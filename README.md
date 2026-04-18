@@ -98,9 +98,8 @@ together prove the pre-registration preceded the analysis.
 
 | Commit (private repo) | Date | Event |
 |---|---|---|
-| pre-reg commit | 2026-04-17 23:34:43 UTC | `I1_p53_domain_science.json` + `.prediction` created |
-| `da5a121` | 2026-04-18 | Code fixes (no analysis data) |
-| `cfc1bea` | 2026-04-18 | Analysis results (`I1_p53_results.json`) committed |
+| `da5a121` | 2026-04-17 23:34:43 UTC | Pre-registration: `I1_p53_domain_science.json` + `.prediction` created |
+| `cfc1bea` | 2026-04-18 | Analysis results: `I1_p53_results.json` committed |
 | `5c9697a` | 2026-04-18 | Abstract draft committed |
 
 ---
