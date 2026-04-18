@@ -1,0 +1,54 @@
+{
+  "experiment": "I1_p53_domain_science",
+  "description": "Phase I1: Pre-registered structural predictions for the p53 gene regulatory network multilayer study. ALL hypotheses committed before running any new analysis or expanding the node set. This file is the scientific record — do not edit after committing.",
+  "graph": "examples/proteins_multilayer.json",
+  "layers": ["co_expression", "functional_association", "genetic_interaction", "physical_interaction"],
+  "pre_registration_note": "Predictions made April 2026 before expanding the p53 node set or running any additional analyses. Calibration data used: existing proteins_multilayer.json (15 proteins). Expansion will add MDM2, BCL2, CDKN1A — these additions must not influence the predictions below.",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "ATM will rank in the top 3 items by divergence score (rank_gap) between the physical_interaction layer and the genetic_interaction layer, computed by cross_layer_analysis.",
+      "rationale": "ATM is a DNA damage kinase. It phosphorylates TP53 but has few direct physical binding partners. Prediction: ATM is peripheral in physical_interaction (low degree, few direct bindings) but highly central in genetic_interaction (many genetic dependencies on DNA damage response). This makes it the prototype layer-divergent item.",
+      "type": "layer_divergence_rank",
+      "predicted_direction": "ATM rank_gap(physical ↔ genetic) in top 3"
+    },
+    {
+      "id": "h2",
+      "statement": "The coherence_score of the p53 network (current or expanded) will exceed the 95th percentile of its own null distribution computed with dev.py cohesion --null 500.",
+      "rationale": "The existing 15-protein graph already scores at 99.7th-100th percentile with 300 permutations. This prediction claims the result is robust to moderate node set expansion (adding 3-5 proteins). It is falsifiable: adding poorly-connected proteins could increase variance_r and drop the percentile.",
+      "type": "null_percentile",
+      "predicted_direction": "coherence_score null-percentile >= 95th"
+    },
+    {
+      "id": "h3",
+      "statement": "TP53 will be the top degree hub in at least 3 of the 4 layers (co_expression, functional_association, genetic_interaction, physical_interaction).",
+      "rationale": "TP53 is the most studied tumor suppressor and the canonical master regulator. The structural hub persistence law predicts its topological dominance replicates across independently measured molecular layers. If it fails in co_expression (computed correlation, not direct regulation), that is a specific boundary condition.",
+      "type": "hub_rank",
+      "predicted_direction": "TP53 rank 1 in >= 3 layers"
+    },
+    {
+      "id": "h4",
+      "statement": "r(functional_association ↔ physical_interaction) > r(functional_association ↔ co_expression). Experimentally measured layers (FA and PI both from direct measurements) will agree more than a computationally derived layer (co_expression).",
+      "rationale": "co_expression is computed from RNA correlation — a softer signal than direct physical binding or curated functional association. The v1.5 resolution boundary condition predicts: layers measuring different phenomena at different scales will have lower hub persistence between them.",
+      "type": "cross_layer_r_ordering",
+      "predicted_direction": "r(FA,PI) > r(FA,coexp)"
+    },
+    {
+      "id": "h5",
+      "statement": "The stratification depth result will assign TP53 a depth of 0 or 1 (foundational/near-foundational) in the functional_association layer. MDM2 will be assigned depth >= 2 (downstream regulatory target).",
+      "rationale": "TP53 is a transcription factor that sits at the top of the DNA-damage response hierarchy. MDM2 is a direct transcriptional target of TP53 — it is downstream, structurally derived. Stratification depth should recover this known biological hierarchy from topology alone.",
+      "type": "stratification_rank",
+      "predicted_direction": "depth(TP53) <= 1, depth(MDM2) >= 2, layer: functional_association"
+    }
+  ],
+  "analysis_plan": [
+    "1. Run dev.py resolve examples/proteins_multilayer.json — pre-check resolution compatibility",
+    "2. Run dev.py cohesion examples/proteins_multilayer.json --null 500 — establish null-calibrated category",
+    "3. Run dev.py law examples/proteins_multilayer.json — observe r values and compare to h4",
+    "4. Run dev.py null examples/proteins_multilayer.json --samples 500 --cohesion — full significance test",
+    "5. Run dev.py strat examples/proteins_multilayer.json --layer functional_association — test h5",
+    "6. Inspect cross_layer_analysis output for ATM divergence rank — test h1",
+    "7. Run dev.py atlas examples/proteins_multilayer.json — structural role of each protein",
+    "8. Expand graph with MDM2, BCL2, CDKN1A — re-run steps 1-7 on expanded graph"
+  ]
+}

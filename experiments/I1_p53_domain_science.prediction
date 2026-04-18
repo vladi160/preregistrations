@@ -1,0 +1,28 @@
+{
+  "experiment": "I1_p53_domain_science",
+  "committed_at": "2026-04-17T23:34:43.121109+00:00",
+  "prediction_hash": "32409dbda299e783",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "ATM will rank in the top 3 items by divergence score (rank_gap) between the physical_interaction layer and the genetic_interaction layer, computed by cross_layer_analysis."
+    },
+    {
+      "id": "h2",
+      "statement": "The coherence_score of the p53 network (current or expanded) will exceed the 95th percentile of its own null distribution computed with dev.py cohesion --null 500."
+    },
+    {
+      "id": "h3",
+      "statement": "TP53 will be the top degree hub in at least 3 of the 4 layers (co_expression, functional_association, genetic_interaction, physical_interaction)."
+    },
+    {
+      "id": "h4",
+      "statement": "r(functional_association ↔ physical_interaction) > r(functional_association ↔ co_expression). Experimentally measured layers (FA and PI both from direct measurements) will agree more than a computationally derived layer (co_expression)."
+    },
+    {
+      "id": "h5",
+      "statement": "The stratification depth result will assign TP53 a depth of 0 or 1 (foundational/near-foundational) in the functional_association layer. MDM2 will be assigned depth >= 2 (downstream regulatory target)."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
