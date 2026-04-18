@@ -52,18 +52,26 @@ Pre-registration precedes analysis by commit history. The DENIED result on h1 (A
 
 ## How to verify
 
-```bash
-# Compute the hash yourself and compare to the .prediction sidecar
-python -c "
+The hash is computed from **only the hypothesis `id` and `statement` fields**, not the full file. This is deliberate — it makes the hash stable against metadata changes (graph paths, rationale edits) while locking the actual predictions.
+
+```python
 import hashlib, json
-with open('experiments/I1_p53_domain_science.json') as f:
-    content = f.read()
-h = hashlib.sha256(content.encode('utf-8')).hexdigest()[:16]
-print('Hash:', h)
-print('Expected: 32409dbda299e783')
-print('Match:', h == '32409dbda299e783')
-"
+
+with open('experiments/I1_p53_domain_science.json', encoding='utf-8') as f:
+    data = json.load(f)
+
+hypotheses = data.get('hypotheses', [])
+statements = [{'id': h.get('id', f'h{i}'), 'statement': h.get('statement', '')}
+              for i, h in enumerate(hypotheses)]
+canonical = json.dumps(statements, sort_keys=True, ensure_ascii=False)
+h = hashlib.sha256(canonical.encode()).hexdigest()[:16]
+
+print('Hash:    ', h)
+print('Expected:', '32409dbda299e783')
+print('Match:   ', h == '32409dbda299e783')
 ```
+
+You can also verify by reading the `.prediction` sidecar directly — it contains the exact statement strings that were hashed, so you can inspect them without running code.
 
 ## Pre-registration protocol
 
