@@ -1,0 +1,33 @@
+{
+  "experiment": "M_EXT2 — C. elegans Connectome True External Validation of Functional Proximity Law",
+  "description": "True external validation of the Functional Proximity Law. Dataset: C. elegans hermaphrodite connectome, 15 major hub neurons, 2 layers. CRITICAL: both the data AND the layer definitions are fully independent of IRDME. Data source: White et al. (1986) electron micrograph reconstruction, as tabulated by Varshney et al. (2011) PLoS Comput Biol. Layer 1 (chemical_synapse): directed neurotransmitter connections (S/Sp type entries). Layer 2 (gap_junction): undirected electrical coupling (EJ type entries). The layer distinction is a biological fundamental defined by the original neuroscience authors, not by IRDME. Law prediction: r(chemical_synapse vs gap_junction) > 0 because both layers encode direct physical neuron-to-neuron coupling (same relational regime: physical contact between neurons), just via different biophysical mechanisms. The major command interneurons (AVAL/AVAR/AVBL/AVBR) are hubs in the C. elegans literature independently — if they are hubs in both layers, the law is confirmed on fully external data.",
+  "graph": "../celegans_connectome.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "chemical_synapse", "layer_b": "gap_junction" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(chemical_synapse <-> gap_junction) > 0 — hub neurons in the chemical synapse layer are also hubs in the gap junction layer, because both layers encode direct physical neuron-to-neuron coupling (same relational regime). The command interneurons AVAL and AVAR, which are known top hubs in the C. elegans literature, are predicted to be top hubs in both layers.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "chemical_synapse",
+        "layer_b": "gap_junction",
+        "expected_direction": "positive",
+        "min_abs_r": 0.40
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "AVAL or AVAR is the top hub in the chemical_synapse layer — this is independently confirmed in the C. elegans neuroscience literature (White 1986, Varshney 2011).",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "chemical_synapse",
+        "expected_hub": "aval"
+      }
+    }
+  ]
+}

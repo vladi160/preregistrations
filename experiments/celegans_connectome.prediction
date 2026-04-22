@@ -1,0 +1,16 @@
+{
+  "experiment": "M_EXT2 — C. elegans Connectome True External Validation of Functional Proximity Law",
+  "committed_at": "2026-04-22T18:57:29.122850+00:00",
+  "prediction_hash": "5cbf9e5d1edd6c38649dbe62765a760a95a788f67be55365b319e02dc88a489b",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(chemical_synapse <-> gap_junction) > 0 — hub neurons in the chemical synapse layer are also hubs in the gap junction layer, because both layers encode direct physical neuron-to-neuron coupling (same relational regime). The command interneurons AVAL and AVAR, which are known top hubs in the C. elegans literature, are predicted to be top hubs in both layers."
+    },
+    {
+      "id": "h2",
+      "statement": "AVAL or AVAR is the top hub in the chemical_synapse layer — this is independently confirmed in the C. elegans neuroscience literature (White 1986, Varshney 2011)."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
