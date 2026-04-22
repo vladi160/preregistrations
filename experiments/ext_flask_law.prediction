@@ -1,0 +1,24 @@
+{
+  "experiment": "M_EXT — Flask External Validation of Functional Proximity Law",
+  "committed_at": "2026-04-22T15:18:24.029791+00:00",
+  "prediction_hash": "3879413e12193fd66fc8df8746783dbff47419bfbe73568c02e0eaf5d070870c",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Hub persistence between imports and structural_coupling is higher than between imports and co_change — the structurally similar pair (same relational regime: static architecture) has higher r than the dissimilar pair (different regime: behavioral coupling)"
+    },
+    {
+      "id": "h2",
+      "statement": "r(imports <-> structural_coupling) >= 0.50 — structural coupling is derived from the import topology so strong correlation is expected"
+    },
+    {
+      "id": "h3",
+      "statement": "r(imports <-> co_change) < r(imports <-> structural_coupling) — behavioral coupling diverges from static import structure because developer work patterns are shaped by feature proximity, not module topology alone"
+    },
+    {
+      "id": "h4",
+      "statement": "app is the top hub in the imports layer — Flask's application class is the central dependency target across modules"
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}

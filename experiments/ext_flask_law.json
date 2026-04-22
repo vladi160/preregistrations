@@ -1,0 +1,59 @@
+{
+  "experiment": "M_EXT — Flask External Validation of Functional Proximity Law",
+  "description": "First external-party validation of the Functional Proximity Law on data NOT designed by the IRDME author. Dataset: Flask web framework (github.com/pallets/flask), 14 core Python modules, 3 layers extracted from real source code and git history. Layers: imports (static dependency), structural_coupling (shared import targets), co_change (behavioral — files changed together in git commits). The law predicts: r(imports <-> structural_coupling) > r(imports <-> co_change) because imports and structural_coupling both encode static architecture (same relational regime) while co_change encodes developer work patterns (different relational regime). This is the same pattern confirmed in v1.2 on the IRDME codebase itself (r=0.9411 vs r=-0.3037). If confirmed on Flask, external validity of the law is established.",
+  "graph": "../flask_multilayer.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "imports", "layer_b": "structural_coupling" },
+    { "run": "cross_layer_analysis", "layer_a": "imports", "layer_b": "co_change", "output_key": "cross_imp_cochange" },
+    { "run": "cross_layer_analysis", "layer_a": "structural_coupling", "layer_b": "co_change", "output_key": "cross_sc_cochange" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Hub persistence between imports and structural_coupling is higher than between imports and co_change — the structurally similar pair (same relational regime: static architecture) has higher r than the dissimilar pair (different regime: behavioral coupling)",
+      "test": {
+        "type": "cross_layer_correlation_rank",
+        "pair_a_layer_a": "imports",
+        "pair_a_layer_b": "structural_coupling",
+        "pair_b_layer_a": "imports",
+        "pair_b_layer_b": "co_change",
+        "expected": "pair_a_higher"
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "r(imports <-> structural_coupling) >= 0.50 — structural coupling is derived from the import topology so strong correlation is expected",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "imports",
+        "layer_b": "structural_coupling",
+        "expected_direction": "positive",
+        "min_abs_r": 0.50
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "r(imports <-> co_change) < r(imports <-> structural_coupling) — behavioral coupling diverges from static import structure because developer work patterns are shaped by feature proximity, not module topology alone",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "imports",
+        "layer_b": "co_change",
+        "expected_direction": "positive",
+        "min_abs_r": 0.10
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "app is the top hub in the imports layer — Flask's application class is the central dependency target across modules",
+      "test": {
+        "type": "cross_layer_top_hub_match",
+        "layer_a": "imports",
+        "layer_b": "structural_coupling",
+        "expected_hub": "helpers"
+      }
+    }
+  ]
+}
