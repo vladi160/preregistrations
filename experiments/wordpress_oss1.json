@@ -1,0 +1,62 @@
+{
+  "experiment": "M_OSS1 — WordPress wp-includes Hub Shadow External Validation",
+  "description": "External validation of the Functional Proximity Law on WordPress Core (github.com/WordPress/wordpress-develop). Dataset: top 25 wp-includes/*.php files by commit frequency, 3 layers: include_graph (PHP require/include static analysis), function_coupling (cross-file function call density), co_change (git co-modification history, 2020–2025, depth=500 commits). CRITICAL: data is fully external — authored by ~3000 contributors over 20+ years, not designed by IRDME. Layer definitions are derived mechanically from the source code and git history, not hand-crafted. Primary prediction: the Functional Proximity Law fires — function_coupling and co_change are the proximal pair (same relational regime: runtime behaviour), while include_graph is the distal layer (static file structure). Hub shadow prediction: post.php is structurally peripheral in the include_graph (rank >= 15) but ranks in the top 5 by co_change, making it a hidden maintenance coupling risk invisible to import-graph inspection.",
+  "graph": "../wordpress_multilayer.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "function_coupling", "layer_b": "co_change" },
+    { "run": "cross_layer_analysis", "layer_a": "include_graph", "layer_b": "co_change" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(function_coupling <-> co_change) > r(include_graph <-> co_change). Modules that call each other's functions at runtime are more strongly co-modified by developers than modules that merely share a PHP include/require relationship. The include_graph captures static file structure; co_change captures actual developer coupling. The law predicts the proximal pair (both encoding runtime behaviour) will have higher r than the distal pair (static structure vs runtime behaviour).",
+      "test": {
+        "type": "correlation_direction",
+        "layer_a_pair": ["function_coupling", "co_change"],
+        "layer_b_pair": ["include_graph", "co_change"],
+        "expected_direction": "a_greater_than_b"
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "r(function_coupling <-> co_change) > 0 and statistically significant (p < 0.05). Modules that share function-level dependencies in WordPress wp-includes are co-modified by developers — function coupling is a real predictor of co-change coupling, not a structural artefact.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "function_coupling",
+        "layer_b": "co_change",
+        "expected_direction": "positive",
+        "min_abs_r": 0.35
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "post will rank in the top 5 by co_change degree AND in the bottom 15 by include_graph degree (rank >= 15 in include_graph, rank <= 5 in co_change). This is the hub shadow prediction: post.php implements the core WordPress data model and is referenced at runtime by almost every feature, but this dependency is not captured in the formal PHP include graph. Developers who examine only the import structure will systematically underestimate co-modification risk with post.php. This is a maintenance risk finding that is invisible to standard static analysis.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "co_change",
+        "expected_hub": "post"
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "functions will be the universal hub: rank #1 or #2 in both co_change and function_coupling layers. functions.php is the canonical WordPress extension point — this prediction is based on WordPress domain knowledge (every developer adds hooks/filters via functions.php) and serves as the positive control for the experiment.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "function_coupling",
+        "expected_hub": "functions"
+      }
+    },
+    {
+      "id": "h5",
+      "statement": "The cohesion score for the WordPress wp-includes multilayer will exceed the 90th percentile of a null distribution (500 permutations). If the three layers were independently structured, coherence would be near the null mean. A significantly high coherence score indicates that hub identity is systematically preserved across layers — the structure is not random and the law applies.",
+      "test": {
+        "type": "cohesion_percentile",
+        "null_n": 500,
+        "expected_percentile_min": 90
+      }
+    }
+  ]
+}
