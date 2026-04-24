@@ -1,0 +1,28 @@
+{
+  "experiment": "M_OSS2 — Next.js Multilayer (App-Router Transition Hub Shadows)",
+  "committed_at": "2026-04-23T23:48:48.862515+00:00",
+  "prediction_hash": "cb0cf4a489dc8a279d611e1d2c35faeee9195dd7dfbdd6756756f6641ccf5150",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(import_graph <-> test_coupling) > r(import_graph <-> co_change). Modules that import each other's code also tend to be tested together — this is the 'structural intent' pair. By contrast, co_change captures actual developer behavior during the App Router transition (2022–2025), when both old and new modules were modified together, creating cross-architectural coupling invisible in the static import graph. The law predicts the proximal pair (both encoding architectural structure) will have higher r than the distal pair (static structure vs behavioral transition churn)."
+    },
+    {
+      "id": "h2",
+      "statement": "r(import_graph <-> test_coupling) > 0 and statistically significant (p < 0.05). Modules that import each other are tested together in the Next.js test suite — test co-occurrence is a genuine predictor of static architectural coupling, not a coincidence. This holds even though Next.js has a large, complex test suite that covers many integration scenarios."
+    },
+    {
+      "id": "h3",
+      "statement": "server_app_render will rank in the top 5 by co_change degree. The App Router rendering engine (packages/next/src/server/app-render/) was the center of the major architectural transition in Next.js from 2022 to 2025. It was introduced as new code and iteratively extended with React Server Components, streaming, Suspense boundaries, and parallel routes. This makes it a high-churn module during the observation window. However, as a newer and more isolated module, it has a lower import_graph rank than foundational modules like lib or client — making it a hub shadow from the architectural transition: visible only to behavioral analysis, invisible to import-graph inspection alone."
+    },
+    {
+      "id": "h4",
+      "statement": "lib will rank in the top 2 by import_graph degree. The lib directory (packages/next/src/lib/) contains shared utility code — URL utilities, router helpers, error handling, environment detection — that is imported by nearly every other source module. It is the canonical shared utility layer in the Next.js architecture and serves as the positive control for this experiment: a module that is structurally central by design should be consistently top-ranked in the import graph."
+    },
+    {
+      "id": "h5",
+      "statement": "The cohesion score for the Next.js multilayer will exceed the 70th percentile of a null distribution (500 permutations). A modern, well-maintained TypeScript monorepo with extensive testing and active architectural governance should have non-trivial cross-layer hub alignment. The 70th percentile threshold (vs 90th for WordPress in M_OSS1) reflects the expected attenuation from the App Router transition: the architectural split creates temporary cross-layer divergence that may lower the raw coherence score. The key signal is gradient (h1) + significance (h2), not coherence alone — consistent with the M_OSS1 calibration finding."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
