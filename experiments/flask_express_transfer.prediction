@@ -1,0 +1,28 @@
+{
+  "experiment": "flask_express_transfer",
+  "committed_at": "2026-04-24T23:52:27.782904+00:00",
+  "prediction_hash": "f85f52e6108d841a6ab6998695c42befe1f0d5e79303e6d6362d17f692bf0395",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "The law holds for Express: r(static_coupling, structural_coupling) > r(static_coupling, co_change). Express is a well-architected framework; its import graph and shared-require coupling should be more correlated than its git co-change behavior."
+    },
+    {
+      "id": "h2",
+      "statement": "application is the top hub in Express static_coupling layer. application.js requires all other Express modules (request, response, router, view, utils) — it is the core app factory and should have the highest static import degree."
+    },
+    {
+      "id": "h3",
+      "statement": "router_index or router is a top-3 hub in the Express co_change layer. The router is the behavioral core of any Express application — changes to request handling, middleware, and routing always touch the router module. It should be a top behavioral hub regardless of its static import rank."
+    },
+    {
+      "id": "h4",
+      "statement": "At least 2 Express modules have cross-layer divergence (different rank tiers between static_coupling and co_change). The router subsystem is structurally peripheral (only application imports router directly) but behaviorally central (every route change touches it). This divergence — a hub shadow — predicts migration risk."
+    },
+    {
+      "id": "h5",
+      "statement": "Flask app and Express application are the top structural match pair in the M_TRANSFER output (sim ≥ 0.65). Both are the declared entry points, top importers, and universal hubs of their respective frameworks. The co_change pivot should align them as the strongest cross-technology structural match."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
