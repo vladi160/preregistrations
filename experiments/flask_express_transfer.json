@@ -1,5 +1,6 @@
 {
   "experiment": "flask_express_transfer",
+  "graph": "../../outputs/output_express.json",
   "description": "M_TRANSFER proof-of-concept: Flask (Python) \u2192 Express.js (JavaScript) structural migration risk map. Pre-registered predictions for (A) Express law confirmation and (B) cross-technology migration risk classification via irdme atlas --compare flask.json express.json --pivot co_change. Flask is the confirmed M_EXT dataset. Express is extracted fresh via irdme extract with --scope javascript. The Universal Layer Grammar predicts both frameworks have the same three coupling levels: static_coupling (d1), structural_coupling (d2), co_change (d3). The law (r(d1\u2194d2) > r(d1\u2194d3)) should hold in Express because its architecture is as intentional as Flask's.",
   "domain": "software_engineering",
   "data_sources": [
