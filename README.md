@@ -55,6 +55,94 @@ Expected output:
 
 ---
 
+### M_EXT — Flask External Validation
+
+| File | Description |
+|---|---|
+| [`experiments/ext_flask_law.json`](experiments/ext_flask_law.json) | 4 pre-registered hypotheses |
+| [`experiments/ext_flask_law.prediction`](experiments/ext_flask_law.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `3879413e12193fd66fc8df8746783dbff47419bfbe73568c02e0eaf5d070870c`
+**Registered:** `2026-04-22T15:18:24.029791+00:00` (before any analysis was run)
+
+#### Verdicts (analysis run 2026-04-22)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | r(imports↔structural_coupling) > r(imports↔co_change) | **CONFIRMED** | 0.6659 > 0.4942 |
+| h2 | r(imports↔structural_coupling) ≥ 0.50 | **CONFIRMED** | r=0.6659 (p=0.015) |
+| h3 | r(imports↔co_change) < r(imports↔structural_coupling) | **CONFIRMED** | 0.4942 < 0.6659 |
+| h4 | app is top hub in imports layer | **CONFIRMED** | app = #1 by degree in imports layer |
+
+---
+
+### M_EXT2 — C. elegans Connectome (True External Validation)
+
+| File | Description |
+|---|---|
+| [`experiments/celegans_connectome.json`](experiments/celegans_connectome.json) | 2 pre-registered hypotheses |
+| [`experiments/celegans_connectome.prediction`](experiments/celegans_connectome.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `5cbf9e5d1edd6c38649dbe62765a760a95a788f67be55365b319e02dc88a489b`
+**Registered:** `2026-04-22T23:28:50.565335+00:00` (before any analysis was run)
+
+#### Verdicts (analysis run 2026-04-22)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | r(chemical_synapse↔gap_junction) > 0 — both layers encode direct physical neuron coupling | **CONFIRMED** | r=0.7774 (Spearman=0.7796, p=0.004) |
+| h2 | AVAL or AVAR is top hub in chemical_synapse layer | **CONFIRMED** | AVAL = #1, AVAR = #2 — consistent with White 1986 / Varshney 2011 |
+
+Both data AND layer definitions are fully independent of IRDME. The chemical/electrical distinction was defined by White et al. (1986) from electron micrograph reconstruction.
+
+---
+
+### M_OSS1 — WordPress wp-includes Hub Shadow
+
+| File | Description |
+|---|---|
+| [`experiments/wordpress_oss1.json`](experiments/wordpress_oss1.json) | 5 pre-registered hypotheses |
+| [`experiments/wordpress_oss1.prediction`](experiments/wordpress_oss1.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `6b22eafc586ef5c27416726e36df7ccc996c0117b14018b391ce9b93c0471b5c`
+**Registered:** `2026-04-23T00:51:38.608825+00:00` (before any analysis was run)
+
+#### Verdicts (analysis run 2026-04-23)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | r(function_coupling↔co_change) > r(include_graph↔co_change) | **CONFIRMED** | 0.5156 > 0.2405 |
+| h2 | r(function_coupling↔co_change) > 0, p < 0.05 | **CONFIRMED** | r=0.5156, p=0.012 |
+| h3 | post.php: co_change rank ≤ 5 AND include_graph rank ≥ 15 (hub shadow) | **CONFIRMED** | co_change #4, include_graph #19 — hidden maintenance risk invisible to static analysis |
+| h4 | functions.php: universal hub, rank #1 or #2 in both co_change and function_coupling | **CONFIRMED** | #1 co_change, #2 function_coupling |
+| h5 | cohesion score > 90th null percentile (500 permutations) | **DENIED** | 32nd percentile — power-law degree distribution makes high coherence trivial; gradient+p is the correct metric |
+
+---
+
+### M_OSS2 — Next.js Multilayer (App-Router Transition)
+
+| File | Description |
+|---|---|
+| [`experiments/nextjs_oss2.json`](experiments/nextjs_oss2.json) | 5 pre-registered hypotheses |
+| [`experiments/nextjs_oss2.prediction`](experiments/nextjs_oss2.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `cb0cf4a489dc8a279d611e1d2c35faeee9195dd7dfbdd6756756f6641ccf5150`
+**Registered:** `2026-04-23T23:48:48.862515+00:00` (before any analysis was run)
+
+#### Verdicts (analysis run 2026-04-24)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | r(import_graph↔test_coupling) > r(import_graph↔co_change) | **CONFIRMED** | 0.8995 > 0.5484 — strongest OSS gradient to date (Δr=0.35) |
+| h2 | r(import_graph↔test_coupling) > 0, p < 0.05 | **CONFIRMED** | r=0.8995, Spearman=0.7027, p=0.002 |
+| h3 | server_app_render in co_change top 5 (hub shadow prediction) | **DENIED** | rank #15 — App Router built cleanly; no hub shadow despite 2-year transition |
+| h4 | lib in import_graph top 2 | **DENIED** | rank #3 — server_base (#1) and build (#2) dominate monorepo server infrastructure |
+| h5 | cohesion score > 70th null percentile | **DENIED** | 31st percentile — confirms M_OSS1 calibration finding; coherence alone insufficient for software graphs |
+
+Key finding: the three DENIED hypotheses are all informative — server_app_render being a relay node (not a hub shadow) is direct evidence that the Next.js team maintained clean architectural boundaries during the App Router transition.
+
+---
+
 ## Why denied hypotheses matter
 
 The DENIED result on h1 is direct evidence of integrity. A tool that always confirms predictions is not producing science — it is producing confirmation bias. The prediction named ATM as the top diverger based on domain knowledge; the tool ranked ATM 13th out of 15 and identified CHEK1 as the true structural outlier (gap=8). That disagreement is the result. Denied hypotheses are not failures. They are the mechanism by which the measurement stays honest.
@@ -101,6 +189,14 @@ together prove the pre-registration preceded the analysis.
 | `da5a121` | 2026-04-17 23:34:43 UTC | Pre-registration: `I1_p53_domain_science.json` + `.prediction` created |
 | `cfc1bea` | 2026-04-18 | Analysis results: `I1_p53_results.json` committed |
 | `5c9697a` | 2026-04-18 | Abstract draft committed |
+| — | 2026-04-22 15:18 UTC | Pre-registration: `ext_flask_law` (M_EXT — Flask) pushed to public repo |
+| — | 2026-04-22 | Analysis run: Flask confirmed, r=0.6659 (p=0.015) |
+| — | 2026-04-22 23:28 UTC | Pre-registration: `celegans_connectome` (M_EXT2 — C. elegans) pushed to public repo |
+| — | 2026-04-22 | Analysis run: C. elegans confirmed, r=0.7774 (p=0.004) |
+| — | 2026-04-23 00:51 UTC | Pre-registration: `wordpress_oss1` (M_OSS1 — WordPress) pushed to public repo |
+| — | 2026-04-23 | Analysis run: WordPress 4/5 confirmed, post.php = hub shadow |
+| — | 2026-04-23 23:48 UTC | Pre-registration: `nextjs_oss2` (M_OSS2 — Next.js) pushed to public repo |
+| — | 2026-04-24 | Analysis run: Next.js 2/5 confirmed (law gradient strongest to date), 3 informative denials |
 
 ---
 
