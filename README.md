@@ -86,6 +86,8 @@ Expected output:
 **Hash:** `5cbf9e5d1edd6c38649dbe62765a760a95a788f67be55365b319e02dc88a489b`
 **Registered:** `2026-04-22T23:28:50.565335+00:00` (before any analysis was run)
 
+> **Note on commit history:** Two commits exist for this file — [`d69a159`](https://github.com/vladi160/preregistrations/commit/d69a159) (2026-04-22T18:57:29 UTC) and [`fff8a0b`](https://github.com/vladi160/preregistrations/commit/fff8a0b) (2026-04-22T23:28:50 UTC). The sidecar was regenerated between commits; the `prediction_hash` and all hypothesis content are **identical** in both. Only the auto-generated `committed_at` field differs. The pre-registration was intact before any analysis was run.
+
 #### Verdicts (analysis run 2026-04-22)
 
 | # | Hypothesis | Verdict | Result |
