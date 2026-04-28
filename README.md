@@ -93,7 +93,7 @@ Expected output:
 | # | Hypothesis | Verdict | Result |
 |---|---|---|---|
 | h1 | r(chemical_synapse↔gap_junction) > 0 — both layers encode direct physical neuron coupling | **CONFIRMED** | r=0.7774 (Spearman=0.7796, p=0.004) |
-| h2 | AVAL or AVAR is top hub in chemical_synapse layer | **CONFIRMED** | AVAL = #1, AVAR = #2 — consistent with White 1986 / Varshney 2011 |
+| h2 | AVAL or AVAR is top hub in chemical_synapse layer | **DENIED** | By degree centrality (pre-registered metric), PVCL = #1 and AVAL = #2. AVAL leads by raw synapse weight, which was not the pre-registered measure. Operational boundary condition: degree rank ≠ weight rank. h1 unaffected. |
 
 Both data AND layer definitions are fully independent of IRDME. The chemical/electrical distinction was defined by White et al. (1986) from electron micrograph reconstruction.
 
