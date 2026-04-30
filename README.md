@@ -145,6 +145,30 @@ Key finding: the three DENIED hypotheses are all informative — server_app_rend
 
 ---
 
+### F6 — AI Architecture Graph: Functional Proximity Law on ML Model Lineage
+
+| File | Description |
+|---|---|
+| [`experiments/ai_architecture_law.json`](experiments/ai_architecture_law.json) | 5 pre-registered hypotheses |
+| [`experiments/ai_architecture_law.prediction`](experiments/ai_architecture_law.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `bff4e101342af172d3236a2303191ab33973897d7370000e8c46c7148e2bf320`
+**Registered:** `2026-04-30T20:26:15.228173+00:00` (before any analysis was run)
+
+#### Verdicts (analysis run 2026-04-30)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | r(citation_dependency ↔ architecture_inheritance) > r(citation_dependency ↔ benchmark_co_performance) | **CONFIRMED** | 0.9147 > −0.0025 |
+| h2 | r(citation_dependency ↔ architecture_inheritance) > 0.4 | **CONFIRMED** | r=0.9147 (Spearman=0.6757, p=0.002, R²=0.8367, large effect) |
+| h3 | transformer is rank #1 hub in citation_dependency layer | **CONFIRMED** | transformer #1; top 5: transformer, rnn, gpt3, lstm, bert |
+| h4 | transformer is rank #1 hub in architecture_inheritance layer | **CONFIRMED** | transformer #1; top 5: transformer, gpt3, bert, resnet, lstm |
+| h5 | transformer is rank ≤ 3 in all three layers (universal_hub) | **DENIED** | transformer = #5 in benchmark_co_performance; llama = #1. Mechanism: recency bias in benchmark selection — LLaMA displaced transformer as the benchmarked model even as transformer remained #1 in both structural layers. Transformer is treated as infrastructure, not a competitor. |
+
+> **Note on the denied h5:** The denial is informative. Transformer's absence from the top-3 benchmark is the structural signature of infrastructure — it is measured in citation and inheritance, but not benchmarked because it is assumed. LLaMA's rank inversion (citation rank #16 → benchmark rank #1) is the chameleon finding: structurally peripheral, deployment-dominant. The law correctly identifies transformer as the universal hub in structural layers; the benchmark layer is a behavioral signal that follows different rules (recency, deployment availability). This is the same regime-mismatch mechanism as Finance DENIED (trading vs lending) and is a boundary condition on interpretation of the benchmark layer.
+
+---
+
 ## Why denied hypotheses matter
 
 The DENIED result on h1 is direct evidence of integrity. A tool that always confirms predictions is not producing science — it is producing confirmation bias. The prediction named ATM as the top diverger based on domain knowledge; the tool ranked ATM 13th out of 15 and identified CHEK1 as the true structural outlier (gap=8). That disagreement is the result. Denied hypotheses are not failures. They are the mechanism by which the measurement stays honest.
@@ -199,6 +223,8 @@ together prove the pre-registration preceded the analysis.
 | — | 2026-04-23 | Analysis run: WordPress 4/5 confirmed, post.php = hub shadow |
 | — | 2026-04-23 23:48 UTC | Pre-registration: `nextjs_oss2` (M_OSS2 — Next.js) pushed to public repo |
 | — | 2026-04-24 | Analysis run: Next.js 2/5 confirmed (law gradient strongest to date), 3 informative denials |
+| — | 2026-04-30 20:26 UTC | Pre-registration: `ai_architecture_law` (F6 — AI Architecture Graph) pushed to public repo |
+| — | 2026-04-30 | Analysis run: AI Architecture 4/5 confirmed, r=0.9147, 1 denial with named mechanism (recency bias) |
 
 ---
 
