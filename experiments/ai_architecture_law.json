@@ -1,0 +1,68 @@
+{
+  "experiment": "F6 — AI Architecture Graph: Functional Proximity Law on ML Model Lineage",
+  "description": "Application of the Functional Proximity Law to the AI model architecture domain. Nodes = 20 major ML model architectures (Transformer, BERT, GPT-2, GPT-3, T5, ViT, ResNet, AlexNet, Word2Vec, Bahdanau Attention, LSTM, RNN, GAN, VAE, DDPM/Diffusion, LLaMA, Mamba, CLIP, RoBERTa, GPT-4). Three layers: citation_dependency (d1) — model A is explicitly cited as a direct architectural predecessor in model B's paper; architecture_inheritance (d2) — models A and B share a core structural mechanism (multi-head attention, convolution, sequential processing, latent generative framework); benchmark_co_performance (d3) — models A and B are evaluated together in the same benchmark comparison papers (GLUE, SuperGLUE, ImageNet, FID, language generation benchmarks). All edges are verifiable from the original papers listed in the graph data source. CRITICAL: the graph encodes publicly verifiable structural facts about how the field developed — not IRDME-defined relationships. The layer definitions are fixed before analysis. The Functional Proximity Law prediction: r(d1 <-> d2) > r(d1 <-> d3), because citation lineage and architecture inheritance both encode how the field is structurally organised (same relational regime), while benchmark co-performance encodes what models do on tasks (behavioral). The structural hub prediction: Transformer will be the top hub in all three layers from topology alone — without reading any paper, without citation counts, without any domain knowledge beyond the edge list.",
+  "graph": "../ai_architecture.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "citation_dependency", "layer_b": "architecture_inheritance" },
+    { "run": "cross_layer_analysis", "layer_a": "citation_dependency", "layer_b": "benchmark_co_performance" },
+    { "run": "cross_layer_analysis", "layer_a": "architecture_inheritance", "layer_b": "benchmark_co_performance" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(citation_dependency <-> architecture_inheritance) > r(citation_dependency <-> benchmark_co_performance). Citation lineage (how papers cite predecessors) and architecture inheritance (which structural mechanisms are reused) are both structural encodings of how the field is organised. Benchmark co-performance is a behavioral signal (what models do on tasks). The law predicts the proximal pair — both structural — will have higher cross-layer hub correlation than the distal pair — structural vs behavioral.",
+      "test": {
+        "type": "cross_layer_correlation_rank",
+        "pair_a_layer_a": "citation_dependency",
+        "pair_a_layer_b": "architecture_inheritance",
+        "pair_b_layer_a": "citation_dependency",
+        "pair_b_layer_b": "benchmark_co_performance",
+        "expected": "pair_a_higher"
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "r(citation_dependency <-> architecture_inheritance) > 0.4. The structural pair should show strong positive correlation: architectures that cite each other also inherit each other's mechanisms. This is the primary law test.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "citation_dependency",
+        "layer_b": "architecture_inheritance",
+        "expected_direction": "positive",
+        "min_abs_r": 0.40
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "Transformer is the top hub (rank #1) in the citation_dependency layer. From the edge list alone — without reading any paper — Transformer has the highest number of direct architectural citation links. This is pre-registered before running any centrality computation.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "citation_dependency",
+        "expected_hub": "transformer",
+        "max_rank": 1
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "Transformer is the top hub (rank #1) in the architecture_inheritance layer. More models inherit multi-head attention (the Transformer's core mechanism) than any other architectural primitive. This is pre-registered before centrality is computed.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "architecture_inheritance",
+        "expected_hub": "transformer",
+        "max_rank": 1
+      }
+    },
+    {
+      "id": "h5",
+      "statement": "Transformer is a persistent hub (rank <= 3) in all three layers — citation_dependency, architecture_inheritance, and benchmark_co_performance. A universal_hub in IRDME terms: high hub importance across all layers simultaneously.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "benchmark_co_performance",
+        "expected_hub": "transformer",
+        "max_rank": 3
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "experiment": "F6 — AI Architecture Graph: Functional Proximity Law on ML Model Lineage",
+  "committed_at": "2026-04-30T20:26:15.228173+00:00",
+  "prediction_hash": "bff4e101342af172d3236a2303191ab33973897d7370000e8c46c7148e2bf320",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(citation_dependency <-> architecture_inheritance) > r(citation_dependency <-> benchmark_co_performance). Citation lineage (how papers cite predecessors) and architecture inheritance (which structural mechanisms are reused) are both structural encodings of how the field is organised. Benchmark co-performance is a behavioral signal (what models do on tasks). The law predicts the proximal pair — both structural — will have higher cross-layer hub correlation than the distal pair — structural vs behavioral."
+    },
+    {
+      "id": "h2",
+      "statement": "r(citation_dependency <-> architecture_inheritance) > 0.4. The structural pair should show strong positive correlation: architectures that cite each other also inherit each other's mechanisms. This is the primary law test."
+    },
+    {
+      "id": "h3",
+      "statement": "Transformer is the top hub (rank #1) in the citation_dependency layer. From the edge list alone — without reading any paper — Transformer has the highest number of direct architectural citation links. This is pre-registered before running any centrality computation."
+    },
+    {
+      "id": "h4",
+      "statement": "Transformer is the top hub (rank #1) in the architecture_inheritance layer. More models inherit multi-head attention (the Transformer's core mechanism) than any other architectural primitive. This is pre-registered before centrality is computed."
+    },
+    {
+      "id": "h5",
+      "statement": "Transformer is a persistent hub (rank <= 3) in all three layers — citation_dependency, architecture_inheritance, and benchmark_co_performance. A universal_hub in IRDME terms: high hub importance across all layers simultaneously."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
