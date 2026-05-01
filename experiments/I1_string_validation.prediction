@@ -1,0 +1,28 @@
+{
+  "experiment": "I1_string_validation",
+  "committed_at": "2026-05-01T00:11:57.082171+00:00",
+  "prediction_hash": "2f7bffbfa31535042734d554f51ec2622d4f488ea020a1fd0eabf2fac0940a84",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(functional_association, physical_interaction) > r(functional_association, co_expression) in the STRING v12.0 graph. The functionally-measured layers (FA and PI) will have higher hub persistence between them than between FA and the computationally-derived co_expression layer. This replicates the h4 CONFIRMED result from v1.0 on independent STRING data."
+    },
+    {
+      "id": "h2",
+      "statement": "TP53 will be the top degree hub in the physical_interaction layer of the STRING graph. This is the most constrained replication test: a change in data source (from curated to raw STRING escore) must not change the identity of the network's structural center."
+    },
+    {
+      "id": "h3",
+      "statement": "The sign of r(functional_association, physical_interaction) from STRING v12.0 will be positive, matching the sign from v1.0 (v1.0 result: r=+0.749). A sign flip would indicate that the STRING data encodes a structurally incompatible layer definition — a data-level boundary condition, not a law violation."
+    },
+    {
+      "id": "h4",
+      "statement": "r(functional_association, genetic_interaction_proxy) < r(functional_association, physical_interaction). The genetic_interaction_proxy layer (textmining channel: escore < 0.15 AND tscore >= 0.45) is a literature proxy, not a CRISPR screen. It encodes a different relational regime from direct functional association. Hub persistence from FA to textmining will be lower than from FA to experimental binding."
+    },
+    {
+      "id": "h5",
+      "statement": "CHEK1 will appear in the top-3 divergent items between the physical_interaction and genetic_interaction_proxy layers in the STRING graph. In v1.0, CHEK1 was the surprise top diverger (gap=8, physical rank 10 vs genetic rank 3 — falsifying the pre-registered ATM prediction). The prediction here is that CHEK1's layer-divergent behavior is structural — it survives data source change — and is not an artifact of manual curation."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
