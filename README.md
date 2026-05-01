@@ -99,6 +99,32 @@ Both data AND layer definitions are fully independent of IRDME. The chemical/ele
 
 ---
 
+### I1 — p53 Gene Regulatory Network (STRING v12.0 External Validation)
+
+| File | Description |
+|---|---|
+| [`experiments/I1_string_validation.json`](experiments/I1_string_validation.json) | 5 pre-registered hypotheses |
+| [`experiments/I1_string_validation.prediction`](experiments/I1_string_validation.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `2f7bffbfa31535042734d554f51ec2622d4f488ea020a1fd0eabf2fac0940a84`  
+**Registered:** `2026-05-01T00:11:57.082171+00:00` (before any analysis was run)
+
+**Context:** I1 Phase 2 — same 15 proteins as the original I1 curated analysis, but edges sourced independently from STRING v12.0 channel scores. Layers: physical_interaction (escore ≥ 0.3), co_expression (ascore ≥ 0.08), functional_association (dscore ≥ 0.4), genetic_interaction_proxy (textmining tscore ≥ 0.45, escore < 0.15). The `genetic_interaction_proxy` is NOT the same as DepMap CRISPR screens used in v1.0 — it is a literature proxy.
+
+#### Verdicts (analysis run 2026-05-01)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | r(functional_association, physical_interaction) > r(functional_association, co_expression) | **CONFIRMED** | 0.8689 > 0.6179 — law replicates on independent STRING data |
+| h2 | TP53 is rank #1 hub in physical_interaction layer | **CONFIRMED** | TP53 = #1; confirmed identity of structural center survives data source change |
+| h3 | r(functional_association, physical_interaction) > 0 (sign replication) | **CONFIRMED** | r = +0.8689 (Spearman=+0.8130, 95% CI [+0.6427, +0.9558]) — sign and magnitude both replicate |
+| h4 | r(functional_association, genetic_interaction_proxy) < r(functional_association, physical_interaction) | **CONFIRMED** | −0.3470 < +0.8689 — regime mismatch confirmed; textmining proxy encodes structurally incompatible layer |
+| h5 | CHEK1 in top-3 divergers between physical_interaction and genetic_interaction_proxy | **DENIED** | CHEK1 rank gap = 1 (physical #5 vs proxy #4). True top divergers: BCL2 (gap=13, proxy #1 vs physical #14), TP53 (gap=12, physical #1 vs proxy #13), PCNA (gap=9). CHEK1's v1.0 divergence was specific to DepMap CRISPR genetic interaction screens — it does not replicate with textmining proxy. Named mechanism: CRISPR screens capture essentiality-based synthetic lethality; textmining captures literature co-mention frequency. Different measurement regimes produce different structural divergers. |
+
+**Key finding:** The Functional Proximity Law replicates on fully independent STRING v12.0 data (h1–h4 CONFIRMED, 4/5). The DENIED h5 is the scientifically most valuable result: CHEK1's divergence in v1.0 was a feature of the DepMap CRISPR data, not a universal structural property of the p53 network. BCL2 (textmining hub, physical peripheral) and TP53 (physical hub, textmining peripheral) are the actual cross-layer structural divergers in the STRING-sourced graph. This is a direct data-source boundary condition: the identity of divergent items depends on which relational regime the genetic layer encodes.
+
+---
+
 ### M_OSS1 — WordPress wp-includes Hub Shadow
 
 | File | Description |
@@ -225,6 +251,8 @@ together prove the pre-registration preceded the analysis.
 | — | 2026-04-24 | Analysis run: Next.js 2/5 confirmed (law gradient strongest to date), 3 informative denials |
 | — | 2026-04-30 20:26 UTC | Pre-registration: `ai_architecture_law` (F6 — AI Architecture Graph) pushed to public repo |
 | — | 2026-04-30 | Analysis run: AI Architecture 4/5 confirmed, r=0.9147, 1 denial with named mechanism (recency bias) |
+| `5bdfa37` (public) | 2026-05-01 00:11 UTC | Pre-registration: `I1_string_validation` (I1 Phase 2 — STRING v12.0) pushed to public repo |
+| — | 2026-05-01 | Analysis run: STRING validation 4/5 CONFIRMED — law replicates on independent data. r(FA,PI)=0.8689. h5 DENIED: CHEK1 divergence was CRISPR-specific, not universal. True divergers on STRING: BCL2 (gap=13), TP53 (gap=12). |
 
 ---
 
