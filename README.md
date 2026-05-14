@@ -5,9 +5,9 @@ Public record of pre-registered scientific hypotheses for the
 
 **This repository exists to make failed predictions visible, not only successful ones.**
 
-**Current status (May 2026):** 16 CONFIRMED, 3 DENIED across 19 domains. arXiv:2604.23639 published (cs.SI, April 2026). Science frozen. Platform live at [irdme.com](https://irdme.com).
+**Current status (May 2026):** 16 CONFIRMED, 3 DENIED across 19 domains. arXiv:2604.23639 published (cs.SI, April 2026). Platform live at [irdme.com](https://irdme.com).
 
-**Experiments in this repo (8 total):**
+**Experiments in this repo (9 total):**
 
 | File | Experiment | Verdict |
 |---|---|---|
@@ -19,6 +19,7 @@ Public record of pre-registered scientific hypotheses for the
 | `nextjs_oss2` | Next.js App-Router transition (M_OSS2) | 2/5 CONFIRMED, 3 DENIED (all informative) |
 | `flask_express_transfer` | Flask↔Express cross-language isomorphism (M_TRANSFER_2) | 3/4 CONFIRMED, 1 PARTIAL |
 | `ai_architecture_law` | AI Model Architecture graph (F6) | 4/5 CONFIRMED, 1 DENIED |
+| `proteins_trust_cert_v1` | p53 Dataset Integrity Certificate — M_DATASET_TRUST first run | ⏳ pre-registered, not yet run |
 
 
 ## Quick verification
@@ -231,6 +232,38 @@ Key finding: the three DENIED hypotheses are all informative — server_app_rend
 | h4 | 0 migration hazards between Flask and Express (both well-architected micro-frameworks) | **CONFIRMED** | 0 `migration_hazard` entries. Risk map: 3 safe_transfer, 1 refactor_opportunity (config = Flask chameleon), 10 relay |
 
 **Key discovery (h1 boundary condition):** Express `lib/` is a flat 6-file architecture — no router module in `lib/`; routing logic is internal to `application.js`. `response` is the most behaviorally coupled module (#1 co_change, 267 commits). The law's gradient is present but underpowered — consistent with the Flask M_EXT finding that micro-frameworks with few modules require a minimum n for the law to reach significance.
+
+---
+
+## proteins_trust_cert_v1 — p53 Dataset Integrity Certificate (M_DATASET_TRUST first run)
+
+| File | Description |
+|---|---|
+| [`experiments/proteins_trust_cert_v1.json`](experiments/proteins_trust_cert_v1.json) | 5 pre-registered hypotheses |
+| [`experiments/proteins_trust_cert_v1.prediction`](experiments/proteins_trust_cert_v1.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `5bbbd9cbebe29544e0f239708e384c85aa6f7f4d2a2eb39907b79c80a1d4b023`
+**Registered:** `2026-05-14T17:47:08.403592+00:00` (before running POST /api/datasets/compare)
+
+**What this experiment is:** The first run of M_DATASET_TRUST — the dataset integrity certification feature. Rather than testing the Functional Proximity Law on a single graph, this experiment compares two independent sources of the same domain to determine which nodes are *structurally trusted* (hubs in both sources) vs *boundary nodes* (hub in one source only). This inverts the standard science direction: instead of data → patterns, the question is: do independent data sources agree on the structural backbone?
+
+**Sources being compared:**
+- **Source A:** `proteins_multilayer.json` — p53 network, manually curated edges from literature (co-IP / pulldown / BioGRID / DepMap CRISPR). v1.0 dataset. 21 physical, 13 co-expression, 16 functional, 10 genetic interaction edges.
+- **Source B:** `proteins_multilayer_string.json` — same 15 proteins, edges from raw STRING v12.0 channel scores (escore/ascore/dscore/tscore). v1.1 dataset. Independent curation methodology.
+
+**Context:** Both sources have been individually pre-registered and CONFIRMED via the law: I1_p53_domain_science (hash 32409dbda299e783, April 2026) and I1_string_validation (hash in its .prediction file, May 1 2026). This is the first time they are compared *against each other* for structural agreement.
+
+**Hypotheses:**
+
+| # | Prediction | Type |
+|---|---|---|
+| h1 | TP53 in trusted_nodes (hub in both sources) | dataset_trust_certification |
+| h2 | MDM2 in trusted_nodes (hub in both sources) | dataset_trust_certification |
+| h3 | Verdict = PARTIAL (0.4 < agreement_score ≤ 0.7) | dataset_trust_certification |
+| h4 | Law holds independently in both sources: r(FA, PI) highest pair in law_a and law_b | dataset_trust_certification |
+| h5 | PCNA in boundary_nodes (hub in one source only) | dataset_trust_certification |
+
+*Verdicts to be recorded after running POST /api/datasets/compare with both datasets loaded to irdme.com.*
 
 ---
 
