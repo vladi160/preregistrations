@@ -19,7 +19,7 @@ Public record of pre-registered scientific hypotheses for the
 | `nextjs_oss2` | Next.js App-Router transition (M_OSS2) | 2/5 CONFIRMED, 3 DENIED (all informative) |
 | `flask_express_transfer` | Flask↔Express cross-language isomorphism (M_TRANSFER_2) | 3/4 CONFIRMED, 1 PARTIAL |
 | `ai_architecture_law` | AI Model Architecture graph (F6) | 4/5 CONFIRMED, 1 DENIED |
-| `proteins_trust_cert_v1` | p53 Dataset Integrity Certificate — M_DATASET_TRUST first run | ⏳ pre-registered, not yet run |
+| `proteins_trust_cert_v1` | p53 Dataset Integrity Certificate — M_DATASET_TRUST first run | **5/5 CONFIRMED** |
 
 
 ## Quick verification
@@ -264,6 +264,24 @@ Key finding: the three DENIED hypotheses are all informative — server_app_rend
 | h5 | PCNA in boundary_nodes (hub in one source only) | dataset_trust_certification |
 
 *Verdicts to be recorded after running POST /api/datasets/compare with both datasets loaded to irdme.com.*
+
+#### Verdicts (analysis run 2026-05-14, `irdme certify` CLI)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | TP53 in trusted_nodes (hub in both sources) | **CONFIRMED** | TP53 in top-7 hubs in both curated v1.0 and STRING v12.0. The master tumor suppressor retains its structural centrality regardless of curation methodology. |
+| h2 | MDM2 in trusted_nodes (hub in both sources) | **CONFIRMED** | MDM2 in top-7 hubs in both sources. MDM2-TP53 feedback loop is structurally robust across data sources. |
+| h3 | Verdict = PARTIAL (0.4 < agreement_score ≤ 0.7) | **CONFIRMED** | agreement_score=0.5556, verdict=PARTIAL. Core hubs agree; peripheral topology diverges as predicted due to methodology gap. |
+| h4 | Law holds independently in both sources: r(FA, PI) is the top pair in law_a and law_b | **CONFIRMED** | Curated: r(FA,PI)=0.7493 (rank 1). STRING: r(FA,PI)=0.8689 (rank 1). Law holds in both independent sources. |
+| h5 | PCNA in boundary_nodes (hub in one source only) | **CONFIRMED** | PCNA is hub in STRING v12.0 (escore high via sliding clamp interactions) but not in curated v1.0. The predicted mechanism — STRING's automated scoring vs curated selection — was the correct explanation. |
+
+**Key findings beyond pre-registered hypotheses:**
+- **Trusted set (5 nodes):** TP53, MDM2, ATM, BRCA1, CHK2 — these are the structurally robust nodes of the p53 network, independently confirmed by two data sources with different curation methodologies. Certificate: SHA-256 `ae72b2310cec20b7…` (full hash in output JSON).
+- **Boundary — curated-only hubs:** ATR, RB1 — present as hubs in the curated literature but ranked lower in STRING escore. ATR's hub status in curated v1.0 reflects expert curation of replication stress relationships not fully captured by STRING channel thresholds.
+- **Boundary — STRING-only hubs:** CHEK1, PCNA — CHEK1 was already identified as the true structural outlier in I1_p53_domain_science (ATM was the pre-registered prediction, CHEK1 was the actual finding — gap=8). Its appearance as a STRING-only hub here is consistent: STRING's escore captures CHEK1's binding partners more densely than the curated set.
+- **Law gradient in both sources:** Curated: r(FA,PI)=0.7493 > r(FA,GI)=0.7308 — narrow gradient. STRING: r(FA,PI)=0.8689 >> r(co_exp,FA)=0.6179 — strong gradient with near-zero r for genetic_interaction_proxy (-0.257). The STRING gradient is sharper because the textmining proxy correctly de-correlates from the functional layer.
+
+**Interpretation:** The 5 trusted nodes are the research-grade backbone of the p53 network — independently confirmable from any data source that captures this domain. Any downstream analysis (drug target prioritization, pathway reconstruction) can use this set with the highest confidence. The 4 boundary nodes are exactly the scientifically interesting region: they represent real biological signals that are data-source-dependent, worth investigating further.
 
 ---
 
