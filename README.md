@@ -5,7 +5,21 @@ Public record of pre-registered scientific hypotheses for the
 
 **This repository exists to make failed predictions visible, not only successful ones.**
 
----
+**Current status (May 2026):** 16 CONFIRMED, 3 DENIED across 19 domains. arXiv:2604.23639 published (cs.SI, April 2026). Science frozen. Platform live at [irdme.com](https://irdme.com).
+
+**Experiments in this repo (8 total):**
+
+| File | Experiment | Verdict |
+|---|---|---|
+| `I1_p53_domain_science` | p53 Gene Regulatory Network — curated | 4/5 CONFIRMED, 1 PARTIAL |
+| `ext_flask_law` | Flask external validation (M_EXT) | 4/4 CONFIRMED |
+| `celegans_connectome` | C. elegans connectome true external (M_EXT2) | 1/2 CONFIRMED, 1 DENIED |
+| `I1_string_validation` | p53 STRING v12.0 external validation | 4/5 CONFIRMED, 1 DENIED |
+| `wordpress_oss1` | WordPress wp-includes hub shadow (M_OSS1) | 4/5 CONFIRMED, 1 DENIED |
+| `nextjs_oss2` | Next.js App-Router transition (M_OSS2) | 2/5 CONFIRMED, 3 DENIED (all informative) |
+| `flask_express_transfer` | Flask↔Express cross-language isomorphism (M_TRANSFER_2) | 3/4 CONFIRMED, 1 PARTIAL |
+| `ai_architecture_law` | AI Model Architecture graph (F6) | 4/5 CONFIRMED, 1 DENIED |
+
 
 ## Quick verification
 
@@ -195,9 +209,110 @@ Key finding: the three DENIED hypotheses are all informative — server_app_rend
 
 ---
 
+### M_TRANSFER_2 — Flask (Python) ↔ Express.js (JavaScript) Structural Migration
+
+| File | Description |
+|---|---|
+| [`experiments/flask_express_transfer.json`](experiments/flask_express_transfer.json) | 4 pre-registered hypotheses |
+| [`experiments/flask_express_transfer.prediction`](experiments/flask_express_transfer.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `f85f52e6108d841a6ab6998695c42befe1f0d5e79303e6d6362d17f692bf0395`  
+**Registered:** `2026-04-24T23:52:27.782904+00:00` (before any analysis was run)
+
+**Context:** Cross-technology structural comparison using `irdme atlas --compare flask.json express.json --pivot co_change`. Flask is the confirmed M_EXT dataset (14 modules, 1934 commits). Express.js extracted fresh via `irdme extract --scope javascript` (6 modules). Both use the Universal Layer Grammar: `static_coupling` (d1), `structural_coupling` (d2), `co_change` (d3). The `co_change` pivot anchors cross-language comparison on the language-agnostic behavioral layer.
+
+#### Verdicts (analysis run 2026-04-25)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | r(static_coupling ↔ structural_coupling) > r(static_coupling ↔ co_change) in Express | **PARTIAL** | Law gradient present (r_delta > 0) but r underpowered at n=6; gradient direction confirmed, significance not reached. Named boundary: n=6 is below minimum for r significance. |
+| h2 | `application` is top hub in Express `static_coupling` layer | **CONFIRMED** | application.js = #1 by degree in static_coupling; requires all other modules |
+| h3 | Flask `app` ↔ Express `application` structural similarity > 0.90 | **CONFIRMED** | sim=1.0000 — perfect cross-language structural match (both universal_hub in all layers). `json`↔`utils` sim=0.9705; `sessions`↔`response` sim=0.9335; `wrappers`↔`request` sim=0.9278 |
+| h4 | 0 migration hazards between Flask and Express (both well-architected micro-frameworks) | **CONFIRMED** | 0 `migration_hazard` entries. Risk map: 3 safe_transfer, 1 refactor_opportunity (config = Flask chameleon), 10 relay |
+
+**Key discovery (h1 boundary condition):** Express `lib/` is a flat 6-file architecture — no router module in `lib/`; routing logic is internal to `application.js`. `response` is the most behaviorally coupled module (#1 co_change, 267 commits). The law's gradient is present but underpowered — consistent with the Flask M_EXT finding that micro-frameworks with few modules require a minimum n for the law to reach significance.
+
+---
+
 ## Why denied hypotheses matter
 
 The DENIED result on h1 is direct evidence of integrity. A tool that always confirms predictions is not producing science — it is producing confirmation bias. The prediction named ATM as the top diverger based on domain knowledge; the tool ranked ATM 13th out of 15 and identified CHEK1 as the true structural outlier (gap=8). That disagreement is the result. Denied hypotheses are not failures. They are the mechanism by which the measurement stays honest.
+
+---
+
+## Git management rules
+
+This repository exists to establish **priority** and **integrity** for scientific claims. Its git history is a legal and scientific record. These rules are strict:
+
+### Never rewrite history
+
+```
+# These commands are FORBIDDEN on this repo — forever:
+git commit --amend
+git rebase
+git push --force
+git reset --hard HEAD~n  (that changes a pushed commit)
+```
+
+Rewriting history breaks the timestamp guarantee. A reviewer checking the commit date via GitHub's API or a third-party archive (e.g. archive.org, OpenTimestamps) must see the exact commit that was pushed before analysis ran.
+
+### Correct mistakes with new commits, not amendments
+
+If a pre-registration file has an error that is noticed BEFORE analysis:
+- Create a new experiment file with a new id (e.g. `my_exp_v2.json`)
+- Commit the new file as a fresh commit — do NOT amend the previous one
+- Add a note in the new file: `"supersedes": "my_exp_v1.json"` and explain why
+
+If a pre-registration file has an error noticed AFTER analysis:
+- Do NOT change the file. The hash is already committed.
+- Add a `_notes.md` file (e.g. `my_exp_notes.md`) documenting the discrepancy
+- Commit the notes file as a new commit explaining the issue
+
+### The two-commit scenario (acceptable)
+
+The C. elegans prediction has two commits because the sidecar was regenerated. This is acceptable **only because** the `prediction_hash` and all hypothesis content are identical in both commits — only the auto-generated `committed_at` field differs. This is documented in the README under that experiment. Future sidecar regenerations should be avoided by using `--push` in the main repo's `irdme commit-prediction` command, which commits atomically.
+
+### OpenTimestamps anchoring (optional but strongest proof)
+
+```bash
+pip install opentimestamps-client
+ots stamp experiments/my_exp.prediction
+# Wait ~8 hours for Bitcoin block confirmation, then:
+ots upgrade experiments/my_exp.prediction.ots
+ots verify  experiments/my_exp.prediction.ots
+# Commit the .ots file:
+git add experiments/my_exp.prediction.ots
+git commit -m "ots: anchor my_exp.prediction to Bitcoin block"
+git push
+```
+
+The `.ots` file lets any reviewer verify the timestamp independently — no trust in GitHub, no trust in you, no trust in any party. Verification requires only the Bitcoin blockchain and the OTS client.
+
+### Workflow summary
+
+```
+# In the MAIN repo (the-beginning), before running any analysis:
+irdme validate-experiment examples/experiments/my_exp.json
+irdme commit-prediction examples/experiments/my_exp.json --push
+
+# The --push flag:
+# 1. Copies my_exp.json + my_exp.prediction to d:/xampp/htdocs/preregistrations/experiments/
+# 2. Runs: git add . && git commit -m "pre-reg: my_exp" && git push
+# This is the only sanctioned way to add a file to this repo.
+
+# After running analysis:
+irdme verify-prediction examples/experiments/my_exp.json
+# Then update this README with verdict table (separate commit, clearly labelled).
+```
+
+### Commit message conventions
+
+```
+pre-reg: <experiment_id>           # for new pre-registration files
+verdict: <experiment_id>           # for README updates with verdicts
+ots: anchor <experiment_id>        # for OpenTimestamps .ots files
+fix: note <experiment_id>          # for _notes.md corrections (NEVER amend)
+```
 
 ---
 

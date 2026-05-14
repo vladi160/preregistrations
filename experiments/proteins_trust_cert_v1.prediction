@@ -1,0 +1,28 @@
+{
+  "experiment": "proteins_trust_cert_v1",
+  "committed_at": "2026-05-14T17:47:08.403592+00:00",
+  "prediction_hash": "5bbbd9cbebe29544e0f239708e384c85aa6f7f4d2a2eb39907b79c80a1d4b023",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "TP53 will appear in the trusted_nodes list — a hub in both sources. TP53 is the master tumor suppressor with the highest number of experimentally confirmed binding partners in the p53 network. Its hub status is robust to any reasonable edge curation methodology."
+    },
+    {
+      "id": "h2",
+      "statement": "MDM2 will appear in the trusted_nodes list. MDM2 is the primary negative regulator of p53 and has the second-highest number of confirmed direct binding partners. Its centrality is structurally enforced by the MDM2-p53 feedback loop which is present in both curated and STRING sources."
+    },
+    {
+      "id": "h3",
+      "statement": "The overall agreement verdict will be PARTIAL (0.4 < agreement_score ≤ 0.7). The two sources share the same biological core (p53 pathway proteins) but differ fundamentally in curation methodology. The top 3–4 hubs will agree; peripheral nodes will diverge due to the textmining-proxy vs CRISPR-screen difference in layer d3."
+    },
+    {
+      "id": "h4",
+      "statement": "The Functional Proximity Law will hold independently in BOTH sources: r(functional_association, physical_interaction) > r(functional_association, genetic_interaction / genetic_interaction_proxy) in the law_a and law_b results. The law's validity does not depend on curation methodology — it is a property of the biological system, not of the data source."
+    },
+    {
+      "id": "h5",
+      "statement": "PCNA will appear as a boundary_node (hub in one source but not the other). PCNA is a structural scaffold (sliding clamp) that ranks very high in physical_interaction in the curated dataset (21 edges, many co_complex associations via KEGG) but may rank lower in the STRING co_expression layer because PCNA expression is constitutively elevated in dividing cells, making it less discriminating in cancer cell line panels."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}

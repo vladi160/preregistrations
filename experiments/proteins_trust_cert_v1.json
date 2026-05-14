@@ -1,0 +1,81 @@
+{
+  "experiment": "proteins_trust_cert_v1",
+  "description": "M_DATASET_TRUST — First structural integrity certification run. Compares two independent sources of the p53 DNA damage response network: (A) proteins_multilayer.json — manually curated edges from literature (co-IP / pulldown / BioGRID / DepMap CRISPR), and (B) proteins_multilayer_string.json — raw STRING v12.0 channel scores (escore/ascore/dscore/tscore). Same 15 proteins, same domain, fundamentally different curation methodologies. Hub-agreement nodes across both sources = structurally trusted. Hub shadows = data-quality gaps or genuine discovery candidates. Predictions written May 14, 2026, before running POST /api/datasets/compare. No r values, hub rankings, or agreement metrics from the comparison have been inspected prior to this pre-registration.",
+  "source_a": "examples/proteins_multilayer.json",
+  "source_b": "examples/proteins_multilayer_string.json",
+  "label_a": "p53 Curated v1.0 (BioGRID/DepMap literature)",
+  "label_b": "p53 STRING v12.0 (raw channel scores: escore/ascore/dscore/tscore)",
+  "pre_registration_note": "The two sources share the same 15 proteins and the same domain ontology but differ in edge construction. Curated v1.0 used manually verified biological literature. STRING v12.0 uses automated channel-score thresholds from the STRING API. Any hub whose structural centrality survives the methodology gap has genuine biological backing independent of curation choices.",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "TP53 will appear in the trusted_nodes list — a hub in both sources. TP53 is the master tumor suppressor with the highest number of experimentally confirmed binding partners in the p53 network. Its hub status is robust to any reasonable edge curation methodology.",
+      "rationale": "TP53 was ranked #1 hub in all 4 layers in both the curated (I1_p53_domain_science) and STRING v12.0 (I1_string_validation) experiments. A change in edge curation methodology cannot plausibly demote TP53 from the top-hub set for a 15-protein network centered on p53 biology. This is the strongest possible prediction — if it is DENIED, it is a data-quality alarm, not a science finding.",
+      "test": {
+        "type": "dataset_trust_certification",
+        "graph_a": "examples/proteins_multilayer.json",
+        "graph_b": "examples/proteins_multilayer_string.json",
+        "check": "node_in_trusted_set",
+        "expected_trusted_hubs": ["tp53"],
+        "verdict_method": "manual — check trusted_nodes list in POST /api/datasets/compare response"
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "MDM2 will appear in the trusted_nodes list. MDM2 is the primary negative regulator of p53 and has the second-highest number of confirmed direct binding partners. Its centrality is structurally enforced by the MDM2-p53 feedback loop which is present in both curated and STRING sources.",
+      "rationale": "MDM2 was ranked #2 or #3 hub in both previous experiments. The MDM2-TP53-MDM4 triangle is the most-studied PPI motif in cancer biology. STRING escore captures co-IP/pulldown evidence which is precisely where MDM2 interactions are densest.",
+      "test": {
+        "type": "dataset_trust_certification",
+        "graph_a": "examples/proteins_multilayer.json",
+        "graph_b": "examples/proteins_multilayer_string.json",
+        "check": "node_in_trusted_set",
+        "expected_trusted_hubs": ["mdm2"],
+        "verdict_method": "manual — check trusted_nodes list in POST /api/datasets/compare response"
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "The overall agreement verdict will be PARTIAL (0.4 < agreement_score ≤ 0.7). The two sources share the same biological core (p53 pathway proteins) but differ fundamentally in curation methodology. The top 3–4 hubs will agree; peripheral nodes will diverge due to the textmining-proxy vs CRISPR-screen difference in layer d3.",
+      "rationale": "TRUSTED verdict (> 0.7) would require the hub sets to be nearly identical despite the curation methodology gap. UNCERTAIN (≤ 0.4) would require most hubs to diverge — implausible for a well-studied 15-protein network with decades of biochemical characterization. PARTIAL is the informative prediction: core hubs agree, peripheral topology diverges where methodology differences matter most.",
+      "test": {
+        "type": "dataset_trust_certification",
+        "graph_a": "examples/proteins_multilayer.json",
+        "graph_b": "examples/proteins_multilayer_string.json",
+        "check": "agreement_verdict",
+        "expected_verdict": "PARTIAL",
+        "min_agreement_score": 0.4,
+        "max_agreement_score": 0.7,
+        "verdict_method": "manual — check verdict and agreement_score in POST /api/datasets/compare response"
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "The Functional Proximity Law will hold independently in BOTH sources: r(functional_association, physical_interaction) > r(functional_association, genetic_interaction / genetic_interaction_proxy) in the law_a and law_b results. The law's validity does not depend on curation methodology — it is a property of the biological system, not of the data source.",
+      "rationale": "I1_string_validation h1 already CONFIRMED this for the STRING graph alone (hash in I1_string_validation.prediction, May 1 2026). I1_p53_domain_science h4 already CONFIRMED this for the curated graph (hash 32409dbda299e783, April 2026). Both are pre-registered and CONFIRMED. This hypothesis pre-registers that when BOTH graphs are included in a single comparison report, the law_a and law_b section of the /compare output will each show the FA-PI pair as the highest-r pair — confirming independent structural replication.",
+      "test": {
+        "type": "dataset_trust_certification",
+        "graph_a": "examples/proteins_multilayer.json",
+        "graph_b": "examples/proteins_multilayer_string.json",
+        "check": "law_holds_in_both_sources",
+        "layer_functional": "functional_association",
+        "layer_physical": "physical_interaction",
+        "layer_behavioral": ["genetic_interaction", "genetic_interaction_proxy"],
+        "expected": "pair_functional_physical_highest_in_both",
+        "verdict_method": "manual — check law_a.pairs and law_b.pairs, confirm FA-PI r is the maximum pair in each"
+      }
+    },
+    {
+      "id": "h5",
+      "statement": "PCNA will appear as a boundary_node (hub in one source but not the other). PCNA is a structural scaffold (sliding clamp) that ranks very high in physical_interaction in the curated dataset (21 edges, many co_complex associations via KEGG) but may rank lower in the STRING co_expression layer because PCNA expression is constitutively elevated in dividing cells, making it less discriminating in cancer cell line panels.",
+      "rationale": "PCNA was flagged as an exception case in I1_p53_domain_science (the IDP-hub rule failed for PCNA, May 2026). The curated dataset explicitly includes PCNA's DNA polymerase complex associations as physical edges, while STRING ascore for PCNA may differ because mRNA co-expression is ubiquitous for PCNA. This makes PCNA the best candidate for a hub shadow that reveals a genuine data-quality difference, not a biology finding.",
+      "test": {
+        "type": "dataset_trust_certification",
+        "graph_a": "examples/proteins_multilayer.json",
+        "graph_b": "examples/proteins_multilayer_string.json",
+        "check": "node_in_boundary_set",
+        "expected_boundary_nodes": ["pcna"],
+        "verdict_method": "manual — check boundary_nodes list in POST /api/datasets/compare response"
+      }
+    }
+  ]
+}
