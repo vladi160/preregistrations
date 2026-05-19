@@ -1,0 +1,20 @@
+{
+  "experiment": "F12 — C. elegans Full 302-Neuron Connectome — Functional Proximity Law Replication at Full Scale",
+  "committed_at": "2026-05-19T18:54:06.378086+00:00",
+  "prediction_hash": "a8926052a7d75afc37e67fcfd2047590a116098c25e13524bae74b4425414877",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(chemical_synapse <-> gap_junction) > 0 on the full 302-neuron C. elegans connectome, with p < 0.05. The Functional Proximity Law holds at full connectome scale: neurons that form many chemical synapses also form many gap junctions, because both layers encode direct physical neuron-to-neuron coupling (same relational regime). This replicates the M_EXT2 finding (r=0.7774, p=0.004, n=15) at the complete connectome scale (n=302). The larger sample increases statistical power and tests whether the law is robust beyond the curated command interneuron subset. min_abs_r is set conservatively at 0.30 to account for the increased noise introduced by non-hub peripheral neurons."
+    },
+    {
+      "id": "h2",
+      "statement": "AVAL is the top hub in the chemical_synapse layer of the full 302-neuron connectome, or ranks within the top 3. AVAL is the dominant backward locomotion command interneuron and has been independently confirmed as the highest-degree neuron in the chemical synapse layer by Varshney et al. (2011). This hypothesis replicates the M_EXT2 h2 finding (AVAL = top hub, n=15) at full connectome scale (n=302). If AVAL retains its hub identity when all 302 neurons are included, it confirms that the command interneurons are genuine structural hubs of the whole connectome, not artifacts of the curated 15-neuron subset."
+    },
+    {
+      "id": "h3",
+      "statement": "The 15 command interneurons from M_EXT2 (AVAL, AVAR, AVBL, AVBR, AVEL, AVER, AVDL, AVDR, PVCL, PVCR, RIAL, RIAR, AIBL, AIBR, DVA) collectively occupy at least 10 of the top 20 positions by total weighted degree in the chemical_synapse layer of the full 302-neuron graph. This is the hub identity preservation test: the 15-neuron M_EXT2 seed is the compressed representation of the full connectome structure. If the 15 seed neurons are top hubs in the full graph, the M_EXT2 compression is scientifically valid — the seed correctly encodes the structural backbone. This is a test of the generative compression claim: bits(seed=15 neurons + FPL) ≪ bits(full 302-neuron graph), with hub identity preserved as the validation criterion."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}

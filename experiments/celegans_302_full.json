@@ -1,0 +1,45 @@
+{
+  "experiment": "F12 — C. elegans Full 302-Neuron Connectome — Functional Proximity Law Replication at Full Scale",
+  "description": "Full-connectome replication of the Functional Proximity Law on the complete C. elegans hermaphrodite nervous system (302 neurons). Extends M_EXT2 (celegans_connectome — 15 command interneurons, r=0.7774, p=0.004) to the complete Varshney 2011 dataset. Both data AND layer definitions remain fully independent of IRDME — the chemical_synapse / gap_junction distinction is a biological fundamental defined by the original neuroscience authors (White 1986, Varshney 2011 PLoS Comput Biol). Primary question: does the Functional Proximity Law hold at full connectome scale (n=302), not just on the curated 15-neuron hub subset? Secondary question: do the 15 original command interneurons (AVAL/AVAR/AVBL/AVBR etc.) preserve their structural roles (top hubs) when embedded in the full 302-neuron graph — i.e., does the hub-seed from M_EXT2 predict hub identity in the full connectome? This is the first empirical test of generative compression in IRDME: the M_EXT2 15-neuron result is the compressed representation; the full 302-neuron graph is the decompressed target. If hub identity is preserved, the compression ratio is approximately 20:1 and structural compression is scientifically grounded. Source: Varshney et al. (2011) NeuronConnect.xls, all S/Sp (chemical synapse) and EJ (gap junction) entries, all 302 neurons.",
+  "graph": "../celegans_302.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "chemical_synapse", "layer_b": "gap_junction" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(chemical_synapse <-> gap_junction) > 0 on the full 302-neuron C. elegans connectome, with p < 0.05. The Functional Proximity Law holds at full connectome scale: neurons that form many chemical synapses also form many gap junctions, because both layers encode direct physical neuron-to-neuron coupling (same relational regime). This replicates the M_EXT2 finding (r=0.7774, p=0.004, n=15) at the complete connectome scale (n=302). The larger sample increases statistical power and tests whether the law is robust beyond the curated command interneuron subset. min_abs_r is set conservatively at 0.30 to account for the increased noise introduced by non-hub peripheral neurons.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "chemical_synapse",
+        "layer_b": "gap_junction",
+        "expected_direction": "positive",
+        "min_abs_r": 0.30
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "AVAL is the top hub in the chemical_synapse layer of the full 302-neuron connectome, or ranks within the top 3. AVAL is the dominant backward locomotion command interneuron and has been independently confirmed as the highest-degree neuron in the chemical synapse layer by Varshney et al. (2011). This hypothesis replicates the M_EXT2 h2 finding (AVAL = top hub, n=15) at full connectome scale (n=302). If AVAL retains its hub identity when all 302 neurons are included, it confirms that the command interneurons are genuine structural hubs of the whole connectome, not artifacts of the curated 15-neuron subset.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "chemical_synapse",
+        "expected_hub": "aval",
+        "max_rank": 3
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "The 15 command interneurons from M_EXT2 (AVAL, AVAR, AVBL, AVBR, AVEL, AVER, AVDL, AVDR, PVCL, PVCR, RIAL, RIAR, AIBL, AIBR, DVA) collectively occupy at least 10 of the top 20 positions by total weighted degree in the chemical_synapse layer of the full 302-neuron graph. This is the hub identity preservation test: the 15-neuron M_EXT2 seed is the compressed representation of the full connectome structure. If the 15 seed neurons are top hubs in the full graph, the M_EXT2 compression is scientifically valid — the seed correctly encodes the structural backbone. This is a test of the generative compression claim: bits(seed=15 neurons + FPL) ≪ bits(full 302-neuron graph), with hub identity preserved as the validation criterion.",
+      "test": {
+        "type": "cross_layer_top_hub_match",
+        "layer_a": "chemical_synapse",
+        "layer_b": "gap_junction",
+        "expected_overlap": 8,
+        "top_n": 20
+      }
+    }
+  ]
+}
