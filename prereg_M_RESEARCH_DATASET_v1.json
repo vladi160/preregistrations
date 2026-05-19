@@ -1,0 +1,32 @@
+{
+  "certification_rule": "Node must appear in top-5 hub ranking in at least 2 of 3 sources to be CONFIRMED; must appear in all 3 to be CERTIFIED CONSENSUS",
+  "experiment_id": "M_RESEARCH_DATASET_v1",
+  "irdme_arxiv": "2604.23639",
+  "irdme_zenodo": "10.5281/zenodo.19647148",
+  "metric": "IRDME hub degree rank (single-layer physical_interaction per source)",
+  "predictions": {
+    "CERTIFIED_CONSENSUS_hubs": [
+      "tp53",
+      "mdm2"
+    ],
+    "LIKELY_CONFIRMED_hubs": [
+      "brca1",
+      "atm",
+      "cdkn1a"
+    ],
+    "PREDICTED_NOT_consensus": [
+      "e2f1",
+      "atr",
+      "mdmx"
+    ]
+  },
+  "rationale": "TP53 and MDM2 are the canonical p53 pathway hubs: TP53 is the master regulator with known direct interactions with most pathway members; MDM2 is the primary negative regulator (direct binding, E3 ligase). Both appear as top-ranked hubs in STRING v12 and Curated Literature physical_interaction layers (built before IntAct download). Prediction is made before running IRDME compare API. BRCA1/ATM/CDKN1A predicted CONFIRMED (appear in 2 of 3 sources top-5) but database-methodology-dependent (IntAct vs STRING/Curated may diverge).",
+  "registered_at": "2026-05-19T23:28:04.609803Z",
+  "sources": [
+    "STRING v12.0 physical_interaction (examples/proteins_ppi_string.json)",
+    "IntAct experimental PPI via PSICQUIC (examples/proteins_ppi_intact.json)",
+    "Curated literature physical_interaction (examples/proteins_ppi_curated.json)"
+  ],
+  "target_dataset": "p53 pathway (15 nodes: tp53, mdm2, mdmx, atm, atr, chek1, chek2, brca1, pcna, cdkn1a, bax, bcl2, crebbp, rb1, e2f1)",
+  "title": "Multi-Source Protein Hub Certification: STRING v12 + IntAct + Curated Literature"
+}
