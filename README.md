@@ -287,6 +287,7 @@ Key finding: the three DENIED hypotheses are all informative — server_app_rend
 |---|---|
 | [`experiments/celegans_302_full.json`](experiments/celegans_302_full.json) | 3 pre-registered hypotheses |
 | [`experiments/celegans_302_full.prediction`](experiments/celegans_302_full.prediction) | Hash + timestamp sidecar |
+| [`experiments/celegans_302_full_amendment1.md`](experiments/celegans_302_full_amendment1.md) | **Amendment 1** — h3 test block schema correction (statement unchanged; filed 2026-05-19) |
 
 **Hash:** `a8926052a7d75afc37e67fcfd2047590a116098c25e13524bae74b4425414877`  
 **Registered:** `2026-05-19T18:54:06.378086+00:00` (before any analysis was run)
@@ -301,13 +302,25 @@ Key finding: the three DENIED hypotheses are all informative — server_app_rend
 | h2 | AVAL or AVAR is rank ≤3 in chemical_synapse layer at full scale | **CONFIRMED** | AVAR=#1, AVAL=#2 (top 5: avar, aval, avbl, pvcl, pvcr). The primary command interneurons dominate the full connectome, not just the 15-neuron hub subset. Hub identity preserved at full scale. |
 | h3 | AVAL is rank ≤3 in gap_junction layer (hub identity preservation + compression test) | **CONFIRMED** | AVAL=#1, AVAR=#2 in gap_junction (top 5: aval, avar, avbr, avbl, ribl). Hub-seed identity fully preserved across both layers. Compression ratio: 15-neuron seed / 279-node full graph ≈ 18.6:1 — seed correctly encodes the structural backbone at >60% hub identity match for the command interneuron class. |
 
-**Key findings:**
-- **Law replicates at full connectome scale** (n=279, not just the curated 15 hubs). This is the strongest C. elegans validation to date.
-- **Layer inversion finding:** AVAR leads chemical synaptic transmission (#1 chemical_synapse) while AVAL leads electrical coupling (#1 gap_junction). Two functionally complementary command interneurons play different structural roles in different biophysical modalities — a structural divergence that was invisible at n=15 (where both were strong hubs in both layers).
-- **Compression claim empirically tested:** The 15-neuron M_EXT2 seed predicts hub identity in the full 279-neuron connectome at an 18.6:1 compression ratio. The Functional Proximity Law is the decompression function. This is the first empirical compression ratio measurement in IRDME generative compression theory.- **Boundary — STRING-only hubs:** CHEK1, PCNA — CHEK1 was already identified as the true structural outlier in I1_p53_domain_science (ATM was the pre-registered prediction, CHEK1 was the actual finding — gap=8). Its appearance as a STRING-only hub here is consistent: STRING's escore captures CHEK1's binding partners more densely than the curated set.
-- **Law gradient in both sources:** Curated: r(FA,PI)=0.7493 > r(FA,GI)=0.7308 — narrow gradient. STRING: r(FA,PI)=0.8689 >> r(co_exp,FA)=0.6179 — strong gradient with near-zero r for genetic_interaction_proxy (-0.257). The STRING gradient is sharper because the textmining proxy correctly de-correlates from the functional layer.
+**Primary finding — cross-layer hub inversion (emergent, not pre-registered):**
 
-**Interpretation:** The 5 trusted nodes are the research-grade backbone of the p53 network — independently confirmable from any data source that captures this domain. Any downstream analysis (drug target prioritization, pathway reconstruction) can use this set with the highest confidence. The 4 boundary nodes are exactly the scientifically interesting region: they represent real biological signals that are data-source-dependent, worth investigating further.
+AVAR and AVAL are the same two command interneurons. At the 15-neuron scale (M_EXT2) they were both strong hubs in both layers — indistinguishable. At full connectome scale, their roles **invert**: AVAR is the structural leader of chemical synaptic transmission (#1 chemical_synapse, directed fast signaling) while AVAL is the structural leader of electrical coupling (#1 gap_junction, bidirectional slow signaling). This is **cross-layer role differentiation** — two neurons that are topologically equivalent at small scale diverge into complementary structural specialists at large scale. This pattern (multiplex network specialization) is more scientifically informative than the confirmation count.
+
+**Supporting findings:**
+- **Law replicates at full connectome scale** — r=0.6233 at n=279, attenuated vs M_EXT2 (r=0.7774 at n=15) as expected when peripheral neurons with weaker structural coupling are added. Signal is robust and statistically significant (p=0.002, large effect).
+- **Node count compression ratio** (formal definition): CR_n = |V_full| / |V_seed| = 279 / 15 = 18.6. This is a node count ratio — it measures how many full-graph nodes each seed node structurally represents, under the assumption that the seed encodes the hub backbone. Not an information-theoretic bits measure. The claim: the 15-node seed correctly identifies the top hub class in the 279-node graph, meaning FPL is the structural decompression function for this network. Null model tests (permutation, degree-preserving rewiring) are pending to validate this claim rigorously.
+
+**Amendment — h3 test block schema correction:**
+
+The h3 test block was corrected after pre-registration due to a wrong test type schema. The hypothesis statement, expected hub (aval), and rank threshold (3) were unchanged. Full documentation: [`experiments/celegans_302_full_amendment1.md`](experiments/celegans_302_full_amendment1.md). The correction was triggered by a runtime schema error, not by inspecting results.
+
+**On naming — 302 vs 279:** The experiment name `celegans_302_full` refers to the Varshney 2011 dataset (302 neurons in the biological organism). Analysis was performed on 279 connected nodes — 23 neurons have no recorded connections in NeuronConnect.xls and are isolated. This is standard for C. elegans connectome analysis and is consistent with published work on the same dataset.
+
+**Pending robustness tests (not pre-registered):**
+- Permutation test: null distribution of r under random node ID shuffle
+- Degree-preserving null graph: configuration model rewiring
+- Layer shuffling: does hub structure collapse under random edge redistribution?
+- These tests do not change the pre-registered result; they provide robustness evidence.
 
 ---
 
