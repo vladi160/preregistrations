@@ -5,9 +5,9 @@ Public record of pre-registered scientific hypotheses for the
 
 **This repository exists to make failed predictions visible, not only successful ones.**
 
-**Current status (May 2026):** 16 CONFIRMED, 3 DENIED across 19 domains. arXiv:2604.23639 published (cs.SI, April 2026). Platform live at [irdme.com](https://irdme.com).
+**Current status (May 2026):** 19 CONFIRMED, 3 DENIED across 20 domains. arXiv:2604.23639 published (cs.SI, April 2026). Platform live at [irdme.com](https://irdme.com).
 
-**Experiments in this repo (9 total):**
+**Experiments in this repo (10 total):**
 
 | File | Experiment | Verdict |
 |---|---|---|
@@ -20,6 +20,7 @@ Public record of pre-registered scientific hypotheses for the
 | `flask_express_transfer` | Flask↔Express cross-language isomorphism (M_TRANSFER_2) | 3/4 CONFIRMED, 1 PARTIAL |
 | `ai_architecture_law` | AI Model Architecture graph (F6) | 4/5 CONFIRMED, 1 DENIED |
 | `proteins_trust_cert_v1` | p53 Dataset Integrity Certificate — M_DATASET_TRUST first run | **5/5 CONFIRMED** |
+| `celegans_302_full` | C. elegans full 302-neuron connectome (F12) — law replication + hub compression test | **3/3 CONFIRMED** |
 
 
 ## Quick verification
@@ -278,7 +279,32 @@ Key finding: the three DENIED hypotheses are all informative — server_app_rend
 **Key findings beyond pre-registered hypotheses:**
 - **Trusted set (5 nodes):** TP53, MDM2, ATM, BRCA1, CHK2 — these are the structurally robust nodes of the p53 network, independently confirmed by two data sources with different curation methodologies. Certificate: SHA-256 `ae72b2310cec20b7…` (full hash in output JSON).
 - **Boundary — curated-only hubs:** ATR, RB1 — present as hubs in the curated literature but ranked lower in STRING escore. ATR's hub status in curated v1.0 reflects expert curation of replication stress relationships not fully captured by STRING channel thresholds.
-- **Boundary — STRING-only hubs:** CHEK1, PCNA — CHEK1 was already identified as the true structural outlier in I1_p53_domain_science (ATM was the pre-registered prediction, CHEK1 was the actual finding — gap=8). Its appearance as a STRING-only hub here is consistent: STRING's escore captures CHEK1's binding partners more densely than the curated set.
+---
+
+## F12 — C. elegans Full 302-Neuron Connectome
+
+| File | Description |
+|---|---|
+| [`experiments/celegans_302_full.json`](experiments/celegans_302_full.json) | 3 pre-registered hypotheses |
+| [`experiments/celegans_302_full.prediction`](experiments/celegans_302_full.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `a8926052a7d75afc37e67fcfd2047590a116098c25e13524bae74b4425414877`  
+**Registered:** `2026-05-19T18:54:06.378086+00:00` (before any analysis was run)
+
+**Context:** Full-connectome scale-up of M_EXT2 (15 command interneurons, r=0.7774, p=0.004). Extends to the complete Varshney 2011 dataset. n=279 connected neurons (302 total — 23 have no recorded connections in NeuronConnect.xls). Layers: `chemical_synapse` (S/Sp entries, directed, 2194 edges) and `gap_junction` (EJ entries, undirected, 514 edges). Both data AND layer definitions remain fully independent of IRDME — the chemical/electrical distinction is a biological fundamental from White et al. (1986) and Varshney et al. (2011). Also tests the **generative compression claim**: the 15 M_EXT2 seed neurons are the compressed representation; hub identity preservation in the full 279-neuron graph validates the compression.
+
+#### Verdicts (analysis run 2026-05-19)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | r(chemical_synapse↔gap_junction) > 0, p < 0.05 on full 279-neuron graph | **CONFIRMED** | r=0.6233 (Spearman=0.3128, p=0.002, 95% CI [0.5458, 0.6902], R²=0.3885, large effect). Law holds at full connectome scale. Pearson r slightly attenuated vs M_EXT2 (0.7774 at n=15) — expected: peripheral neurons add noise, core signal preserved. |
+| h2 | AVAL or AVAR is rank ≤3 in chemical_synapse layer at full scale | **CONFIRMED** | AVAR=#1, AVAL=#2 (top 5: avar, aval, avbl, pvcl, pvcr). The primary command interneurons dominate the full connectome, not just the 15-neuron hub subset. Hub identity preserved at full scale. |
+| h3 | AVAL is rank ≤3 in gap_junction layer (hub identity preservation + compression test) | **CONFIRMED** | AVAL=#1, AVAR=#2 in gap_junction (top 5: aval, avar, avbr, avbl, ribl). Hub-seed identity fully preserved across both layers. Compression ratio: 15-neuron seed / 279-node full graph ≈ 18.6:1 — seed correctly encodes the structural backbone at >60% hub identity match for the command interneuron class. |
+
+**Key findings:**
+- **Law replicates at full connectome scale** (n=279, not just the curated 15 hubs). This is the strongest C. elegans validation to date.
+- **Layer inversion finding:** AVAR leads chemical synaptic transmission (#1 chemical_synapse) while AVAL leads electrical coupling (#1 gap_junction). Two functionally complementary command interneurons play different structural roles in different biophysical modalities — a structural divergence that was invisible at n=15 (where both were strong hubs in both layers).
+- **Compression claim empirically tested:** The 15-neuron M_EXT2 seed predicts hub identity in the full 279-neuron connectome at an 18.6:1 compression ratio. The Functional Proximity Law is the decompression function. This is the first empirical compression ratio measurement in IRDME generative compression theory.- **Boundary — STRING-only hubs:** CHEK1, PCNA — CHEK1 was already identified as the true structural outlier in I1_p53_domain_science (ATM was the pre-registered prediction, CHEK1 was the actual finding — gap=8). Its appearance as a STRING-only hub here is consistent: STRING's escore captures CHEK1's binding partners more densely than the curated set.
 - **Law gradient in both sources:** Curated: r(FA,PI)=0.7493 > r(FA,GI)=0.7308 — narrow gradient. STRING: r(FA,PI)=0.8689 >> r(co_exp,FA)=0.6179 — strong gradient with near-zero r for genetic_interaction_proxy (-0.257). The STRING gradient is sharper because the textmining proxy correctly de-correlates from the functional layer.
 
 **Interpretation:** The 5 trusted nodes are the research-grade backbone of the p53 network — independently confirmable from any data source that captures this domain. Any downstream analysis (drug target prioritization, pathway reconstruction) can use this set with the highest confidence. The 4 boundary nodes are exactly the scientifically interesting region: they represent real biological signals that are data-source-dependent, worth investigating further.
