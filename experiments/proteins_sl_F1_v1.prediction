@@ -1,0 +1,24 @@
+{
+  "experiment": "F1 — Synthetic Lethality Prediction (Cancer)",
+  "committed_at": "2026-05-20T01:48:57.951777+00:00",
+  "prediction_hash": "518b9bd9e838cff04b773b6d55572a760bf1ee73807094e3c0b1e806583cd811",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(physical_interaction, genetic_interaction) > 0, p < 0.05. The Functional Proximity Law holds for cancer proteins: proteins that physically bind each other also tend to show genetic interaction (SL) with each other. TP53 and BRCA1 are hubs in both layers, driving a positive correlation. Even though SL pairs are specifically defined by functional divergence, the overall cross-layer correlation is positive because hub proteins (TP53, BRCA1, ATM) appear in both layers."
+    },
+    {
+      "id": "h2",
+      "statement": "CHEK1 is in the top-3 divergers between physical_interaction and genetic_interaction layers (rank gap >= 5 between the two layers). CHEK1 is the top SL hub (degree=5 in genetic_interaction) but is NOT a top PPI hub. It is a checkpoint effector kinase — activated by ATR/ATM signaling but not a direct binding partner of the canonical p53 complex. This makes it the structural diverger that SL biology predicts: physically peripheral, genetically central. Pre-registered key prediction from SL theory applied to IRDME."
+    },
+    {
+      "id": "h3",
+      "statement": "PARP1 is in the top-3 divergers between physical_interaction and genetic_interaction layers (rank gap >= 4). PARP1 is SL with BRCA1 and BRCA2 (the most clinically validated SL pair in oncology — basis for olaparib/niraparib approvals). PARP1 physically binds TP53, PCNA, and ATM (3 PPI edges) but has 4 genetic interactions — a clear diverger. This tests whether IRDME independently identifies the BRCA-PARP SL relationship as a structural anomaly."
+    },
+    {
+      "id": "h4",
+      "statement": "TP53 is the top hub in the physical_interaction layer (degree rank #1). TP53 is the master tumor suppressor and the most physically connected protein in the p53 pathway: it binds MDM2, MDMX, ATM, CHEK2, CREBBP, PARP1, BAX, BCL2, and more. This is a robust prediction from I1 (CONFIRMED) and I1_string_validation (CONFIRMED) — expected to hold."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}

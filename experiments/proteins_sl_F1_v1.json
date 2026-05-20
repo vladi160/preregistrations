@@ -1,0 +1,57 @@
+{
+  "experiment": "F1 — Synthetic Lethality Prediction (Cancer)",
+  "description": "F1 tests whether IRDME cross-layer divergence identifies known synthetic lethality (SL) pairs in cancer. Dataset: 20 proteins from the p53/DDR network. d1=physical_interaction (STRING v12.0 experimental score + curated for 5 new proteins). d2=genetic_interaction (18 landmark SL pairs: Farmer 2005, Bryant 2005, Toledo 2011, etc.). Core prediction: SL hubs are structural divergers — proteins with high genetic_interaction degree but low physical_interaction degree. CHEK1 is the primary predicted diverger: it is the top SL hub but physically peripheral (checkpoint kinase, activated by ATR/ATM, not a direct binding partner of the canonical p53 complex). PARP1 is the secondary diverger: it is SL with BRCA1/BRCA2 but physically binds only TP53, PCNA, ATM. The Functional Proximity Law (r > 0) is also tested — does it hold for PPI vs genetic interaction, or is this a case where the law is specifically violated by the divergent SL structure?",
+  "graph": "../proteins_sl_multilayer.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "physical_interaction", "layer_b": "genetic_interaction" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(physical_interaction, genetic_interaction) > 0, p < 0.05. The Functional Proximity Law holds for cancer proteins: proteins that physically bind each other also tend to show genetic interaction (SL) with each other. TP53 and BRCA1 are hubs in both layers, driving a positive correlation. Even though SL pairs are specifically defined by functional divergence, the overall cross-layer correlation is positive because hub proteins (TP53, BRCA1, ATM) appear in both layers.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "physical_interaction",
+        "layer_b": "genetic_interaction",
+        "expected_direction": "positive",
+        "min_abs_r": 0.1
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "CHEK1 is in the top-3 divergers between physical_interaction and genetic_interaction layers (rank gap >= 5 between the two layers). CHEK1 is the top SL hub (degree=5 in genetic_interaction) but is NOT a top PPI hub. It is a checkpoint effector kinase — activated by ATR/ATM signaling but not a direct binding partner of the canonical p53 complex. This makes it the structural diverger that SL biology predicts: physically peripheral, genetically central. Pre-registered key prediction from SL theory applied to IRDME.",
+      "test": {
+        "type": "cross_layer_divergence_count",
+        "layer_a": "physical_interaction",
+        "layer_b": "genetic_interaction",
+        "expected_divergent_item": "chek1",
+        "min_rank_gap": 5
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "PARP1 is in the top-3 divergers between physical_interaction and genetic_interaction layers (rank gap >= 4). PARP1 is SL with BRCA1 and BRCA2 (the most clinically validated SL pair in oncology — basis for olaparib/niraparib approvals). PARP1 physically binds TP53, PCNA, and ATM (3 PPI edges) but has 4 genetic interactions — a clear diverger. This tests whether IRDME independently identifies the BRCA-PARP SL relationship as a structural anomaly.",
+      "test": {
+        "type": "cross_layer_divergence_count",
+        "layer_a": "physical_interaction",
+        "layer_b": "genetic_interaction",
+        "expected_divergent_item": "parp1",
+        "min_rank_gap": 4
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "TP53 is the top hub in the physical_interaction layer (degree rank #1). TP53 is the master tumor suppressor and the most physically connected protein in the p53 pathway: it binds MDM2, MDMX, ATM, CHEK2, CREBBP, PARP1, BAX, BCL2, and more. This is a robust prediction from I1 (CONFIRMED) and I1_string_validation (CONFIRMED) — expected to hold.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "physical_interaction",
+        "expected_hub": "tp53",
+        "max_rank": 1
+      }
+    }
+  ],
+  "notes": "F1 — IRDME Synthetic Lethality test. Data: 20 proteins (15 from M_RESEARCH_DATASET + parp1, brca2, wee1, rad51, cdk2). d1 from STRING v12.0 + curated landmark literature for new proteins. d2 from 18 SL pairs (landmark studies, SynLethDB v2.0 consistent). The key scientific contribution: IRDME identifies SL candidates as cross-layer divergers WITHOUT knowing which pairs are SL — topology alone."
+}
