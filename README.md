@@ -5,6 +5,8 @@ Public record of pre-registered scientific hypotheses for the
 
 **This repository exists to make failed predictions visible, not only successful ones.**
 
+**What pre-registration is and isn't.** Pre-registration is a logging and history mechanism. It records that a specific prediction was committed to this public repository with a git timestamp before the analysis result was seen. It makes the full prediction history — including denied results — publicly auditable. It does not prevent private analysis before registration; it does not guarantee that no exploratory work happened beforehand. Its value is in workflow discipline, a transparent public record, and reproducibility documentation.
+
 **Current status (May 2026):** 21 CONFIRMED, 3 DENIED across 22 domains. arXiv:2604.23639 published (cs.SI, April 2026). Platform live at [irdme.com](https://irdme.com).
 
 **Experiments in this repo (12 total):**
