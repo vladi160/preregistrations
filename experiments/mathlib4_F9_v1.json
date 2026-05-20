@@ -1,0 +1,42 @@
+{
+  "id": "mathlib4_F9_v1",
+  "description": "F9 — Lean 4 mathlib4: Functional Proximity Law on Formal Mathematics",
+  "graph": "examples/mathlib4_multilayer.json",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "The Functional Proximity Law holds in formal mathematics: import coupling (d1) and proof co-development (d3) are positively correlated across Lean 4 mathlib4 top-level modules — r(import_graph, proof_co_development) > 0 with p < 0.05.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "import_graph",
+        "layer_b": "proof_co_development",
+        "expected_direction": "positive",
+        "min_r": 0.0,
+        "max_p": 0.05
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "The top hub in import_graph (d1) is Algebra or Analysis (the foundational modules most imported by other areas of mathematics).",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "import_graph",
+        "expected_hub": "Algebra",
+        "alternative_hub": "Analysis",
+        "max_rank": 2
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "Hub identity is preserved across layers: at least 2 of the top-3 import_graph hubs also appear in the top-3 proof_co_development hubs.",
+      "test": {
+        "type": "cross_layer_top_hub_match",
+        "layer_a": "import_graph",
+        "layer_b": "proof_co_development",
+        "expected_hub": "Algebra",
+        "max_rank": 3
+      }
+    }
+  ],
+  "notes": "F9 — IRDME primitivity hypothesis test. d1 = Lean 4 import statements (declared coupling). d3 = git commit co-change with threshold >= 5 co-changes out of 200-commit window (behavioral coupling). n=20 top-level Mathlib modules. Threshold pre-specified before any correlation computation. Nodes: mathematical modules only; infrastructure (Tactic, Deprecated, Testing, Util, Lean) excluded. Source: leanprover-community/mathlib4, depth=200 commits."
+}

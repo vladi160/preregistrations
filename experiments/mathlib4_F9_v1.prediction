@@ -1,0 +1,20 @@
+{
+  "experiment": "mathlib4_F9_v1.json",
+  "committed_at": "2026-05-20T00:18:01.376600+00:00",
+  "prediction_hash": "4ffcdac582cb8f80bce8bc71dd126fc9561d1a812caf2583778bd4fd6e5dc73c",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "The Functional Proximity Law holds in formal mathematics: import coupling (d1) and proof co-development (d3) are positively correlated across Lean 4 mathlib4 top-level modules — r(import_graph, proof_co_development) > 0 with p < 0.05."
+    },
+    {
+      "id": "h2",
+      "statement": "The top hub in import_graph (d1) is Algebra or Analysis (the foundational modules most imported by other areas of mathematics)."
+    },
+    {
+      "id": "h3",
+      "statement": "Hub identity is preserved across layers: at least 2 of the top-3 import_graph hubs also appear in the top-3 proof_co_development hubs."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
