@@ -7,9 +7,9 @@ Public record of pre-registered scientific hypotheses for the
 
 **What pre-registration is and isn't.** Pre-registration is a logging and history mechanism. It records that a specific prediction was committed to this public repository with a git timestamp before the analysis result was seen. It makes the full prediction history — including denied results — publicly auditable. It does not prevent private analysis before registration; it does not guarantee that no exploratory work happened beforehand. Its value is in workflow discipline, a transparent public record, and reproducibility documentation.
 
-**Current status (May 2026):** 18 CONFIRMED, 3 DENIED across 13 canonical + 8 Tier B pre-registered experiments. arXiv:2604.23639 published (cs.SI, April 2026). Platform live at [irdme.com](https://irdme.com). Paper updated to v5 (May 2026): adds F6 (AI Architecture), F9 (mathlib4), F12 (C. elegans full connectome), F1 (Synthetic Lethality).
+**Current status (May 2026):** 18 CONFIRMED, 3 DENIED across 13 canonical + 8 Tier B pre-registered experiments. arXiv:2604.23639 published (cs.SI, April 2026). Platform live at [irdme.com](https://irdme.com). Paper updated to v5 (May 2026): adds F6 (AI Architecture), F9 (mathlib4), F12 (C. elegans full connectome), F1 (Synthetic Lethality). H_PRIMITIVITY meta-science test run 2026-05-21: 1 CONFIRMED, 2 DENIED, 1 PARTIAL (BC4 candidate identified).
 
-**Experiments in this repo (12 total):**
+**Experiments in this repo (13 total):**
 
 | File | Experiment | Verdict |
 |---|---|---|
@@ -25,6 +25,7 @@ Public record of pre-registered scientific hypotheses for the
 | `celegans_302_full` | C. elegans full 302-neuron connectome (F12) — law replication + hub compression test | **3/3 CONFIRMED** |
 | `mathlib4_F9_v1` | Lean 4 mathlib4: Functional Proximity Law on Formal Mathematics (F9) | **2/3 CONFIRMED, 1 PARTIAL** |
 | `proteins_sl_F1_v1` | Synthetic Lethality Prediction — PARP1/CHEK1 as cross-layer divergers (F1) | **3/4 CONFIRMED, 1 PARTIAL** |
+| `H_PRIMITIVITY_v1` | Meta-science test: is d1/d2/d3 more primitive than mathematical formalization? (H_PRIMITIVITY) | **1/4 CONFIRMED, 2/4 DENIED, 1/4 PARTIAL — BC4 candidate** |
 
 
 ## Quick verification
@@ -385,6 +386,33 @@ PCNA is the largest cross-layer diverger in the dataset — it is the #3 PPI hub
 
 **On h1 PARTIAL:**
 The near-zero correlation (r=0.11, ns) between PPI and SL layers is not a failure — it is the expected result from SL biology. SL pairs are specifically defined as proteins that do NOT need to physically bind to show genetic interaction. If PPI and SL were strongly correlated, SL would not be a useful therapeutic strategy. The PARTIAL verdict confirms that SL imposes a fundamentally different structural regime on cancer proteins — exactly what justifies its therapeutic interest.
+
+---
+
+## H_PRIMITIVITY — Meta-science: is d1/d2/d3 more primitive than mathematical formalization?
+
+| File | Description |
+|---|---|
+| [`experiments/H_PRIMITIVITY_v1.json`](experiments/H_PRIMITIVITY_v1.json) | 4 pre-registered hypotheses |
+| [`experiments/H_PRIMITIVITY_v1.prediction`](experiments/H_PRIMITIVITY_v1.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `cfb38b83750474b1c9b7d8812ce5b2445223e31ef19b51e83faabd367fe31f67`  
+**Registered:** `2026-05-21T04:04:19.828636+00:00` (commit [3e609f2](https://github.com/vladi160/preregistrations/commit/3e609f2), before analysis)
+
+**Context:** Meta-science test. 15 IRDME-tested scientific domains as nodes. d1=formal_dependency (which domains formally require each other's mathematical tools), d2=structural_grammar_type (which domains share the same d1/d2/d3 coupling class), d3=law_confirmation_coupling (which domains confirmed FPL with similar r-value ranges). Tests H_PRIMITIVITY: if the FPL holds at the meta-science level (r(d1↔d2) > r(d1↔d3)), and if mathematical formalization does not significantly predict law confirmation strength, then d1/d2/d3 is more primitive than domain-level mathematical formalization.
+
+#### Verdicts (analysis run 2026-05-21)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | FPL holds at meta-science level: r(formal_dep↔structural_grammar) > r(formal_dep↔law_confirm) | **DENIED** | r(d1↔d2)=0.212 < r(d1↔d3)=0.368 — reversed. BC4 candidate: meta-science coupling regime is a distinct structural domain. |
+| h2 | Top hub in law_confirmation_coupling is mol_bio or sw_eng (max_rank=2) | **DENIED** | Top hub is sys_bio. mol_bio ranks #4. |
+| h3 | formal_math is #1 hub in formal_dependency | **CONFIRMED** | formal_math degree=20, #2 is sys_bio (10). Layer design validated. |
+| h4 | r(formal_dep↔law_confirm) is NOT significant (p > 0.05) — formalization does not predict confirmation | **PARTIAL** | r=0.368, p=0.206. Not significant. Consistent with H_PRIMITIVITY: the law's applicability is independent of mathematical formalization level. |
+
+**Key finding — BC4 candidate (meta-science regime):**
+
+h1 DENIED identifies a potential fourth boundary condition: the FPL does not confirm when nodes are scientific domains and layers encode abstract institutional dependencies between entire fields. Candidate mechanism: abstract coupling between sciences operates at a different structural resolution than concrete physical, computational, or biological coupling — analogous to BC1 (relational regime mismatch) and BC3 (resolution mismatch). h4 PARTIAL independently supports H_PRIMITIVITY: mathematical formalization level (measured by how many other fields depend on a domain's mathematical tools) does not significantly predict whether or how strongly the FPL confirms in that domain.
 
 ---
 
