@@ -1,0 +1,62 @@
+{
+  "experiment": "H_PRIMITIVITY — Is d1/d2/d3 More Primitive Than Mathematical Formalization?",
+  "description": "Meta-science test of H_PRIMITIVITY. 15 IRDME-tested scientific domains as nodes. Three layers: d1=formal_dependency (which domains require each other's math tools), d2=structural_grammar_type (which domains share the same d1/d2/d3 coupling class), d3=law_confirmation_coupling (which domains confirmed FPL with similar r-value ranges). H_PRIMITIVITY predicts: FPL holds at the meta-science level (r(d1↔d2) > r(d1↔d3)) AND formal mathematical structure predicts structural coupling class (d2) better than it predicts law confirmation outcome (d3). If CONFIRMED: the d1/d2/d3 grammar is more primitive than domain-specific mathematics — it organizes scientific domains independently of their formalization level.",
+  "graph": "../science_formalization_spectrum.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "formal_dependency", "layer_b": "structural_grammar_type" },
+    { "run": "cross_layer_analysis", "layer_a": "formal_dependency", "layer_b": "law_confirmation_coupling", "output_key": "cross_layer_fd_lc" },
+    { "run": "cross_layer_analysis", "layer_a": "structural_grammar_type", "layer_b": "law_confirmation_coupling", "output_key": "cross_layer_sg_lc" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "FPL holds at the meta-science level: r(formal_dependency ↔ structural_grammar_type) > r(formal_dependency ↔ law_confirmation_coupling). Domains that share mathematical tool dependencies (d1) are structurally similar in their coupling grammar (d2) more than they are similar in their FPL confirmation outcome (d3). Interpretation: mathematical formalization hierarchy organizes coupling types, but NOT law confirmation — the law is independent of formalization level.",
+      "test": {
+        "type": "cross_layer_correlation_rank",
+        "pair_a_layer_a": "formal_dependency",
+        "pair_a_layer_b": "structural_grammar_type",
+        "pair_b_layer_a": "formal_dependency",
+        "pair_b_layer_b": "law_confirmation_coupling",
+        "expected": "pair_a_higher"
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "Top hub in law_confirmation_coupling is molecular_biology or software_engineering — NOT formal_mathematics. Despite formal_mathematics being the #1 hub in formal_dependency (most depended-upon domain), it is NOT the strongest confirmer of the FPL. This shows law confirmation strength is driven by tight structural coupling (biology, software) not by mathematical formalization level.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "law_confirmation_coupling",
+        "expected_hub": "mol_bio",
+        "alternative_hub": "sw_eng",
+        "max_rank": 2
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "Top hub in formal_dependency is formal_mathematics — confirming formal_mathematics is the most methodologically foundational domain. This validates the d1 layer encodes mathematical hierarchy correctly, making the h1 comparison meaningful.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "formal_dependency",
+        "expected_hub": "formal_math",
+        "max_rank": 1
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "r(formal_dependency ↔ law_confirmation_coupling) is NOT significant (p > 0.05) — mathematical formalization level does not significantly predict FPL confirmation strength. This is the direct test of H_PRIMITIVITY: the law's applicability is orthogonal to the mathematical formalization hierarchy.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "formal_dependency",
+        "layer_b": "law_confirmation_coupling",
+        "expected_direction": "positive",
+        "min_r": 0.0,
+        "max_p": 0.05,
+        "expected_outcome": "NOT_SIGNIFICANT"
+      }
+    }
+  ],
+  "notes": "H_PRIMITIVITY meta-science experiment. d1/d2/d3 grammar predicts structural class (coupling type) better than it predicts law confirmation. If confirmed: d1/d2/d3 is a pre-mathematical primitive — the law holds across all levels of the mathematical formalization hierarchy without being explained by it. The 3 DENIED domains (finance, psychiatry, math_attr) form a triangle in law_confirmation_coupling despite having DIFFERENT formal_dependency levels — showing denials cluster by structural failure mode (resolution mismatch), not by mathematical formalization."
+}

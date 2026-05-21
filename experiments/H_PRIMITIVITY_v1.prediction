@@ -1,0 +1,24 @@
+{
+  "experiment": "H_PRIMITIVITY — Is d1/d2/d3 More Primitive Than Mathematical Formalization?",
+  "committed_at": "2026-05-21T04:04:19.828636+00:00",
+  "prediction_hash": "cfb38b83750474b1c9b7d8812ce5b2445223e31ef19b51e83faabd367fe31f67",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "FPL holds at the meta-science level: r(formal_dependency ↔ structural_grammar_type) > r(formal_dependency ↔ law_confirmation_coupling). Domains that share mathematical tool dependencies (d1) are structurally similar in their coupling grammar (d2) more than they are similar in their FPL confirmation outcome (d3). Interpretation: mathematical formalization hierarchy organizes coupling types, but NOT law confirmation — the law is independent of formalization level."
+    },
+    {
+      "id": "h2",
+      "statement": "Top hub in law_confirmation_coupling is molecular_biology or software_engineering — NOT formal_mathematics. Despite formal_mathematics being the #1 hub in formal_dependency (most depended-upon domain), it is NOT the strongest confirmer of the FPL. This shows law confirmation strength is driven by tight structural coupling (biology, software) not by mathematical formalization level."
+    },
+    {
+      "id": "h3",
+      "statement": "Top hub in formal_dependency is formal_mathematics — confirming formal_mathematics is the most methodologically foundational domain. This validates the d1 layer encodes mathematical hierarchy correctly, making the h1 comparison meaningful."
+    },
+    {
+      "id": "h4",
+      "statement": "r(formal_dependency ↔ law_confirmation_coupling) is NOT significant (p > 0.05) — mathematical formalization level does not significantly predict FPL confirmation strength. This is the direct test of H_PRIMITIVITY: the law's applicability is orthogonal to the mathematical formalization hierarchy."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
