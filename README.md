@@ -58,6 +58,8 @@ Expected output:
 
 `verify.py` works on **Python 3.6+** with no external dependencies. It finds the `.prediction` sidecar automatically from the `.json` path.
 
+**Hash format note (2026-05-23):** Early prediction sidecars (`I1_p53_domain_science`) store a 16-character truncated hash (legacy format). All later experiments store the full 64-character SHA-256 digest. `verify.py` was updated (commit `991e9d5`) to accept both formats — it verifies the full digest and confirms the stored hash is a valid prefix or exact match. All 17 experiments verified MATCH in a clean-clone reviewer test on 2026-05-23.
+
 ---
 
 ## Experiments
