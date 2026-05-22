@@ -1,0 +1,24 @@
+{
+  "experiment": "BC3b_circuit_v2 — Priority Arbiter FPL test (properly pre-registered replication of c17)",
+  "committed_at": "2026-05-22T06:10:46.589149+00:00",
+  "prediction_hash": "1ff07ec91549b5139676a1df1125685c7d4b950fe5d84b5f890f8e7e3e9f29d6",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "FPL directional inequality holds: r(gate_wiring, structural_proximity) > r(gate_wiring, critical_path_coupling). Gate_wiring (d1) and structural_proximity (d2) both encode physical topology — d1 captures direct signal connections, d2 captures neighborhood at distance<=2. Both layers reflect the same structural regime: combinational fan-in/fan-out. critical_path_coupling (d3) encodes timing behavior — which nodes co-occur on the longest propagation paths. The priority chain structure (inv3 blocks ch2/ch1/ch0; inv2 blocks ch1/ch0; inv1 blocks ch0) creates a timing hierarchy distinct from the local wiring topology. Therefore r(d1,d2) > r(d1,d3). This replicates the c17 exploratory finding (r=0.7504 vs 0.2813) in an independent, larger circuit (n=19 vs n=11) that models interrupt priority resolution — the same functional domain as ISCAS85 c432."
+    },
+    {
+      "id": "h2",
+      "statement": "r(gate_wiring, structural_proximity) is statistically significant (p < 0.05) with a large effect size (r >= 0.5). The circuit has n=19 nodes with Var(d1)=2.152, providing adequate statistical power. The d1 hub ch0 (degree=5) is also the d2 hub (degree=12), indicating strong topological alignment between layers that should produce a significant positive r. This is the key quantitative claim distinguishing physical circuits from BC3b pure-boolean-algebra collapse (where r->0 due to layer degeneracy)."
+    },
+    {
+      "id": "h3",
+      "statement": "Hub identity is preserved across d1 and d2: the rank-1 hub in gate_wiring (ch0, degree=5) is also rank-1 or rank-2 in structural_proximity. ch0 is the lowest-priority grant gate AND(mreq0, inv3, inv2, inv1) — it has the most wiring inputs (4 direct connections from 3 inversion gates + 1 masking gate) and therefore the largest structural neighborhood (it is within wiring distance 2 of most other nodes). This tests that hub identity is preserved between the structural coupling layers d1 and d2, as required by FPL."
+    },
+    {
+      "id": "h4",
+      "statement": "The d3 hub (critical_path_coupling) is DIFFERENT from the d1 hub: the rank-1 node in critical_path_coupling is irq (the OR output gate) or inv3 (the high-priority inversion gate), NOT ch0. irq appears in all 12 critical paths as their terminal node (degree=15 in d3). This hub displacement from d1 (ch0) to d3 (irq or inv3) is precisely what causes r(d1,d3) to be lower than r(d1,d2): the timing behavior elevates the terminal output node (irq) and the priority bottleneck (inv3) as hubs, while the wiring topology elevates the lowest-priority grant gate (ch0) as hub. This finding would be IMPOSSIBLE in a pure boolean algebra BC3b setting (where all layers collapse to logical consequence and no hub distinction exists)."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
