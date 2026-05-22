@@ -1,0 +1,58 @@
+{
+  "id": "M_GEOM_CSG_1",
+  "experiment": "M_GEOM — Constructive Solid Geometry multilayer (planetary gear set)",
+  "graph": "../../examples/m_geom_csg_1.json",
+  "description": "Tests the Functional Proximity Law in constructive solid geometry (CSG) using a planetary gear set as the domain. Three layers follow the Universal Layer Grammar: operation_tree (d1 — declared structural: which components are operands of the same CSG assembly step), volumetric_proximity (d2 — structural geometric: which components share a physical contact interface in the assembled gear set), and co_parameter_sensitivity (d3 — behavioral: which components must be co-adjusted when a design parameter changes, driven by the gear ratio constraint Z_ring = Z_sun + 2*Z_planet). This experiment is directly motivated by BC3b (named boundary condition for pure boolean algebra layer collapse): the scientific question is whether boolean-type CSG operations on CONTINUOUS geometry preserve genuine layer differentiation — in contrast to pure boolean algebra where all three layers collapse to logical consequence. Pre-computed Pearson from degree vectors: r(d1,d2)=0.668 (moderate-strong positive), r(d1,d3)=-0.267 (weak negative), delta_r=0.935. If confirmed: demonstrates that the BC3b collapse is specific to discrete boolean algebra, not to geometric CSG operations. New domain: computational geometry has not previously been tested in the IRDME framework.",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "operation_tree", "layer_b": "volumetric_proximity" },
+    { "run": "cross_layer_analysis", "layer_a": "operation_tree", "layer_b": "co_parameter_sensitivity" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "FPL directional inequality holds in the planetary gear CSG model: r(operation_tree, volumetric_proximity) > r(operation_tree, co_parameter_sensitivity). Both d1 and d2 encode structural arrangement (assembly hierarchy and geometric proximity both reflect the same physical organization of the gear set), while d3 encodes behavioral kinematic coupling (gear ratio co-sensitivity), which is orthogonal to structural assembly. The Universal Layer Grammar predicts d1 and d2 should agree more than d1 and d3.",
+      "test": {
+        "type": "cross_layer_correlation_rank",
+        "pair_a_layer_a": "operation_tree",
+        "pair_a_layer_b": "volumetric_proximity",
+        "pair_b_layer_a": "operation_tree",
+        "pair_b_layer_b": "co_parameter_sensitivity",
+        "expected": "pair_a_higher"
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "FPL medium-to-large effect: r(operation_tree, volumetric_proximity) >= 0.50 in the positive direction. The planetary gear set has clear structural hierarchy (carrier_plate is hub in both d1 and d2 with degree 5 and 7 respectively) that should produce a moderate-to-strong positive correlation. n=8 makes significance hard to reach, but the directional effect should be large.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "operation_tree",
+        "layer_b": "volumetric_proximity",
+        "expected_direction": "positive",
+        "min_abs_r": 0.50
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "carrier_plate is the rank-1 hub in operation_tree (d1). It is the single node with highest degree in the assembly tree: it receives all 3 planet gears (planet_A, planet_B, planet_C), the sun gear assembly, and connects to the housing — giving it degree 5, uniquely higher than all other nodes. As the output member that aggregates planet motion, it is the structural center of the assembly.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "operation_tree",
+        "expected_hub": "carrier_plate",
+        "max_rank": 1
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "carrier_plate is also the rank-1 hub in volumetric_proximity (d2). It shares physical contact surfaces with all 3 planet bearing journals, the sun gear body, the ring gear inner surface, the outer housing bearing, and the input shaft center bore — giving it degree 7, uniquely highest. Hub identity is preserved across d1 and d2: the assembly hub and the geometric contact hub are the same component. This is a direct test of cross-layer structural identity preservation (distinct from FPL r-test).",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "volumetric_proximity",
+        "expected_hub": "carrier_plate",
+        "max_rank": 1
+      }
+    }
+  ]
+}

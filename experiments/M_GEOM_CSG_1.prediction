@@ -1,0 +1,24 @@
+{
+  "experiment": "M_GEOM — Constructive Solid Geometry multilayer (planetary gear set)",
+  "committed_at": "2026-05-22T04:52:57.530116+00:00",
+  "prediction_hash": "1dd686ee25e25d97ca0afc4701ea34a2ef4fcf690b231a42e71854bc13c262c9",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "FPL directional inequality holds in the planetary gear CSG model: r(operation_tree, volumetric_proximity) > r(operation_tree, co_parameter_sensitivity). Both d1 and d2 encode structural arrangement (assembly hierarchy and geometric proximity both reflect the same physical organization of the gear set), while d3 encodes behavioral kinematic coupling (gear ratio co-sensitivity), which is orthogonal to structural assembly. The Universal Layer Grammar predicts d1 and d2 should agree more than d1 and d3."
+    },
+    {
+      "id": "h2",
+      "statement": "FPL medium-to-large effect: r(operation_tree, volumetric_proximity) >= 0.50 in the positive direction. The planetary gear set has clear structural hierarchy (carrier_plate is hub in both d1 and d2 with degree 5 and 7 respectively) that should produce a moderate-to-strong positive correlation. n=8 makes significance hard to reach, but the directional effect should be large."
+    },
+    {
+      "id": "h3",
+      "statement": "carrier_plate is the rank-1 hub in operation_tree (d1). It is the single node with highest degree in the assembly tree: it receives all 3 planet gears (planet_A, planet_B, planet_C), the sun gear assembly, and connects to the housing — giving it degree 5, uniquely higher than all other nodes. As the output member that aggregates planet motion, it is the structural center of the assembly."
+    },
+    {
+      "id": "h4",
+      "statement": "carrier_plate is also the rank-1 hub in volumetric_proximity (d2). It shares physical contact surfaces with all 3 planet bearing journals, the sun gear body, the ring gear inner surface, the outer housing bearing, and the input shaft center bore — giving it degree 7, uniquely highest. Hub identity is preserved across d1 and d2: the assembly hub and the geometric contact hub are the same component. This is a direct test of cross-layer structural identity preservation (distinct from FPL r-test)."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
