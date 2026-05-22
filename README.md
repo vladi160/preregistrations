@@ -7,11 +7,13 @@ Public record of pre-registered scientific hypotheses for the
 
 **What pre-registration is and isn't.** Pre-registration is a logging and history mechanism. It records that a specific prediction was committed to this public repository with a git timestamp before the analysis result was seen. It makes the full prediction history — including denied results — publicly auditable. It does not prevent private analysis before registration; it does not guarantee that no exploratory work happened beforehand. Its value is in workflow discipline, a transparent public record, and reproducibility documentation.
 
-**Current status (May 2026):** 19 CONFIRMED, 4 DENIED across 14 canonical + 9 Tier B pre-registered experiments (23 total). M_TRANSFER_3 adds 1 denied experiment (BC_RADIAL candidate — FPL denied in all 3 docopt implementations). M_GEOM_CSG_1 adds 1 confirmed experiment — new domain (computational geometry), BC3b boundary demonstrated: CSG geometry confirms FPL. arXiv:2604.23639 published (cs.SI, April 2026). Platform live at [irdme.com](https://irdme.com). Paper updated to v5 (May 2026): adds F6 (AI Architecture), F9 (mathlib4), F12 (C. elegans full connectome), F1 (Synthetic Lethality). H_PRIMITIVITY meta-science test run 2026-05-21: 1 CONFIRMED, 2 DENIED, 1 PARTIAL (BC4 formally named).
+**Current status (May 2026):** 21 CONFIRMED, 6 DENIED across 25 pre-registered experiments (13 Tier A + 12 Tier B). Recent additions: M_RADIAL_1 (BC_RADIAL threshold validation — click CONFIRMED, logrus BC_RADIAL replicated, cobra BC_INVERSION discovered, 3/4 CONFIRMED); BC3b_circuit_v2 (priority arbiter circuit replication, 4/4 CONFIRMED, properly pre-registered); BC_INVERSION formally named as BC6. arXiv:2604.23639 published (cs.SI, April 2026) — v2 in preparation. Platform live at [irdme.com](https://irdme.com).
 
-**Post-hoc confirmatory runs (NOT pre-registered, not counted in totals):** BC3b circuit (2026-05-22, see section below) — workflow was not followed; result is valid but has no pre-registration credibility.
+**proteins_trust_cert_v1 exclusion note:** This experiment (5/5 CONFIRMED) uses the `dataset_trust_certification` methodology — it tests multi-source hub agreement across two data curation methodologies. It does NOT test the FPL inequality $r(d_1, d_2) > r(d_1, d_3)$ and is therefore excluded from the 21/25 FPL primary count. Its h4 independently replicates the FPL in both sources, which is reported as a secondary finding.
 
-**Experiments in this repo (14 total):**
+**Post-hoc confirmatory runs (NOT pre-registered, not counted in totals):** BC3b c17 circuit (2026-05-22) — workflow was not followed for the original c17 run; BC3b_circuit_v2 is the properly pre-registered replication.
+
+**Experiments in this repo (17 total):**
 
 | File | Experiment | Verdict |
 |---|---|---|
@@ -21,15 +23,17 @@ Public record of pre-registered scientific hypotheses for the
 | `I1_string_validation` | p53 STRING v12.0 external validation | 4/5 CONFIRMED, 1 DENIED |
 | `wordpress_oss1` | WordPress wp-includes hub shadow (M_OSS1) | 4/5 CONFIRMED, 1 DENIED |
 | `nextjs_oss2` | Next.js App-Router transition (M_OSS2) | 2/5 CONFIRMED, 3 DENIED (all informative) |
-| `flask_express_transfer` | Flask↔Express cross-language isomorphism (M_TRANSFER_2) | 3/4 CONFIRMED, 1 PARTIAL |
+| `flask_express_transfer` | Flask↔Express cross-language isomorphism (M_TRANSFER_2) | 4/5 CONFIRMED, 1 PARTIAL |
 | `ai_architecture_law` | AI Model Architecture graph (F6) | 4/5 CONFIRMED, 1 DENIED |
-| `proteins_trust_cert_v1` | p53 Dataset Integrity Certificate — M_DATASET_TRUST first run | **5/5 CONFIRMED** |
+| `proteins_trust_cert_v1` | p53 Dataset Integrity Certificate — M_DATASET_TRUST first run *(dataset_trust_certification methodology — excluded from FPL 21/25 count; see note above)* | **5/5 CONFIRMED** |
 | `celegans_302_full` | C. elegans full 302-neuron connectome (F12) — law replication + hub compression test | **3/3 CONFIRMED** |
 | `mathlib4_F9_v1` | Lean 4 mathlib4: Functional Proximity Law on Formal Mathematics (F9) | **2/3 CONFIRMED, 1 PARTIAL** |
 | `proteins_sl_F1_v1` | Synthetic Lethality Prediction — PARP1/CHEK1 as cross-layer divergers (F1) | **3/4 CONFIRMED, 1 PARTIAL** |
 | `H_PRIMITIVITY_v1` | Meta-science test: is d1/d2/d3 more primitive than mathematical formalization? (H_PRIMITIVITY) | **1/4 CONFIRMED, 2/4 DENIED, 1/4 PARTIAL — BC4** |
 | `M_TRANSFER_3_docopt_v1` | Cross-language FPL replication: Go, Java, Rust docopt implementations | **0/4 CONFIRMED, 3/4 DENIED, 1/4 PARTIAL — BC_RADIAL candidate** |
 | `M_GEOM_CSG_1` | Planetary gear CSG multilayer — BC3b boundary test (computational geometry) | **4/4 CONFIRMED** |
+| `M_RADIAL_1` | BC_RADIAL threshold validation: cobra (BC_INVERSION), click (CONFIRMED), logrus (BC_RADIAL replicated) | **3/4 CONFIRMED, 1 DENIED — BC_INVERSION (BC6)** |
+| `BC3b_circuit_v2` | Priority arbiter circuit — proper pre-registered replication of c17 BC3b result | **4/4 CONFIRMED** |
 
 
 ## Quick verification
