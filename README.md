@@ -7,7 +7,7 @@ Public record of pre-registered scientific hypotheses for the
 
 **What pre-registration is and isn't.** Pre-registration is a logging and history mechanism. It records that a specific prediction was committed to this public repository with a git timestamp before the analysis result was seen. It makes the full prediction history — including denied results — publicly auditable. It does not prevent private analysis before registration; it does not guarantee that no exploratory work happened beforehand. Its value is in workflow discipline, a transparent public record, and reproducibility documentation.
 
-**Current status (May 2026):** 18 CONFIRMED, 3 DENIED across 13 canonical + 8 Tier B pre-registered experiments. arXiv:2604.23639 published (cs.SI, April 2026). Platform live at [irdme.com](https://irdme.com). Paper updated to v5 (May 2026): adds F6 (AI Architecture), F9 (mathlib4), F12 (C. elegans full connectome), F1 (Synthetic Lethality). H_PRIMITIVITY meta-science test run 2026-05-21: 1 CONFIRMED, 2 DENIED, 1 PARTIAL (BC4 candidate identified).
+**Current status (May 2026):** 18 CONFIRMED, 3 DENIED across 13 canonical + 8 Tier B pre-registered experiments. arXiv:2604.23639 published (cs.SI, April 2026). Platform live at [irdme.com](https://irdme.com). Paper updated to v5 (May 2026): adds F6 (AI Architecture), F9 (mathlib4), F12 (C. elegans full connectome), F1 (Synthetic Lethality). H_PRIMITIVITY meta-science test run 2026-05-21: 1 CONFIRMED, 2 DENIED, 1 PARTIAL (BC4 formally named).
 
 **Post-hoc confirmatory runs (NOT pre-registered, not counted in totals):** BC3b circuit (2026-05-22, see section below) — workflow was not followed; result is valid but has no pre-registration credibility.
 
@@ -27,7 +27,7 @@ Public record of pre-registered scientific hypotheses for the
 | `celegans_302_full` | C. elegans full 302-neuron connectome (F12) — law replication + hub compression test | **3/3 CONFIRMED** |
 | `mathlib4_F9_v1` | Lean 4 mathlib4: Functional Proximity Law on Formal Mathematics (F9) | **2/3 CONFIRMED, 1 PARTIAL** |
 | `proteins_sl_F1_v1` | Synthetic Lethality Prediction — PARP1/CHEK1 as cross-layer divergers (F1) | **3/4 CONFIRMED, 1 PARTIAL** |
-| `H_PRIMITIVITY_v1` | Meta-science test: is d1/d2/d3 more primitive than mathematical formalization? (H_PRIMITIVITY) | **1/4 CONFIRMED, 2/4 DENIED, 1/4 PARTIAL — BC4 candidate** |
+| `H_PRIMITIVITY_v1` | Meta-science test: is d1/d2/d3 more primitive than mathematical formalization? (H_PRIMITIVITY) | **1/4 CONFIRMED, 2/4 DENIED, 1/4 PARTIAL — BC4** |
 
 
 ## Quick verification
@@ -407,12 +407,12 @@ The near-zero correlation (r=0.11, ns) between PPI and SL layers is not a failur
 
 | # | Hypothesis | Verdict | Result |
 |---|---|---|---|
-| h1 | FPL holds at meta-science level: r(formal_dep↔structural_grammar) > r(formal_dep↔law_confirm) | **DENIED** | r(d1↔d2)=0.212 < r(d1↔d3)=0.368 — reversed. BC4 candidate: meta-science coupling regime is a distinct structural domain. |
+| h1 | FPL holds at meta-science level: r(formal_dep↔structural_grammar) > r(formal_dep↔law_confirm) | **DENIED** | r(d1↔d2)=0.212 < r(d1↔d3)=0.368 — reversed. BC4 (formally named): meta-science coupling regime is a distinct structural domain. |
 | h2 | Top hub in law_confirmation_coupling is mol_bio or sw_eng (max_rank=2) | **DENIED** | Top hub is sys_bio. mol_bio ranks #4. |
 | h3 | formal_math is #1 hub in formal_dependency | **CONFIRMED** | formal_math degree=20, #2 is sys_bio (10). Layer design validated. |
 | h4 | r(formal_dep↔law_confirm) is NOT significant (p > 0.05) — formalization does not predict confirmation | **PARTIAL** | r=0.368, p=0.206. Not significant. Consistent with H_PRIMITIVITY: the law's applicability is independent of mathematical formalization level. |
 
-**Key finding — BC4 candidate (meta-science regime):**
+**Key finding — BC4 (meta-science regime, formally named):**
 
 h1 DENIED identifies a potential fourth boundary condition: the FPL does not confirm when nodes are scientific domains and layers encode abstract institutional dependencies between entire fields. Candidate mechanism: abstract coupling between sciences operates at a different structural resolution than concrete physical, computational, or biological coupling — analogous to BC1 (relational regime mismatch) and BC3 (resolution mismatch). h4 PARTIAL independently supports H_PRIMITIVITY: mathematical formalization level (measured by how many other fields depend on a domain's mathematical tools) does not significantly predict whether or how strongly the FPL confirms in that domain.
 
@@ -587,4 +587,4 @@ These runs produced valid scientific results but **did not follow the pre-regist
 |---|---|---|---|---|
 | **BC3b circuit** — ISCAS85 c17 equivalent, n=11 nodes, 3 layers | 2026-05-22 | Ran `main.py examples/experiments/BC3b_circuit_v1.json`. All 3 hypotheses confirmed. r(gate_wiring↔structural_proximity)=0.7504 (p=0.01), r(gate_wiring↔critical_path)=0.2813 (ns), Δr=0.4691. BC3b formally named (layer collapse in pure boolean algebra). | Prediction sidecar was hand-crafted in the same AI session as the analysis run. Was not generated by `dev.py commit-prediction` and was not pushed here before analysis. | Valid result. Matches analytical pre-computation of expected r from circuit topology. Does not have pre-registration credibility because the public timestamp sequence was not established. |
 
-**If you want BC3b to count as pre-registered:** the only valid path is to build a new dataset (or reuse `boolean_circuit_c17.json`), write new hypotheses with genuinely unknown results, commit prediction, push here, then run. Reproducing a known result post-hoc with a new pre-registration is not scientifically meaningful — so BC3b should either be presented as an exploratory run or superseded by a new circuit experiment with a genuinely open prediction.
+

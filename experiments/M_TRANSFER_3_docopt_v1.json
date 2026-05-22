@@ -1,0 +1,67 @@
+{
+  "id": "M_TRANSFER_3_docopt_v1",
+  "experiment": "M_TRANSFER_3 — Docopt cross-language replication (Go, Java, Rust)",
+  "description": "Cross-language structural isomorphism replication: does the Functional Proximity Law hold independently in Go, Java, and Rust implementations of the same CLI parsing library (docopt), and does the primary parser module act as the structural hub in all three? The exploratory run (Tier C, not pre-registered) confirmed hub identity sim >= 0.967 across all language pairs via atlas --compare (role-vector cosine similarity). This pre-registered experiment formally tests the per-codebase FPL r-values and hub rankings using the standard within-codebase analysis — a different measurement that the exploratory run did not compute. All three datasets use the Universal Layer Grammar: d1=static_coupling (declared imports), d2=structural_coupling (inferred shared-import proximity), d3=co_change (git behavioral coupling).",
+  "datasets": [
+    "examples/docopt_go.json",
+    "examples/docopt_java.json",
+    "examples/docopt_rs.json"
+  ],
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "static_coupling", "layer_b": "structural_coupling" },
+    { "run": "cross_layer_analysis", "layer_a": "static_coupling", "layer_b": "co_change" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "FPL directional inequality holds in the Java docopt implementation (n=16): r(static_coupling, structural_coupling) > r(static_coupling, co_change). The OOP Java implementation has richer dependency structure (49 static_coupling edges) making hub differentiation between the structural and behavioral layers more visible than in Go (n=6) or Rust (n=8).",
+      "test": {
+        "type": "cross_layer_correlation_rank",
+        "pair_a_layer_a": "static_coupling",
+        "pair_a_layer_b": "structural_coupling",
+        "pair_b_layer_a": "static_coupling",
+        "pair_b_layer_b": "co_change",
+        "expected": "pair_a_higher",
+        "dataset": "examples/docopt_java.json"
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "FPL reaches significance in the Java docopt implementation (n=16): r(static_coupling, structural_coupling) > 0 with min_abs_r >= 0.50 (at n=16 this corresponds to p < 0.05). Java has sufficient node count and 49 static_coupling edges to power the correlation test.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "static_coupling",
+        "layer_b": "structural_coupling",
+        "expected_direction": "positive",
+        "min_abs_r": 0.50,
+        "dataset": "examples/docopt_java.json"
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "FPL directional inequality holds in the Rust docopt implementation (n=8): r(static_coupling, structural_coupling) > r(static_coupling, co_change). The Rust implementation is the most committed-to codebase (284 commits, 17 co_change edges) and the parser-centric architecture should encode the same structural gradient as the other two languages.",
+      "test": {
+        "type": "cross_layer_correlation_rank",
+        "pair_a_layer_a": "static_coupling",
+        "pair_a_layer_b": "structural_coupling",
+        "pair_b_layer_a": "static_coupling",
+        "pair_b_layer_b": "co_change",
+        "expected": "pair_a_higher",
+        "dataset": "examples/docopt_rs.json"
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "The primary parser module is rank <=2 hub in static_coupling in all three implementations: docopt (Go, 498 LOC, main library file), Docopt (Java, 544 LOC, main class), parse (Rust, 1241 LOC, main parser module). The parser/entry module drives all static dependencies in a CLI parsing library regardless of language paradigm — it is the unique hub that all other modules reference or are referenced through.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "static_coupling",
+        "expected_hub": "docopt",
+        "max_rank": 2
+      }
+    }
+  ]
+}

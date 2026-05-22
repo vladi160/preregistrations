@@ -1,0 +1,24 @@
+{
+  "experiment": "M_TRANSFER_3 — Docopt cross-language replication (Go, Java, Rust)",
+  "committed_at": "2026-05-22T04:16:40.507306+00:00",
+  "prediction_hash": "5388c0f114a52040330c8e4ac6f82a90a7a2a10e763c47f507e3c6ebe65560bc",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "FPL directional inequality holds in the Java docopt implementation (n=16): r(static_coupling, structural_coupling) > r(static_coupling, co_change). The OOP Java implementation has richer dependency structure (49 static_coupling edges) making hub differentiation between the structural and behavioral layers more visible than in Go (n=6) or Rust (n=8)."
+    },
+    {
+      "id": "h2",
+      "statement": "FPL reaches significance in the Java docopt implementation (n=16): r(static_coupling, structural_coupling) > 0 with min_abs_r >= 0.50 (at n=16 this corresponds to p < 0.05). Java has sufficient node count and 49 static_coupling edges to power the correlation test."
+    },
+    {
+      "id": "h3",
+      "statement": "FPL directional inequality holds in the Rust docopt implementation (n=8): r(static_coupling, structural_coupling) > r(static_coupling, co_change). The Rust implementation is the most committed-to codebase (284 commits, 17 co_change edges) and the parser-centric architecture should encode the same structural gradient as the other two languages."
+    },
+    {
+      "id": "h4",
+      "statement": "The primary parser module is rank <=2 hub in static_coupling in all three implementations: docopt (Go, 498 LOC, main library file), Docopt (Java, 544 LOC, main class), parse (Rust, 1241 LOC, main parser module). The parser/entry module drives all static dependencies in a CLI parsing library regardless of language paradigm — it is the unique hub that all other modules reference or are referenced through."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
