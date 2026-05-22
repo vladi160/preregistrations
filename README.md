@@ -7,7 +7,7 @@ Public record of pre-registered scientific hypotheses for the
 
 **What pre-registration is and isn't.** Pre-registration is a logging and history mechanism. It records that a specific prediction was committed to this public repository with a git timestamp before the analysis result was seen. It makes the full prediction history — including denied results — publicly auditable. It does not prevent private analysis before registration; it does not guarantee that no exploratory work happened beforehand. Its value is in workflow discipline, a transparent public record, and reproducibility documentation.
 
-**Current status (May 2026):** 18 CONFIRMED, 3 DENIED across 13 canonical + 8 Tier B pre-registered experiments. arXiv:2604.23639 published (cs.SI, April 2026). Platform live at [irdme.com](https://irdme.com). Paper updated to v5 (May 2026): adds F6 (AI Architecture), F9 (mathlib4), F12 (C. elegans full connectome), F1 (Synthetic Lethality). H_PRIMITIVITY meta-science test run 2026-05-21: 1 CONFIRMED, 2 DENIED, 1 PARTIAL (BC4 formally named).
+**Current status (May 2026):** 18 CONFIRMED, 4 DENIED across 14 canonical + 8 Tier B pre-registered experiments (22 total). M_TRANSFER_3 adds 1 denied experiment (BC_RADIAL candidate — FPL denied in all 3 docopt implementations due to structural_coupling degeneracy in single-hub radial architectures). arXiv:2604.23639 published (cs.SI, April 2026). Platform live at [irdme.com](https://irdme.com). Paper updated to v5 (May 2026): adds F6 (AI Architecture), F9 (mathlib4), F12 (C. elegans full connectome), F1 (Synthetic Lethality). H_PRIMITIVITY meta-science test run 2026-05-21: 1 CONFIRMED, 2 DENIED, 1 PARTIAL (BC4 formally named).
 
 **Post-hoc confirmatory runs (NOT pre-registered, not counted in totals):** BC3b circuit (2026-05-22, see section below) — workflow was not followed; result is valid but has no pre-registration credibility.
 
@@ -28,6 +28,7 @@ Public record of pre-registered scientific hypotheses for the
 | `mathlib4_F9_v1` | Lean 4 mathlib4: Functional Proximity Law on Formal Mathematics (F9) | **2/3 CONFIRMED, 1 PARTIAL** |
 | `proteins_sl_F1_v1` | Synthetic Lethality Prediction — PARP1/CHEK1 as cross-layer divergers (F1) | **3/4 CONFIRMED, 1 PARTIAL** |
 | `H_PRIMITIVITY_v1` | Meta-science test: is d1/d2/d3 more primitive than mathematical formalization? (H_PRIMITIVITY) | **1/4 CONFIRMED, 2/4 DENIED, 1/4 PARTIAL — BC4** |
+| `M_TRANSFER_3_docopt_v1` | Cross-language FPL replication: Go, Java, Rust docopt implementations | **0/4 CONFIRMED, 3/4 DENIED, 1/4 PARTIAL — BC_RADIAL candidate** |
 
 
 ## Quick verification
@@ -415,6 +416,41 @@ The near-zero correlation (r=0.11, ns) between PPI and SL layers is not a failur
 **Key finding — BC4 (meta-science regime, formally named):**
 
 h1 DENIED identifies a potential fourth boundary condition: the FPL does not confirm when nodes are scientific domains and layers encode abstract institutional dependencies between entire fields. Candidate mechanism: abstract coupling between sciences operates at a different structural resolution than concrete physical, computational, or biological coupling — analogous to BC1 (relational regime mismatch) and BC3 (resolution mismatch). h4 PARTIAL independently supports H_PRIMITIVITY: mathematical formalization level (measured by how many other fields depend on a domain's mathematical tools) does not significantly predict whether or how strongly the FPL confirms in that domain.
+
+---
+
+## M_TRANSFER_3 — Docopt Cross-Language Replication (Go, Java, Rust)
+
+| File | Description |
+|---|---|
+| [`experiments/M_TRANSFER_3_docopt_v1.json`](experiments/M_TRANSFER_3_docopt_v1.json) | 4 pre-registered hypotheses |
+| [`experiments/M_TRANSFER_3_docopt_v1.prediction`](experiments/M_TRANSFER_3_docopt_v1.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `5388c0f114a52040330c8e4ac6f82a90a7a2a10e763c47f507e3c6ebe65560bc`
+**Registered:** `2026-05-22T04:16:40.507306+00:00` (before any analysis was run)
+
+**Context:** Pre-registered replication of the exploratory M_TRANSFER_3 result (Tier C, not pre-registered), which found hub identity sim ≥ 0.967 across all three docopt language pairs via `irdme atlas --compare` (role-vector cosine similarity). This experiment formally tests the per-codebase FPL r-values and hub rankings — a different measurement that the exploratory run did not compute. Three docopt implementations extracted via `irdme extract`: Go (n=6, v0.6.2, 97 commits), Java (n=16, 13 commits), Rust (n=8, v1.1.1, 284 commits). All use the Universal Layer Grammar: d1=static_coupling, d2=structural_coupling, d3=co_change. Run separately against each dataset (h1+h2 test Java, h3 tests Rust, h4 aggregated across all three).
+
+#### Verdicts (analysis run 2026-05-22)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | FPL directional inequality holds in Java (n=16): r(d1↔d2) > r(d1↔d3) | **DENIED** | r(static_coupling↔structural_coupling)=0.0 < r(static_coupling↔co_change)=0.2584. structural_coupling has a constant degree vector — degenerate. |
+| h2 | FPL reaches significance in Java (n=16): r(d1↔d2) > 0, min_abs_r ≥ 0.50 | **DENIED** | structural_coupling degree vector is constant (all nodes have equal structural degree). r undefined. Threshold of 0.50 not reached. |
+| h3 | FPL directional inequality holds in Rust (n=8): r(d1↔d2) > r(d1↔d3) | **DENIED** | r(static_coupling↔structural_coupling)=−0.1429 < r(static_coupling↔co_change)=0.4962. FPL inverted — co_change is more correlated with static_coupling than structural_coupling. |
+| h4 | Primary parser module is rank ≤2 in static_coupling in all 3: docopt (Go), Docopt (Java), parse (Rust) | **PARTIAL** | Go: docopt = rank #1 ✓. Java: Docopt = rank #1 ✓. Rust: dopt = rank #1 (not parse as predicted — dopt is the library entry module, parse is the sub-parser it wraps). |
+
+**Overall: 0/4 CONFIRMED, 3/4 DENIED, 1/4 PARTIAL.**
+
+**Key finding — systematic FPL denial in single-hub radial architectures:**
+
+All three docopt implementations share the same structural pattern: a single dominant parser module (docopt/Docopt/dopt) that acts as the sole hub, with all other modules as peripheral dependents. In this radial/star topology, structural_coupling (d2) degenerates — when all modules depend on the same hub or share the same type imports, every node's structural_coupling degree converges to a similar value (Java: constant; Go: near-zero from only 1 edge; Rust: very low). The result is that r(d1,d2) collapses toward 0 or below, while r(d1,d3) remains positive because behavioral co-change reflects feature proximity, not structural degeneracy.
+
+**Named mechanism — BC_RADIAL (candidate):** Single-hub radial architectures cause structural_coupling degeneracy. The FPL requires genuine layer differentiation — when d1 and d2 both reduce to "proximity to the same hub," they cannot produce different hub rankings, and the law cannot confirm. This is structurally distinct from BC3 (resolution mismatch) and BC1 (relational regime): here, the layer design is correct but the specific topology collapses the layer differentiation.
+
+**On the exploratory finding (hub identity sim ≥ 0.967):** The exploratory result remains valid. Cross-language hub identity (measured by role-vector cosine similarity via `irdme atlas --compare`) IS preserved — the same hub node (docopt/Docopt/dopt) appears in all three languages with nearly identical structural roles. Hub identity and the FPL r-test measure different things: hub identity asks "which node is central?"; FPL r asks "does centrality co-vary systematically between layers?" The former confirms across all 3 languages; the latter fails due to structural_coupling degeneracy. The distinction is the finding.
+
+**This experiment is DENIED at the experiment level (FPL did not hold in any of the 3 sub-tests). It adds 1 denied experiment to the total: 18 CONFIRMED, 4 DENIED across 22 pre-registered experiments.**
 
 ---
 
