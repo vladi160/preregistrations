@@ -1,0 +1,24 @@
+{
+  "experiment": "M_RADIAL_1 — BC_RADIAL threshold validation across diverse hub-dominated libraries",
+  "committed_at": "2026-05-22T05:54:47.404724+00:00",
+  "prediction_hash": "c00ebfa43bf9141b891f7b53679d0e0092db4069d335dc35a8dd680f0670aed9",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "FPL directional inequality holds in cobra (n=12, Go CLI framework): r(static_coupling, structural_coupling) > r(static_coupling, co_change). Cobra has Var(structural_coupling)=10.515, well above the empirical threshold tau_var=0.714 derived from meta-analysis of 23 pre-registered experiments. Cobra's architecture is NOT radially degenerate: 6 completion generators (bash, zsh, fish, powershell, yaml, bash_v2) all share types with command.go but also with each other, creating a structurally rich d2 layer. The threshold predicts FPL is evaluable and should fire. Hub prediction: command is rank-1 in static_coupling (degree 11)."
+    },
+    {
+      "id": "h2",
+      "statement": "FPL directional inequality holds in click (n=11, Python CLI framework): r(static_coupling, structural_coupling) > r(static_coupling, co_change). Click has Var(structural_coupling)=0.873, above the empirical threshold tau_var=0.714. Although click's static_coupling and structural_coupling layers are sparse (3 edges each), the variance is sufficient for the correlation signal to emerge: types is d1 hub (degree 3) while core/testing/utils share types (degree 2 each in d2) and co_change is near-uniform (all degrees 9-10). The threshold predicts FPL will confirm despite the sparse edge count. Hub prediction: core is rank-1 or rank-2 in structural_coupling."
+    },
+    {
+      "id": "h3",
+      "statement": "BC_RADIAL inversion holds in logrus (n=10, Go logging library): r(static_coupling, co_change) > r(static_coupling, structural_coupling). Logrus has Var(structural_coupling)=0.000 — fully degenerate, all 10 nodes have identical degree 9 in structural_coupling (constant vector, Pearson r undefined, mapped to 0). This is the same hard degeneracy as Java docopt (M_TRANSFER_3). The threshold strongly predicts FPL collapse: tau_var=0.714 >> 0.000. The behavioral co_change layer retains structural variance, so r(d1,d3) > r(d1,d2)=0 is the predicted inversion. Logrus is from a completely different domain (logging) and language family (Go) than docopt, confirming BC_RADIAL is architecture-driven, not family-specific."
+    },
+    {
+      "id": "h4",
+      "statement": "Hub identity is preserved in logrus despite BC_RADIAL degeneracy: the logrus module (the main library entry file) is rank-1 or rank-2 in co_change (d3 behavioral layer). In BC_RADIAL systems, the FPL r-test collapses but the hub node retains its identity in the behavioral layer — the same finding as M_TRANSFER_3 where docopt/Docopt/dopt was rank-1 in static_coupling across all three implementations even as FPL failed. This tests whether hub identity preservation is a general property of BC_RADIAL systems, independent of domain."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
