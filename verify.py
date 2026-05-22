@@ -34,15 +34,20 @@ def verify(json_path: str) -> bool:
         for i, h in enumerate(hypotheses)
     ]
     canonical = json.dumps(statements, sort_keys=True, ensure_ascii=False)
-    computed = hashlib.sha256(canonical.encode()).hexdigest()[:16]
+    computed_full = hashlib.sha256(canonical.encode()).hexdigest()
     expected = sidecar.get("prediction_hash", "")
+
+    # Support both old (16-char prefix) and new (full 64-char SHA256) hash formats.
+    # A stored hash matches if it equals the full digest or the full digest starts with it.
+    match = (expected == computed_full) or computed_full.startswith(expected)
+    computed = computed_full[:len(expected)] if len(expected) <= 64 else computed_full
 
     print(f"\n  Experiment : {sidecar.get('experiment', json_path)}")
     print(f"  Registered : {sidecar.get('committed_at', '?')}")
     print(f"  Expected   : {expected}")
     print(f"  Computed   : {computed}")
-    print(f"  {'MATCH — pre-registration intact.' if computed == expected else 'MISMATCH — file has been modified after registration!'}\n")
-    return computed == expected
+    print(f"  {'MATCH — pre-registration intact.' if match else 'MISMATCH — file has been modified after registration!'}\n")
+    return match
 
 
 if __name__ == "__main__":
