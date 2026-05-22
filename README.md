@@ -7,11 +7,11 @@ Public record of pre-registered scientific hypotheses for the
 
 **What pre-registration is and isn't.** Pre-registration is a logging and history mechanism. It records that a specific prediction was committed to this public repository with a git timestamp before the analysis result was seen. It makes the full prediction history — including denied results — publicly auditable. It does not prevent private analysis before registration; it does not guarantee that no exploratory work happened beforehand. Its value is in workflow discipline, a transparent public record, and reproducibility documentation.
 
-**Current status (May 2026):** 18 CONFIRMED, 4 DENIED across 14 canonical + 8 Tier B pre-registered experiments (22 total). M_TRANSFER_3 adds 1 denied experiment (BC_RADIAL candidate — FPL denied in all 3 docopt implementations due to structural_coupling degeneracy in single-hub radial architectures). arXiv:2604.23639 published (cs.SI, April 2026). Platform live at [irdme.com](https://irdme.com). Paper updated to v5 (May 2026): adds F6 (AI Architecture), F9 (mathlib4), F12 (C. elegans full connectome), F1 (Synthetic Lethality). H_PRIMITIVITY meta-science test run 2026-05-21: 1 CONFIRMED, 2 DENIED, 1 PARTIAL (BC4 formally named).
+**Current status (May 2026):** 19 CONFIRMED, 4 DENIED across 14 canonical + 9 Tier B pre-registered experiments (23 total). M_TRANSFER_3 adds 1 denied experiment (BC_RADIAL candidate — FPL denied in all 3 docopt implementations). M_GEOM_CSG_1 adds 1 confirmed experiment — new domain (computational geometry), BC3b boundary demonstrated: CSG geometry confirms FPL. arXiv:2604.23639 published (cs.SI, April 2026). Platform live at [irdme.com](https://irdme.com). Paper updated to v5 (May 2026): adds F6 (AI Architecture), F9 (mathlib4), F12 (C. elegans full connectome), F1 (Synthetic Lethality). H_PRIMITIVITY meta-science test run 2026-05-21: 1 CONFIRMED, 2 DENIED, 1 PARTIAL (BC4 formally named).
 
 **Post-hoc confirmatory runs (NOT pre-registered, not counted in totals):** BC3b circuit (2026-05-22, see section below) — workflow was not followed; result is valid but has no pre-registration credibility.
 
-**Experiments in this repo (13 total):**
+**Experiments in this repo (14 total):**
 
 | File | Experiment | Verdict |
 |---|---|---|
@@ -29,6 +29,7 @@ Public record of pre-registered scientific hypotheses for the
 | `proteins_sl_F1_v1` | Synthetic Lethality Prediction — PARP1/CHEK1 as cross-layer divergers (F1) | **3/4 CONFIRMED, 1 PARTIAL** |
 | `H_PRIMITIVITY_v1` | Meta-science test: is d1/d2/d3 more primitive than mathematical formalization? (H_PRIMITIVITY) | **1/4 CONFIRMED, 2/4 DENIED, 1/4 PARTIAL — BC4** |
 | `M_TRANSFER_3_docopt_v1` | Cross-language FPL replication: Go, Java, Rust docopt implementations | **0/4 CONFIRMED, 3/4 DENIED, 1/4 PARTIAL — BC_RADIAL candidate** |
+| `M_GEOM_CSG_1` | Planetary gear CSG multilayer — BC3b boundary test (computational geometry) | **4/4 CONFIRMED** |
 
 
 ## Quick verification
@@ -451,6 +452,40 @@ All three docopt implementations share the same structural pattern: a single dom
 **On the exploratory finding (hub identity sim ≥ 0.967):** The exploratory result remains valid. Cross-language hub identity (measured by role-vector cosine similarity via `irdme atlas --compare`) IS preserved — the same hub node (docopt/Docopt/dopt) appears in all three languages with nearly identical structural roles. Hub identity and the FPL r-test measure different things: hub identity asks "which node is central?"; FPL r asks "does centrality co-vary systematically between layers?" The former confirms across all 3 languages; the latter fails due to structural_coupling degeneracy. The distinction is the finding.
 
 **This experiment is DENIED at the experiment level (FPL did not hold in any of the 3 sub-tests). It adds 1 denied experiment to the total: 18 CONFIRMED, 4 DENIED across 22 pre-registered experiments.**
+
+---
+
+## M_GEOM_CSG_1 — Planetary Gear Set Constructive Solid Geometry (May 22, 2026)
+
+| Field | Value |
+|---|---|
+| **Experiment file** | [`experiments/M_GEOM_CSG_1.json`](experiments/M_GEOM_CSG_1.json) |
+| **Prediction sidecar** | [`experiments/M_GEOM_CSG_1.prediction`](experiments/M_GEOM_CSG_1.prediction) |
+| **Pre-registration hash** | `1dd686ee25e25d97ca0afc4701ea34a2ef4fcf690b231a42e71854bc13c262c9` |
+| **Pre-registration timestamp** | 2026-05-22T04:52:57.530116+00:00 |
+| **Public repo push (pre-reg)** | commit `5c45bbe` — before any analysis ran |
+| **Domain** | Computational geometry — constructive solid geometry (CSG), planetary gear set |
+| **Dataset** | `examples/m_geom_csg_1.json` — 8 nodes, 36 relations across 3 layers |
+| **Layers** | d1=operation_tree (CSG assembly steps), d2=volumetric_proximity (physical contact interfaces), d3=co_parameter_sensitivity (gear ratio kinematic coupling) |
+
+**Context:** Directly motivated by BC3b (named boundary condition for pure boolean algebra layer collapse). Scientific question: do CSG boolean operations (union/difference) on continuous geometry also collapse d1/d2/d3 to logical consequence — or does continuous geometry preserve genuine layer differentiation? The planetary gear set was selected as a well-understood mechanical system with three independently derivable structural properties.
+
+**Verdict table:**
+
+| Hypothesis | Verdict | Evidence |
+|---|---|---|
+| h1: FPL directional inequality r(d1,d2) > r(d1,d3) | **CONFIRMED** | r(operation_tree,volumetric_proximity)=0.6682 > r(operation_tree,co_parameter_sensitivity)=-0.2673 |
+| h2: r(d1,d2) ≥ 0.50, positive direction | **CONFIRMED** | Pearson r=0.6682, permutation p=0.0419 (significant at α=0.05) |
+| h3: carrier_plate = rank-1 hub in operation_tree | **CONFIRMED** | carrier_plate rank #1, degree=5 (housing #2 at degree=3) |
+| h4: carrier_plate = rank-1 hub in volumetric_proximity | **CONFIRMED** | carrier_plate rank #1, degree=7 (sun_gear and ring_gear #2 at degree=5) |
+
+**Result: 4/4 CONFIRMED. Δr = 0.6682 − (−0.2673) = 0.9355 (very large effect).**
+
+**BC3b boundary formally demonstrated:** CSG geometry (continuous geometry, boolean operations) confirms FPL — genuine layer differentiation is preserved. The carrier plate is the structural hub in BOTH the declared assembly tree (d1) AND the geometric proximity graph (d2), while the kinematic parameter sensitivity graph (d3) is dominated by the gear ratio coupling chain (sun gear and ring gear as co-sensitivity hubs). The layer collapse that occurs in pure boolean algebra (BC3b mechanism) does NOT occur here because the three layers encode genuinely independent structural properties of the continuous-geometry system.
+
+**Distinction from BC3b (not a contradiction):** BC3b states that pure boolean algebra denies FPL because d1/d2/d3 all reduce to logical consequence — there is no independent structural meaning in any layer beyond set membership. CSG geometry has the same SYNTAX (union, difference) but different SEMANTICS: the assembly sequence, the geometric contact zones, and the kinematic co-sensitivity are independently derivable from different physical properties of the gear set. The boolean operations produce distinct structural layers because the domain is continuous, not discrete.
+
+**This experiment adds 1 confirmed experiment: 19 CONFIRMED, 4 DENIED across 23 pre-registered experiments.**
 
 ---
 
