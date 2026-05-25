@@ -1,0 +1,57 @@
+{
+  "experiment": "M_MED1 — Antidepressant Evidence Chain Structural Circularity",
+  "description": "Structural analysis of the antidepressant (SSRI) evidence chain as a multilayer graph. Nodes are key theoretical claims, methodological decisions, and empirical findings. Three layers: d1=justifies (theoretical justification), d2=selects_endpoints (methodological constraint), d3=cites_as_support (citation as evidence). The core hypothesis is that the Functional Proximity Law (FPL) will hold in the justification vs endpoint-selection layers (both encode causal/structural coupling between epistemic claims), and that the monoamine_hypothesis node will exhibit a hub shadow — central in d1 (justification hub: everything traces back to it theoretically) but peripheralized in d3 (cites_as_support: it is rarely cited directly as empirical evidence — instead, clinical success is cited back to it). This hub shadow pattern is the IRDME structural signature of circular reasoning: a founding assumption that justifies the entire evidence chain without ever being independently grounded from outside the chain. Sources: Lacasse & Leo (2005), Moncrieff et al. (2022), Kirsch et al. (2008), Pigott et al. (2010). Dataset: examples/antidepressant_evidence_chain.json. Layer designations: d1=justifies, d2=selects_endpoints, d3=cites_as_support.",
+  "graph": "../antidepressant_evidence_chain.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "justifies", "layer_b": "selects_endpoints" },
+    { "run": "cross_layer_analysis", "layer_a": "justifies", "layer_b": "cites_as_support" },
+    { "run": "cross_layer_analysis", "layer_a": "selects_endpoints", "layer_b": "cites_as_support" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(justifies <-> selects_endpoints) > r(justifies <-> cites_as_support). Justification (d1) and endpoint selection (d2) both encode structural causal coupling between epistemic claims — they are two sides of the same methodological constraint (a theoretical claim shapes BOTH the rationale AND the measurement procedure). Citation (d3) encodes a weaker, more diffuse coupling: any claim can cite any other for rhetorical support. Therefore the Functional Proximity Law predicts the d1-d2 correlation will exceed the d1-d3 correlation. Note: this experiment has n=8 nodes, so statistical power is limited; direction of effect is the primary criterion.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "justifies",
+        "layer_b": "selects_endpoints",
+        "expected_direction": "positive",
+        "min_abs_r": 0.30
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "monoamine_hypothesis is the top hub in the justifies layer OR ranks within the top 2. The monoamine hypothesis is the founding assumption that the entire evidence chain traces back to — it justifies the SSRI mechanism claim, the endpoint selection, the research program, and is circularly reconfirmed by the clinical guidelines. It should have the highest justification degree in the network. If monoamine_hypothesis is NOT the top justification hub, the circular structure takes a different form than predicted and the hub identity claim is DENIED.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "justifies",
+        "expected_hub": "monoamine_hypothesis",
+        "max_rank": 2
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "monoamine_hypothesis exhibits a hub shadow between the justifies layer and the cites_as_support layer: it is a top-2 hub in justifies but NOT in the top 2 of cites_as_support. The structural signature of circular reasoning is that the founding assumption IS the central justification hub but is NOT the most-cited empirical support node — that role is taken by the empirical findings (rct_efficacy, fda_approval) that were themselves shaped by the founding assumption. This hub shadow means monoamine_hypothesis is structurally displaced in the evidential layer — it supports everything structurally but appears peripheral in the citation layer, because citation goes to the downstream empirical outputs, not to the original assumption.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "cites_as_support",
+        "expected_hub": "rct_efficacy",
+        "max_rank": 2
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "r(justifies <-> selects_endpoints) > 0 with the absolute value >= 0.30. Even if h1 fails (direction violated), the absolute correlation between the two mechanistic layers should be substantial. Both justifies and selects_endpoints encode the same kind of structural coupling: downstream epistemic claims depend structurally on upstream ones. Nodes that are central in the justification hierarchy (high d1 degree) should also tend to be central in the endpoint-selection hierarchy (high d2 degree) because the same theoretical claims that provide justification also constrain what gets measured.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "selects_endpoints",
+        "layer_b": "cites_as_support",
+        "expected_direction": "positive",
+        "min_abs_r": 0.30
+      }
+    }
+  ]
+}
