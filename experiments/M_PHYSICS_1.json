@@ -1,0 +1,69 @@
+{
+  "id": "M_PHYSICS_1",
+  "experiment": "M_PHYSICS_1 \u2014 Standard Model Structural Topology: Force Coupling vs Decay Channels",
+  "description": "First physics pre-registered experiment. Tests whether the Functional Proximity Law (FPL) holds in the abstract structural topology of the Standard Model of particle physics. Dataset: 17 fundamental particles (6 quarks, 6 leptons, 4 gauge bosons, 1 Higgs) represented as a multilayer graph with 3 layers: force_coupling (d1 \u2014 particles sharing QFT interaction vertices), decay_channel (d2 \u2014 particles co-appearing in dominant tree-level decay products), and mass_proximity (d3 \u2014 particles within ~one order of magnitude in mass). The key scientific question: does gauge structure (force coupling) predict decay topology better than mass scale proximity? In the Standard Model, decay channels are CAUSALLY determined by force couplings (decays happen via the same gauge vertices that define force_coupling), while mass proximity is an independent organizing principle (quarks and leptons share mass scales but differ fundamentally in gauge charges). The FPL predicts: r(force_coupling \u2194 decay_channel) > r(force_coupling \u2194 mass_proximity). This would confirm that causal structural coupling (gauge interaction) is a better predictor of behavioral coupling (decay channel) than phenomenological similarity (mass scale). Secondary prediction: the W boson is the structural hub in both force_coupling and decay_channel, because it is the mediator of all charged-current weak decays \u2014 it appears at the center of every flavor-changing process. Hub shadow prediction: the photon ranks in top-3 of force_coupling (degree=10, 2nd only to W) but ranks near-last in decay_channel (degree=0 \u2014 photons are stable/massless and do not appear as decay products in the dominant channels), making the photon the canonical hub shadow in the Standard Model. This demonstrates that massless gauge bosons decouple from the decay-channel topology despite being central to the force-coupling topology. Source dataset: examples/sm_particles.json (PDG 2024 + standard QFT textbooks).",
+  "graph": "../sm_particles.json",
+  "steps": [
+    {"run": "layer_summary"},
+    {"run": "cross_layer_analysis", "layer_a": "force_coupling", "layer_b": "decay_channel"},
+    {"run": "cross_layer_analysis", "layer_a": "force_coupling", "layer_b": "mass_proximity"},
+    {"run": "cross_layer_analysis", "layer_a": "decay_channel",  "layer_b": "mass_proximity"},
+    {"run": "centrality"},
+    {"run": "patterns"}
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "FPL directional inequality holds: r(force_coupling, decay_channel) > r(force_coupling, mass_proximity). Particles that share gauge interaction vertices (force_coupling) also co-appear in dominant decay products (decay_channel) more strongly than they cluster by mass scale (mass_proximity). Physical rationale: decay channels in the SM are causally determined by the same gauge couplings encoded in force_coupling \u2014 the W boson mediates both weak-force vertices AND all charged-current decays. By contrast, mass_proximity is an emergent phenomenological property (masses arise via Yukawa coupling / spontaneous symmetry breaking) that groups particles by scale (e.g. electroweak scale: W, Z, H, top) rather than by interaction structure. Mass-proximate particles (e.g. charm quark and tau lepton, both ~1-2 GeV) are NOT structurally coupled \u2014 they belong to different gauge sectors. The FPL predicts the causal layer (d1\u2194d2) dominates over the phenomenological layer (d1\u2194d3).",
+      "test": {
+        "type": "cross_layer_correlation_rank",
+        "pair_a_layer_a": "force_coupling",
+        "pair_a_layer_b": "decay_channel",
+        "pair_b_layer_a": "force_coupling",
+        "pair_b_layer_b": "mass_proximity",
+        "expected": "pair_a_higher"
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "The W boson (w_boson) ranks #1 in force_coupling by degree. The W mediates: (1) all 3 charged lepton generations (\u03b3: e, \u03bc, \u03c4 \u2194 their neutrinos), (2) all 3 quark generation flavor transitions (u\u2194d, c\u2194s, t\u2194b), (3) WWZ and WW\u03b3 electroweak self-couplings. Predicted degree: 14 (electron, nu_e, muon, nu_mu, tau, nu_tau, up, down, charm, strange, top, bottom, z_boson, photon). The Z boson is predicted at degree 13 (all 12 fermions + w_boson). The photon is predicted at degree 10 (all charged particles). w_boson > z_boson > photon > gluon in force_coupling degree.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "force_coupling",
+        "expected_hub": "w_boson",
+        "max_rank": 1
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "The W boson (w_boson) ranks #1 in decay_channel by degree. The W boson IS the universal decay mediator in the SM: every unstable fermion (top quark t\u2192Wb, bottom quark b\u2192cW*, strange quark s\u2192uW*, muon \u03bc via W propagator, tau \u03c4 via W propagator) decays through the W. Additionally, the W itself decays to all lepton/neutrino and light quark pairs. Predicted degree: 13 (top, bottom, electron, nu_e, muon, nu_mu, tau, nu_tau, up, down, charm, strange, higgs). The Z boson follows at degree 12. The tau lepton is predicted at degree 8 (highest among matter fermions) because it decays to both electron and muon channels AND has W, Z, Higgs couplings. Hub shadow prediction: the photon (force_coupling rank 2-3) has decay_channel degree 0 \u2014 photons are stable and massless, not appearing as primary decay products of any SM particle in the dominant channels.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "decay_channel",
+        "expected_hub": "w_boson",
+        "max_rank": 1
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "r(force_coupling, decay_channel) > 0.35 and positive. Even though the photon (high d1 degree, zero d2 degree) and gluon (high d1 degree, low d2 degree) pull the correlation down \u2014 because massless gauge bosons are structurally central in force_coupling but absent from dominant decay channels \u2014 the W boson and Z boson (both high in d1 AND high in d2) should anchor a strong positive correlation. The photon/gluon represent the BC boundary within the Standard Model: massless gauge bosons decouple the force_coupling topology from the decay_channel topology at the very bottom of the degree distribution in d2. Despite this, the W/Z dominance is expected to keep the overall correlation above 0.35.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "force_coupling",
+        "layer_b": "decay_channel",
+        "expected_direction": "positive",
+        "min_abs_r": 0.35
+      }
+    },
+    {
+      "id": "h5",
+      "statement": "z_boson ranks in top-2 of decay_channel. The Z boson decays to all fermion-antifermion pairs (BR: 69.9% hadronic, 10.1% charged leptons, 20% invisible neutrinos) and to the Higgs via H\u2192ZZ*. Predicted degree in decay_channel: 12 (electron, muon, tau, nu_e, nu_mu, nu_tau, up, down, strange, charm, bottom, higgs). The only particle predicted to rank above z_boson in decay_channel is w_boson (degree 13, which also includes top quark and strange quark decay channels). This places z_boson consistently at rank 2, validating both the general hub structure and the W>Z dominance in the decay topology.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "decay_channel",
+        "expected_hub": "z_boson",
+        "max_rank": 2
+      }
+    }
+  ]
+}
