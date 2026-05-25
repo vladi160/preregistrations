@@ -1,0 +1,24 @@
+{
+  "experiment": "F2 — COBOL Legacy Code Multilayer: Functional Proximity Law in Procedural Mainframe Architecture",
+  "committed_at": "2026-05-25T12:44:50.368801+00:00",
+  "prediction_hash": "c119983a252debfd70c7457d575b3dcb80443faa83fb407229e56ff60084a623",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(perform_call_graph <-> copy_dependency) > r(perform_call_graph <-> data_field_sharing). In COBOL architecture, programs that PERFORM each other (d1) must share copybooks (d2) because COPY defines the data structures through which programs communicate. This structural necessity means d1 and d2 should be highly correlated. Data field sharing (d3) is more diffuse: global WORKING-STORAGE allows any program to access any field regardless of PERFORM relationships, and dead code programs retain their WS references. Therefore the Functional Proximity Law predicts d1-d2 correlation exceeds d1-d3 correlation. This is the primary FPL directional test."
+    },
+    {
+      "id": "h2",
+      "statement": "main_control is rank #1 hub in the perform_call_graph layer. The driver program (MAIN-CONTROL) orchestrates the entire batch run by PERFORMing all major processing routines. By COBOL architectural convention, the driver program has the highest PERFORM out-degree. No other program has a broader PERFORM scope. If main_control is NOT rank #1, the dataset does not match standard COBOL driver architecture and the structural premise is violated."
+    },
+    {
+      "id": "h3",
+      "statement": "dormant_account is rank #1 or #2 in the data_field_sharing layer (max_rank=3). dormant_account is dead code — degree=0 in perform_call_graph by dataset design. Despite being unreachable via PERFORM, it retains WORKING-STORAGE references to WS-ACCT-NUMBER, WS-BALANCE, WS-DORMANCY-FLAG, WS-INTEREST-RATE, and other global fields shared with many active programs. IRDME should identify it as a top hub in data_field_sharing — high data coupling with zero control-flow coupling. The same structural dead-code pattern applies to legacy_interest_calc (expected top-4 in data_field_sharing, degree=0 in perform_call_graph). Confirming dormant_account's top-3 rank in data_field_sharing validates IRDME's ability to detect structural dead code via cross-layer divergence without reading any code."
+    },
+    {
+      "id": "h4",
+      "statement": "r(perform_call_graph <-> copy_dependency) >= 0.50 with p < 0.05 at n=14. COBOL PERFORM and COPY dependencies are structurally coupled by the language design — inter-program communication REQUIRES copybook sharing. This means the correlation should not just be directionally positive (h1) but should be substantial. At n=14, a Pearson or Spearman r >= 0.50 is achievable if the coupling principle holds (t-statistic approximately 2.1 at r=0.50, n=14, one-tailed p ≈ 0.03). If r < 0.50, the COBOL structural coupling is weaker than predicted and a boundary condition may apply."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
