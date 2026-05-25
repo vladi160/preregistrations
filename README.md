@@ -529,7 +529,7 @@ Structural interpretation: `monoamine_hypothesis` simultaneously (1) is the prim
 |---|---|---|
 | h1 | r(perform_call_graph↔copy_dependency) > r(perform_call_graph↔data_field_sharing) | ✅ CONFIRMED: 0.807 >> 0.119 |
 | h2 | main_control is rank #1 hub in perform_call_graph | ✅ CONFIRMED: rank #1, degree=6 |
-| h3 | dormant_account is top-3 in data_field_sharing (dead code detection) | ✅ CONFIRMED: rank #2, degree=10 |
+| h3 | dormant_account is top-3 in data_field_sharing (topological dormancy signature) | ✅ CONFIRMED: rank #2, degree=10 |
 | h4 | r(perform_call_graph↔copy_dependency) ≥ 0.50 with p < 0.05 | ✅ CONFIRMED: r=0.807, Spearman=0.840, p=0.002 |
 
 **Cross-layer correlations:**
@@ -537,12 +537,12 @@ Structural interpretation: `monoamine_hypothesis` simultaneously (1) is the prim
 - r(perform_call_graph ↔ data_field_sharing): Pearson=**0.119** (near-zero, not significant)
 - FPL gradient Δr = **0.688**
 
-**Dead code detection via cross-layer divergence:**
-Both dead code programs (`legacy_interest_calc` and `dormant_account`) have degree=0 in `perform_call_graph` (never called by any active program) but rank among the top nodes in `data_field_sharing` (still entangled in global WORKING-STORAGE):
+**Topological dormancy signatures (cross-layer divergence):**
+Both execution-isolated programs (`legacy_interest_calc` and `dormant_account`) have degree=0 in `perform_call_graph` (no callers in the dataset) but rank among the top nodes in `data_field_sharing` (still entangled in global WORKING-STORAGE):
 - `dormant_account`: d1 rank=#13 (degree=0) → d3 rank=#2 (degree=10), **rank gap=11**
 - `legacy_interest_calc`: d1 rank=#14 (degree=0) → d3 rank=#3 (degree=9), **rank gap=11**
 
-IRDME identifies structural dead code via topology alone, without reading or executing the code.
+IRDME identifies **topological dormancy signatures** via rank divergence — execution-isolated but dependency-central modules. The precise claim: candidate dormant components whose structural footprint is consistent with programs removed from the PERFORM chain while data references remained intact. Detectable without reading or executing the code.
 
 **Scientific significance:** First IRDME experiment on COBOL / procedural mainframe architecture. The FPL holds across a 50-year language barrier. COBOL's global WORKING-STORAGE creates diffuse data coupling (low r(d1↔d3)=0.119) that decouples data access from control flow — this is the structural basis for ghost programs: dead in the call graph, alive in the data fabric.
 
