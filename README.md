@@ -7,13 +7,13 @@ Public record of pre-registered scientific hypotheses for the
 
 **What pre-registration is and isn't.** Pre-registration is a logging and history mechanism. It records that a specific prediction was committed to this public repository with a git timestamp before the analysis result was seen. It makes the full prediction history — including denied results — publicly auditable. It does not prevent private analysis before registration; it does not guarantee that no exploratory work happened beforehand. Its value is in workflow discipline, a transparent public record, and reproducibility documentation.
 
-**Current status (May 2026):** 22 CONFIRMED, 6 DENIED across 27 pre-registered experiments (13 Tier A + 14 Tier B). Recent additions: M_MED1 (antidepressant evidence chain, medicine domain — h2 CONFIRMED: monoamine_hypothesis is #1 hub in both justification and citation layers = structural self-referential loop; h3 DENIED is the stronger result: hub dominance, not hub shadow, was found); M_PHYSICS_1 (Standard Model particle topology — 5/5 CONFIRMED, first physics domain experiment; photon hub shadow confirmed; kinematic mass-threshold effect observed); M_RADIAL_1 (BC_RADIAL threshold validation — click CONFIRMED, logrus BC_RADIAL replicated, cobra BC_INVERSION discovered, 3/4 CONFIRMED); BC3b_circuit_v2 (priority arbiter circuit replication, 4/4 CONFIRMED, properly pre-registered); BC_INVERSION formally named as BC6. arXiv:2604.23639 published (cs.SI, April 2026) — v2 in preparation. Platform live at [irdme.com](https://irdme.com).
+**Current status (May 2026):** 26 CONFIRMED, 6 DENIED across 28 pre-registered experiments (13 Tier A + 15 Tier B). Recent additions: F2_cobol_legacy_v1 (COBOL legacy banking multilayer — 4/4 CONFIRMED, r(PERFORM↔COPY)=0.807 p=0.002; first software/legacy domain; dead code detected via cross-layer divergence — dormant_account and legacy_interest_calc rank #2–#3 in data_field_sharing with degree=0 in perform_call_graph); M_MED1 (antidepressant evidence chain, medicine domain — h2 CONFIRMED: monoamine_hypothesis is #1 hub in both justification and citation layers = structural self-referential loop; h3 DENIED is the stronger result: hub dominance, not hub shadow, was found); M_PHYSICS_1 (Standard Model particle topology — 5/5 CONFIRMED, first physics domain experiment; photon hub shadow confirmed; kinematic mass-threshold effect observed); M_RADIAL_1 (BC_RADIAL threshold validation — click CONFIRMED, logrus BC_RADIAL replicated, cobra BC_INVERSION discovered, 3/4 CONFIRMED); BC3b_circuit_v2 (priority arbiter circuit replication, 4/4 CONFIRMED, properly pre-registered); BC_INVERSION formally named as BC6. arXiv:2604.23639 published (cs.SI, April 2026) — v2 in preparation. Platform live at [irdme.com](https://irdme.com).
 
 **proteins_trust_cert_v1 exclusion note:** This experiment (5/5 CONFIRMED) uses the `dataset_trust_certification` methodology — it tests multi-source hub agreement across two data curation methodologies. It does NOT test the FPL inequality $r(d_1, d_2) > r(d_1, d_3)$ and is therefore excluded from the 21/25 FPL primary count. Its h4 independently replicates the FPL in both sources, which is reported as a secondary finding.
 
 **Post-hoc confirmatory runs (NOT pre-registered, not counted in totals):** BC3b c17 circuit (2026-05-22) — workflow was not followed for the original c17 run; BC3b_circuit_v2 is the properly pre-registered replication.
 
-**Experiments in this repo (19 total):**
+**Experiments in this repo (20 total):**
 
 | File | Experiment | Verdict |
 |---|---|---|
@@ -36,6 +36,7 @@ Public record of pre-registered scientific hypotheses for the
 | `BC3b_circuit_v2` | Priority arbiter circuit — proper pre-registered replication of c17 BC3b result | **4/4 CONFIRMED** |
 | `M_PHYSICS_1` | Standard Model 17-particle multilayer — force_coupling / decay_channel / mass_proximity (first physics domain FPL experiment) | **5/5 CONFIRMED** |
 | `M_MED1` | Antidepressant evidence chain: monoamine hypothesis structural circularity (medicine domain) | **1/4 CONFIRMED, 2/4 PARTIAL, 1/4 DENIED — hub dominance across all layers** |
+| `F2_cobol_legacy_v1` | COBOL legacy banking multilayer: FPL in procedural mainframe code + dead code detection (software domain) | **4/4 CONFIRMED** |
 
 
 ## Quick verification
@@ -508,6 +509,44 @@ Structural interpretation: `monoamine_hypothesis` simultaneously (1) is the prim
 **Most divergent items (justifies vs selects_endpoints):** ssri_mechanism_claim (rank #2 in justifies, rank #6 in selects_endpoints, gap=4); hamd_endpoint (rank #5 in justifies, rank #1 in selects_endpoints, gap=4); rct_efficacy (rank #6 in justifies, rank #2 in selects_endpoints, gap=4).
 
 **Output:** `outputs/output_M_MED1.json` in private repo.
+
+---
+
+## F2_cobol_legacy_v1 — COBOL Legacy Banking Multilayer: FPL in Procedural Mainframe Architecture (May 25, 2026)
+
+| **Experiment file** | [`experiments/F2_cobol_legacy_v1.json`](experiments/F2_cobol_legacy_v1.json) |
+| **Prediction sidecar** | [`experiments/F2_cobol_legacy_v1.prediction`](experiments/F2_cobol_legacy_v1.prediction) |
+| **Pre-registration hash** | `c119983a252debfd70c7457d575b3dcb80443faa83fb407229e56ff60084a623` |
+| **Pre-registration timestamp** | 2026-05-25T12:44:50.368801+00:00 |
+| **Public repo push (pre-reg)** | commit `891e6d1` — before any analysis ran |
+| **Domain** | Software — COBOL legacy / mainframe banking |
+| **Dataset** | `examples/cobol_legacy_banking.json` — 14 COBOL programs, 95 relations across 3 layers |
+| **Layers** | d1=perform_call_graph (PERFORM control flow), d2=copy_dependency (shared COPY copybooks), d3=data_field_sharing (shared WORKING-STORAGE data item access including dead code) |
+
+**Result: 4/4 CONFIRMED.**
+
+| Hypothesis | Prediction | Result |
+|---|---|---|
+| h1 | r(perform_call_graph↔copy_dependency) > r(perform_call_graph↔data_field_sharing) | ✅ CONFIRMED: 0.807 >> 0.119 |
+| h2 | main_control is rank #1 hub in perform_call_graph | ✅ CONFIRMED: rank #1, degree=6 |
+| h3 | dormant_account is top-3 in data_field_sharing (dead code detection) | ✅ CONFIRMED: rank #2, degree=10 |
+| h4 | r(perform_call_graph↔copy_dependency) ≥ 0.50 with p < 0.05 | ✅ CONFIRMED: r=0.807, Spearman=0.840, p=0.002 |
+
+**Cross-layer correlations:**
+- r(perform_call_graph ↔ copy_dependency): Pearson=**0.8067**, Spearman=**0.8397**, p=**0.002**
+- r(perform_call_graph ↔ data_field_sharing): Pearson=**0.119** (near-zero, not significant)
+- FPL gradient Δr = **0.688**
+
+**Dead code detection via cross-layer divergence:**
+Both dead code programs (`legacy_interest_calc` and `dormant_account`) have degree=0 in `perform_call_graph` (never called by any active program) but rank among the top nodes in `data_field_sharing` (still entangled in global WORKING-STORAGE):
+- `dormant_account`: d1 rank=#13 (degree=0) → d3 rank=#2 (degree=10), **rank gap=11**
+- `legacy_interest_calc`: d1 rank=#14 (degree=0) → d3 rank=#3 (degree=9), **rank gap=11**
+
+IRDME identifies structural dead code via topology alone, without reading or executing the code.
+
+**Scientific significance:** First IRDME experiment on COBOL / procedural mainframe architecture. The FPL holds across a 50-year language barrier. COBOL's global WORKING-STORAGE creates diffuse data coupling (low r(d1↔d3)=0.119) that decouples data access from control flow — this is the structural basis for ghost programs: dead in the call graph, alive in the data fabric.
+
+**Output:** `outputs/output_F2_cobol_legacy_v1.json` in private repo.
 | **Experiment file** | [`experiments/M_GEOM_CSG_1.json`](experiments/M_GEOM_CSG_1.json) |
 | **Prediction sidecar** | [`experiments/M_GEOM_CSG_1.prediction`](experiments/M_GEOM_CSG_1.prediction) |
 | **Pre-registration hash** | `1dd686ee25e25d97ca0afc4701ea34a2ef4fcf690b231a42e71854bc13c262c9` |
