@@ -7,7 +7,7 @@ Public record of pre-registered scientific hypotheses for the
 
 **What pre-registration is and isn't.** Pre-registration is a logging and history mechanism. It records that a specific prediction was committed to this public repository with a git timestamp before the analysis result was seen. It makes the full prediction history — including denied results — publicly auditable. It does not prevent private analysis before registration; it does not guarantee that no exploratory work happened beforehand. Its value is in workflow discipline, a transparent public record, and reproducibility documentation.
 
-**Current status (May 2026):** 21 CONFIRMED, 6 DENIED across 25 pre-registered experiments (13 Tier A + 12 Tier B). Recent additions: M_RADIAL_1 (BC_RADIAL threshold validation — click CONFIRMED, logrus BC_RADIAL replicated, cobra BC_INVERSION discovered, 3/4 CONFIRMED); BC3b_circuit_v2 (priority arbiter circuit replication, 4/4 CONFIRMED, properly pre-registered); BC_INVERSION formally named as BC6. arXiv:2604.23639 published (cs.SI, April 2026) — v2 in preparation. Platform live at [irdme.com](https://irdme.com).
+**Current status (May 2026):** 22 CONFIRMED, 6 DENIED across 26 pre-registered experiments (13 Tier A + 13 Tier B). Recent additions: M_PHYSICS_1 (Standard Model particle topology — 5/5 CONFIRMED, first physics domain experiment; photon hub shadow confirmed; kinematic mass-threshold effect observed); M_RADIAL_1 (BC_RADIAL threshold validation — click CONFIRMED, logrus BC_RADIAL replicated, cobra BC_INVERSION discovered, 3/4 CONFIRMED); BC3b_circuit_v2 (priority arbiter circuit replication, 4/4 CONFIRMED, properly pre-registered); BC_INVERSION formally named as BC6. arXiv:2604.23639 published (cs.SI, April 2026) — v2 in preparation. Platform live at [irdme.com](https://irdme.com).
 
 **proteins_trust_cert_v1 exclusion note:** This experiment (5/5 CONFIRMED) uses the `dataset_trust_certification` methodology — it tests multi-source hub agreement across two data curation methodologies. It does NOT test the FPL inequality $r(d_1, d_2) > r(d_1, d_3)$ and is therefore excluded from the 21/25 FPL primary count. Its h4 independently replicates the FPL in both sources, which is reported as a secondary finding.
 
@@ -34,6 +34,7 @@ Public record of pre-registered scientific hypotheses for the
 | `M_GEOM_CSG_1` | Planetary gear CSG multilayer — BC3b boundary test (computational geometry) | **4/4 CONFIRMED** |
 | `M_RADIAL_1` | BC_RADIAL threshold validation: cobra (BC_INVERSION), click (CONFIRMED), logrus (BC_RADIAL replicated) | **3/4 CONFIRMED, 1 DENIED — BC_INVERSION (BC6)** |
 | `BC3b_circuit_v2` | Priority arbiter circuit — proper pre-registered replication of c17 BC3b result | **4/4 CONFIRMED** |
+| `M_PHYSICS_1` | Standard Model 17-particle multilayer — force_coupling / decay_channel / mass_proximity (first physics domain FPL experiment) | **5/5 CONFIRMED** |
 
 
 ## Quick verification
