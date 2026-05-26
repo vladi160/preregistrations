@@ -1,0 +1,20 @@
+{
+  "experiment": "F13 — Drosophila Larva Connectome — FPL Cross-Species Replication (Winding et al. 2023)",
+  "committed_at": "2026-05-26T07:54:58.452032+00:00",
+  "prediction_hash": "7f04e5dd1cdb744ba858bb3871baa0cb56bace3aceb9dd423bef59ccd71b805b",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(axon_to_dendrite, axon_to_axon) > 0 with p < 0.05 in the Drosophila larval connectome (n=2952 neurons). The Functional Proximity Law holds cross-species: neurons that form many conventional axon-to-dendrite synapses also form many axon-to-axon connections, because both layer types encode direct physical neuron-to-neuron coupling (same relational regime). This replicates F12 (C. elegans, r=0.807) in an insect brain 10x larger. The larger sample provides strong statistical power. min_abs_r is set conservatively at 0.20 to account for increased biological heterogeneity (mixed cell types: sensory, motor, interneuron, mushroom body Kenyon cells) expected in a full insect brain vs the C. elegans hermaphrodite nervous system."
+    },
+    {
+      "id": "h2",
+      "statement": "r(axon_to_dendrite, axon_to_axon) >= 0.40 in the Drosophila larval connectome. The Functional Proximity Law holds with meaningful effect size. Across all prior IRDME experiments in neuroscience (M_EXT2: r=0.7774, F12: r=0.807, M_MED1_h1: r=0.408), the cross-layer hub correlation in biological networks has consistently been moderate to strong. The threshold r=0.40 is a conservative lower bound representing a medium effect size (Cohen's convention), well below the C. elegans value of 0.807 but above trivial correlation. CONFIRMED would mean FPL is not merely directionally conserved across species but shows substantial structural conservation. DENIED would suggest that greater biological complexity in the insect brain reduces hub persistence below the medium-effect threshold, which is scientifically interesting as a boundary condition finding."
+    },
+    {
+      "id": "h3",
+      "statement": "There exist at least 5 neurons that are structural divergents (high rank in axon_to_dendrite but low rank in axon_to_axon, or vice versa) — i.e., neurons with layer-specific roles that violate local hub persistence. This tests the complementary claim: even if FPL holds globally (h1/h2), the insect brain should contain specialized neurons that exploit the two synapse compartment types asymmetrically. In C. elegans, AVAR (rank 1 in chemical_synapse, rank 2 in gap_junction) shows near-perfect hub persistence. In a more complex brain with 2952 neurons and diverse cell types (sensory, motor, Kenyon cells, mushroom body output neurons), some neurons will show strong layer specialization. This is not in tension with FPL — it tests whether hub persistence is universal OR whether some neuron classes are exempt. If DENIED (fewer than 5 divergents), it implies extreme conservation across all cell types, which would be remarkable."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
