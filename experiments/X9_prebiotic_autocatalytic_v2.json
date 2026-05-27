@@ -1,0 +1,60 @@
+{
+  "id": "X9_prebiotic_autocatalytic_v2",
+  "experiment": "X9 v2 — External Autocatalytic Network Replication",
+  "description": "External-data replication of X9 on the published CatReNet example-9 origin-of-metabolism autocatalytic network (Xavier et al. 2020). Molecule-level layers: d1=reactant_coupling, d2=catalyst_product, d3=product_dependency.",
+  "graph": "../prebiotic_autocatalytic_X9_v2.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "reactant_coupling", "layer_b": "catalyst_product" },
+    { "run": "cross_layer_analysis", "layer_a": "catalyst_product", "layer_b": "product_dependency", "output_key": "cross_layer_d2_d3" },
+    { "run": "cross_layer_analysis", "layer_a": "reactant_coupling", "layer_b": "product_dependency", "output_key": "cross_layer_d1_d3" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "In the published external autocatalytic network, catalyst-to-product structure is closer to product-dependency structure than simple reactant co-presence is: r(catalyst_product, product_dependency) > r(reactant_coupling, product_dependency).",
+      "test": {
+        "type": "cross_layer_correlation_rank",
+        "pair_a_layer_a": "catalyst_product",
+        "pair_a_layer_b": "product_dependency",
+        "pair_b_layer_a": "reactant_coupling",
+        "pair_b_layer_b": "product_dependency",
+        "expected": "pair_a_higher"
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "Core autocatalytic molecule a remains top-tier in product_dependency, ranking within the top 2 hubs.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "product_dependency",
+        "expected_hub": "a",
+        "max_rank": 2
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "Core autocatalytic molecule a is also top-tier in catalyst_product, ranking within the top 3 hubs.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "catalyst_product",
+        "expected_hub": "a",
+        "max_rank": 3
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "At least 3 molecules show strong role divergence (rank gap >= 3) between reactant_coupling and product_dependency, indicating specialization beyond simple co-reactant pairing.",
+      "test": {
+        "type": "cross_layer_divergence_count",
+        "layer_a": "reactant_coupling",
+        "layer_b": "product_dependency",
+        "min_divergent": 3,
+        "min_gap": 3
+      }
+    }
+  ],
+  "notes": "External-source replication using a published autocatalytic CRS from CatReNet example-9 / Xavier et al. 2020. Dataset is built after preregistration from the local CRS snapshot."
+}

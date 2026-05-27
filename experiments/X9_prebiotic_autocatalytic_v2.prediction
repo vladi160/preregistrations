@@ -1,0 +1,24 @@
+{
+  "experiment": "X9 v2 — External Autocatalytic Network Replication",
+  "committed_at": "2026-05-27T20:09:04.845939+00:00",
+  "prediction_hash": "63759fcb1e5db26cd25e280d4afa86eb8f58784a1e2aacd2f60bebddcd6f2312",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "In the published external autocatalytic network, catalyst-to-product structure is closer to product-dependency structure than simple reactant co-presence is: r(catalyst_product, product_dependency) > r(reactant_coupling, product_dependency)."
+    },
+    {
+      "id": "h2",
+      "statement": "Core autocatalytic molecule a remains top-tier in product_dependency, ranking within the top 2 hubs."
+    },
+    {
+      "id": "h3",
+      "statement": "Core autocatalytic molecule a is also top-tier in catalyst_product, ranking within the top 3 hubs."
+    },
+    {
+      "id": "h4",
+      "statement": "At least 3 molecules show strong role divergence (rank gap >= 3) between reactant_coupling and product_dependency, indicating specialization beyond simple co-reactant pairing."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
