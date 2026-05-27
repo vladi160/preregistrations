@@ -1,0 +1,24 @@
+{
+  "experiment": "X9 — Origin-of-Life Prebiotic Chemistry Topology",
+  "committed_at": "2026-05-27T18:15:18.363575+00:00",
+  "prediction_hash": "9717351f9ae48cbc44229fcd42230d9064099e42e8169d09e32233d0f1bf1cfc",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Functional Proximity Law holds in prebiotic chemistry: r(bond_chemistry, autocatalytic_membership) > r(bond_chemistry, replication_co_occurrence)."
+    },
+    {
+      "id": "h2",
+      "statement": "A core carbon-feedstock node remains top-tier in d1: formaldehyde (h2co) ranks within top 2 hubs in bond_chemistry."
+    },
+    {
+      "id": "h3",
+      "statement": "Replicative organization centralizes around information-carrying intermediates: RNA fragments (rna_frag) ranks within top 3 hubs in replication_co_occurrence."
+    },
+    {
+      "id": "h4",
+      "statement": "At least 2 molecules show strong cross-layer role divergence (rank gap >= 5) between bond_chemistry and replication_co_occurrence, indicating emergence of proto-functional specialization."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}

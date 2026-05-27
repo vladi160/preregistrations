@@ -1,0 +1,59 @@
+{
+  "id": "X9_prebiotic_autocatalytic_v1",
+  "experiment": "X9 — Origin-of-Life Prebiotic Chemistry Topology",
+  "description": "Prebiotic chemistry experiment with three layers: d1=bond_chemistry, d2=autocatalytic_membership, d3=replication_co_occurrence. Goal: test whether structural role identity persists from mechanistic chemistry into proto-replicative organization.",
+  "graph": "../prebiotic_autocatalytic_X9_v1.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "bond_chemistry", "layer_b": "autocatalytic_membership" },
+    { "run": "cross_layer_analysis", "layer_a": "bond_chemistry", "layer_b": "replication_co_occurrence", "output_key": "cross_layer_d1_d3" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Functional Proximity Law holds in prebiotic chemistry: r(bond_chemistry, autocatalytic_membership) > r(bond_chemistry, replication_co_occurrence).",
+      "test": {
+        "type": "cross_layer_correlation_rank",
+        "pair_a_layer_a": "bond_chemistry",
+        "pair_a_layer_b": "autocatalytic_membership",
+        "pair_b_layer_a": "bond_chemistry",
+        "pair_b_layer_b": "replication_co_occurrence",
+        "expected": "pair_a_higher"
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "A core carbon-feedstock node remains top-tier in d1: formaldehyde (h2co) ranks within top 2 hubs in bond_chemistry.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "bond_chemistry",
+        "expected_hub": "h2co",
+        "max_rank": 2
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "Replicative organization centralizes around information-carrying intermediates: RNA fragments (rna_frag) ranks within top 3 hubs in replication_co_occurrence.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "replication_co_occurrence",
+        "expected_hub": "rna_frag",
+        "max_rank": 3
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "At least 2 molecules show strong cross-layer role divergence (rank gap >= 5) between bond_chemistry and replication_co_occurrence, indicating emergence of proto-functional specialization.",
+      "test": {
+        "type": "cross_layer_divergence_count",
+        "layer_a": "bond_chemistry",
+        "layer_b": "replication_co_occurrence",
+        "min_divergent": 2,
+        "min_gap": 5
+      }
+    }
+  ],
+  "notes": "X9 first-stage model-based run. If confirmed, next step is external-data replication on published prebiotic reaction-network datasets (autocatalytic set literature) with the same test structure."
+}
