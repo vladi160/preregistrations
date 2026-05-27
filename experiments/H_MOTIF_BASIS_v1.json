@@ -1,0 +1,53 @@
+{
+  "id": "H_MOTIF_BASIS_v1",
+  "experiment": "H_MOTIF_BASIS — Local motif basis compression across software and social graphs",
+  "description": "Confirmatory v1 test of H_MOTIF_BASIS on unseen datasets. Meta-dataset compares local motif-basis metrics derived from 1-hop egonet signatures across two software multilayer graphs and two social multilayer graphs.",
+  "graph": "../H_MOTIF_BASIS_v1_data.json",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Engineered software graphs are more symbolically compressible than social graphs: software_mean motif_compression_ratio is lower than social_mean motif_compression_ratio.",
+      "test": {
+        "type": "dimension_value_comparison",
+        "item_a": "software_mean",
+        "item_b": "social_mean",
+        "dimension": "motif_compression_ratio",
+        "operator": "lt"
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "WordPress multilayer architecture has lower motif_compression_ratio than the organizational social multilayer graph.",
+      "test": {
+        "type": "dimension_value_comparison",
+        "item_a": "wordpress_multilayer",
+        "item_b": "org_network_multilayer",
+        "dimension": "motif_compression_ratio",
+        "operator": "lt"
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "The generic software multilayer graph has lower motif_compression_ratio than social_v2.",
+      "test": {
+        "type": "dimension_value_comparison",
+        "item_a": "software_multilayer",
+        "item_b": "social_v2",
+        "dimension": "motif_compression_ratio",
+        "operator": "lt"
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "Social graphs require a larger local motif vocabulary than software graphs: social_mean motif_basis_ratio is higher than software_mean motif_basis_ratio.",
+      "test": {
+        "type": "dimension_value_comparison",
+        "item_a": "social_mean",
+        "item_b": "software_mean",
+        "dimension": "motif_basis_ratio",
+        "operator": "gt"
+      }
+    }
+  ],
+  "notes": "Metric definition fixed before running: collapse graph to undirected simple graph, compute each node's 1-hop egonet degree-sequence signature, define motif basis as the set of unique signatures, and compression ratio as |M|/|E|. Exploratory probe on a separate trio (linux/social/random) was used only to choose the metric, not the confirmatory datasets used here."
+}

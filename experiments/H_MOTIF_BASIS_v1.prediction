@@ -1,0 +1,24 @@
+{
+  "experiment": "H_MOTIF_BASIS — Local motif basis compression across software and social graphs",
+  "committed_at": "2026-05-27T19:43:13.322786+00:00",
+  "prediction_hash": "e24f67f863ff55c59550b507f16436e3aee89be48ff03e1cc100aa9294520e0f",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Engineered software graphs are more symbolically compressible than social graphs: software_mean motif_compression_ratio is lower than social_mean motif_compression_ratio."
+    },
+    {
+      "id": "h2",
+      "statement": "WordPress multilayer architecture has lower motif_compression_ratio than the organizational social multilayer graph."
+    },
+    {
+      "id": "h3",
+      "statement": "The generic software multilayer graph has lower motif_compression_ratio than social_v2."
+    },
+    {
+      "id": "h4",
+      "statement": "Social graphs require a larger local motif vocabulary than software graphs: social_mean motif_basis_ratio is higher than software_mean motif_basis_ratio."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
