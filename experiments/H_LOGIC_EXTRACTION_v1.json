@@ -1,0 +1,57 @@
+{
+  "id": "H_LOGIC_EXTRACTION_v1",
+  "experiment": "H_LOGIC_EXTRACTION — Operational Logic as Topology in Formal Proof Systems",
+  "description": "Test whether IRDME extracts operational logic from formal proof structure without symbolic translation. Dataset: Lean 4 mathlib4 multilayer graph. d1=import_graph (declared logical dependency), d3=proof_co_development (behavioral proof construction coupling).",
+  "graph": "../mathlib4_multilayer.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "import_graph", "layer_b": "proof_co_development" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Operational logic is topologically recoverable: declared logical dependency (import_graph) and behavioral proof coupling (proof_co_development) have strong positive hub persistence (r >= 0.70, p < 0.05).",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "import_graph",
+        "layer_b": "proof_co_development",
+        "expected_direction": "positive",
+        "min_abs_r": 0.70
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "The top hub in declared dependency (import_graph) is Algebra (rank #1), representing axiomatic convergence in formal mathematics.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "import_graph",
+        "expected_hub": "Algebra",
+        "max_rank": 1
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "The top hub in behavioral proof coupling (proof_co_development) is Analysis (rank #1), indicating operational proof traffic concentrates on analytical infrastructure.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "proof_co_development",
+        "expected_hub": "Analysis",
+        "max_rank": 1
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "Logic-role divergence exists: at least 3 modules have cross-layer hub-rank divergence >= 8 between import_graph and proof_co_development, indicating distinct logical roles between declared and operational proof structures.",
+      "test": {
+        "type": "cross_layer_divergence_count",
+        "layer_a": "import_graph",
+        "layer_b": "proof_co_development",
+        "min_divergent": 3,
+        "min_gap": 8
+      }
+    }
+  ],
+  "notes": "H_LOGIC_EXTRACTION v1 extends F9 from law-replication to logic-extraction: topology is treated as operational logic geometry. Pre-registration required before run. Prediction is intentionally strict (r>=0.70) to make failure informative."
+}

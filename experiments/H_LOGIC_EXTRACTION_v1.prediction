@@ -1,0 +1,24 @@
+{
+  "experiment": "H_LOGIC_EXTRACTION — Operational Logic as Topology in Formal Proof Systems",
+  "committed_at": "2026-05-27T18:07:08.441456+00:00",
+  "prediction_hash": "bc2fd1068e832a2e3590f64bf4b34eb1b5d0576128db463be832b17efd4e0bfd",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Operational logic is topologically recoverable: declared logical dependency (import_graph) and behavioral proof coupling (proof_co_development) have strong positive hub persistence (r >= 0.70, p < 0.05)."
+    },
+    {
+      "id": "h2",
+      "statement": "The top hub in declared dependency (import_graph) is Algebra (rank #1), representing axiomatic convergence in formal mathematics."
+    },
+    {
+      "id": "h3",
+      "statement": "The top hub in behavioral proof coupling (proof_co_development) is Analysis (rank #1), indicating operational proof traffic concentrates on analytical infrastructure."
+    },
+    {
+      "id": "h4",
+      "statement": "Logic-role divergence exists: at least 3 modules have cross-layer hub-rank divergence >= 8 between import_graph and proof_co_development, indicating distinct logical roles between declared and operational proof structures."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
