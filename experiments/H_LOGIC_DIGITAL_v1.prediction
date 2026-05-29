@@ -1,0 +1,12 @@
+{
+  "experiment": "H_LOGIC_DIGITAL_v1",
+  "committed_at": "2026-05-29T16:11:46.691612+00:00",
+  "prediction_hash": "eaf485b3607d09d70f8bf94e4fda1e6c4d9a0a594322bed7aa8aecb1cea0481b",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "There is a positive hub correlation between physical wiring and state correlation. Hubs that are highly connected physically will also govern strong state correlations across the circuit."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}

@@ -1,0 +1,22 @@
+{
+  "experiment": "H_LOGIC_DIGITAL_v1",
+  "description": "Validation of Topology-as-Logic using a 4-bit ripple carry adder physical circuit. Layer 1: physical wiring gates to gates. Layer 2: state correlation observed by exhaustive truth-table simulation across 512 input states. IRDME should correctly map physical wiring topology to operational boolean logic behavior.",
+  "graph": "../../datasets/M_DIGITAL_LOGIC_1.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "physical_wiring", "layer_b": "state_correlation" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "There is a positive hub correlation between physical wiring and state correlation. Hubs that are highly connected physically will also govern strong state correlations across the circuit.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "physical_wiring",
+        "layer_b": "state_correlation",
+        "expected_direction": "positive",
+        "min_abs_r": 0.30
+      }
+    }
+  ]
+}

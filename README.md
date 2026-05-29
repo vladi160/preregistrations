@@ -7,13 +7,15 @@ Public record of pre-registered scientific hypotheses for the
 
 **What pre-registration is and isn't.** Pre-registration is a logging and history mechanism. It records that a specific prediction was committed to this public repository with a git timestamp before the analysis result was seen. It makes the full prediction history — including denied results — publicly auditable. It does not prevent private analysis before registration; it does not guarantee that no exploratory work happened beforehand. Its value is in workflow discipline, a transparent public record, and reproducibility documentation.
 
-**Current status (May 2026):** 30 CONFIRMED, 4 DENIED, 2 PARTIAL across 35 pre-registered experiment files (13 Tier A + 22 Tier B). **X9_prebiotic_autocatalytic_v2** confirmed (2026-05-27, hash 63759fcb): external replication on the published CatReNet example-9 autocatalytic network from Xavier et al. 2020 — **4/4 CONFIRMED** (catalyst_product↔product_dependency r=0.8263 > reactant_coupling↔product_dependency r=0.4959; molecule `a` #1 product_dependency hub and #2 catalyst_product hub; 9 molecules with rank_gap>=3). **H_MOTIF_BASIS_v1** recorded (2026-05-27, hash e24f67f8): local motif-basis compression across software and social graphs — **2/4 CONFIRMED, 2/4 DENIED** (software_mean motif_compression_ratio 0.2469 < social_mean 0.3913; WordPress 0.1500 < org_network 0.4783; but software_multilayer 0.3438 > social_v2 0.3043, and social_mean motif_basis_ratio 0.6262 < software_mean 0.9031). **X9_prebiotic_autocatalytic_v1** confirmed (2026-05-27, hash 9717351f): Origin-of-life prebiotic chemistry topology — **3/4 CONFIRMED, 1/4 DENIED** (h1 confirmed FPL rank test: r(d1↔d2)=0.251 > r(d1↔d3)=0.218; h2co #1 bond_chemistry hub; h3 denied: rna_frag rank #4 while vesicle #1 in replication layer; h4 confirmed 6 divergent molecules with rank_gap>=5). **H_LOGIC_EXTRACTION_v1** confirmed (2026-05-27, hash bc2fd106): Lean4/mathlib4 operational logic extraction — **4/4 CONFIRMED** (r=0.777, Spearman=0.7328, p=0.004; Algebra=#1 import hub, Analysis=#1 proof-co-development hub, 3 modules with rank_gap≥8). **F12c** confirmed (2026-05-27, hash cd2ed080): C. elegans → Drosophila cross-species hub transfer — **3/3 CONFIRMED**, rank_vector_cosine 0.985/0.908/0.947 (all well above thresholds). Recent confirmed additions: **F13** (Drosophila larval connectome cross-species FPL replication — h1 CONFIRMED Pearson r=0.363/Spearman r=0.663 p=0.002, n=2952 neurons, ~600M years evolution from C. elegans; Spearman >> Pearson discrepancy = FPL is a law about structural roles, not connection magnitudes; h2 PARTIAL Pearson<0.40 but Spearman>0.40; h3 CONFIRMED 747/2952 divergent neurons); F2_cobol_legacy_v1 (COBOL legacy banking multilayer — 4/4 CONFIRMED, r(PERFORM↔COPY)=0.807 p=0.002; first software/legacy domain; dead code detected via cross-layer divergence — dormant_account and legacy_interest_calc rank #2–#3 in data_field_sharing with degree=0 in perform_call_graph); M_MED1 (antidepressant evidence chain, medicine domain — h2 CONFIRMED: monoamine_hypothesis is #1 hub in both justification and citation layers = structural self-referential loop; h3 DENIED is the stronger result: hub dominance, not hub shadow, was found); M_PHYSICS_1 (Standard Model particle topology — 5/5 CONFIRMED, first physics domain experiment; photon hub shadow confirmed; kinematic mass-threshold effect observed); M_RADIAL_1 (BC_RADIAL threshold validation — click CONFIRMED, logrus BC_RADIAL replicated, cobra BC_INVERSION discovered, 3/4 CONFIRMED); BC3b_circuit_v2 (priority arbiter circuit replication, 4/4 CONFIRMED, properly pre-registered); BC_INVERSION formally named as BC6. arXiv:2604.23639 published (cs.SI, April 2026) — v2 in preparation. Platform live at [irdme.com](https://irdme.com).
+**Current status (May 2026):** 36 pre-registered experiment files are on record in this repository. Latest addition: **F12b_v2** (2026-05-29, hash `36c7aa7e…`, commit [`65692a7`](https://github.com/vladi160/preregistrations/commit/65692a7)) — formal confirmatory rerun of C. elegans generative compression, **4/4 CONFIRMED** (`avg_seed_cosine=0.8448`, `avg_rank_cosine=0.8882`, `chemical_synapse_rank_cosine=0.9392`, `gap_junction_rank_cosine=0.8372`). This is a methodological/generative experiment, not an FPL inequality test. Recent additions also include **X9_prebiotic_autocatalytic_v2**, **H_MOTIF_BASIS_v1**, **X9_prebiotic_autocatalytic_v1**, **H_LOGIC_EXTRACTION_v1**, **F12c**, and **F13**. arXiv:2604.23639 is published; v2 remains in preparation. Platform live at [irdme.com](https://irdme.com).
 
-**proteins_trust_cert_v1 exclusion note:** This experiment (5/5 CONFIRMED) uses the `dataset_trust_certification` methodology — it tests multi-source hub agreement across two data curation methodologies. It does NOT test the FPL inequality $r(d_1, d_2) > r(d_1, d_3)$ and is therefore excluded from the 21/25 FPL primary count. Its h4 independently replicates the FPL in both sources, which is reported as a secondary finding.
+**proteins_trust_cert_v1 exclusion note:** This experiment (5/5 CONFIRMED) uses the `dataset_trust_certification` methodology — it tests multi-source hub agreement across two data curation methodologies. It does NOT test the FPL inequality $r(d_1, d_2) > r(d_1, d_3)$ and is therefore excluded from the 25/31 FPL primary count. Its h4 independently replicates the FPL in both sources, which is reported as a secondary finding.
+
+**F12b_v2 exclusion note:** This experiment (4/4 CONFIRMED) is a generative-compression validation. It tests seeded reconstruction accuracy (`avg_seed_cosine`, `avg_rank_cosine`, layer-specific rank-vector cosine), not the FPL inequality $r(d_1, d_2) > r(d_1, d_3)$. It is publicly pre-registered and scientifically valid, but excluded from the FPL primary count for methodological reasons.
 
 **Post-hoc confirmatory runs (NOT pre-registered, not counted in totals):** BC3b c17 circuit (2026-05-22) — workflow was not followed for the original c17 run; BC3b_circuit_v2 is the properly pre-registered replication.
 
-**Experiments in this repo (25 total):**
+**Experiments in this repo (26 total):**
 
 | File | Experiment | Verdict |
 |---|---|---|
@@ -43,6 +45,28 @@ Public record of pre-registered scientific hypotheses for the
 | `F2_cobol_legacy_v1` | COBOL legacy banking multilayer: FPL in procedural mainframe code + dead code detection (software domain) | **4/4 CONFIRMED** |
 | `F13_drosophila_larval_v1` | *Drosophila melanogaster* larval connectome (Winding 2023): cross-species FPL replication, n=2952 neurons, ~600M years evolution from *C. elegans* (neuroscience/connectomics) | **h1 CONFIRMED** (Spearman r=0.663, Pearson r=0.363, p=0.002), **h2 PARTIAL** (Pearson<0.40, Spearman>0.40), **h3 CONFIRMED** (747 divergent neurons) |
 | `F12c_celegans_drosophila_transfer_v1` | *C. elegans* → *Drosophila* hub transfer: rank_vector_cosine similarity of C. elegans-seeded synthetic graph vs actual Drosophila degree distribution (cross-species generative compression test) | **3/3 CONFIRMED** — 2026-05-27; cosine 0.985/0.908/avg 0.947 |
+| `F12b_v2` | Confirmatory rerun of C. elegans generative compression using a pre-registered seeded reconstruction benchmark | **4/4 CONFIRMED** — avg_seed_cosine 0.8448, avg_rank_cosine 0.8882 |
+
+### F12b_v2 — Confirmatory Generative Compression Rerun
+
+| File | Description |
+|---|---|
+| [`experiments/F12b_v2.json`](experiments/F12b_v2.json) | 4 pre-registered reconstruction-accuracy hypotheses |
+| [`experiments/F12b_v2.prediction`](experiments/F12b_v2.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `36c7aa7ebca2db6ffa2c77b758c7c2175a2727d723c91d74d7af0d2d65b0238f`
+**Registered:** `2026-05-29T15:14:53.578655+00:00` (before any analysis was run)
+
+**Context:** Formal confirmatory rerun of the earlier exploratory F12b tooling milestone. The builder script `build_f12b_v2_data.py` runs `dev.py synth --seed-from outputs/output_celegans_302_full.json --seed-n 15 --compare-to examples/celegans_302.json` and emits a compact summary dataset for the experiment runner. The result is methodological/generative, not an FPL inequality test.
+
+#### Verdicts (analysis run 2026-05-29)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | average seed-hub role-vector cosine ≥ 0.80 | **CONFIRMED** | `avg_seed_cosine = 0.8448` |
+| h2 | average rank-vector cosine across both layers ≥ 0.85 | **CONFIRMED** | `avg_rank_cosine = 0.8882` |
+| h3 | chemical synapse rank-vector cosine ≥ 0.90 | **CONFIRMED** | `chemical_synapse_rank_cosine = 0.9392` |
+| h4 | gap junction rank-vector cosine ≥ 0.80 | **CONFIRMED** | `gap_junction_rank_cosine = 0.8372` |
 
 
 ## Quick verification
