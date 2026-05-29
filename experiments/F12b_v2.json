@@ -1,0 +1,53 @@
+{
+  "id": "F12b_v2",
+  "experiment": "F12b_v2 — Confirmatory generative compression rerun on the full C. elegans connectome",
+  "description": "Formal pre-registered rerun of the completed F12b exploratory tooling milestone. This experiment does not test the Functional Proximity Law directly. It tests whether the seeded structural synthesis procedure can reconstruct the full 302-neuron C. elegans hub geometry from the top 15 seed hubs with pre-committed accuracy thresholds. The benchmark and method are known from prior exploratory work, but the thresholds below are fixed before this confirmatory rerun is executed and pushed to the public preregistration repository. Output graph is produced by build_f12b_v2_data.py, which runs dev.py synth with --seed-from outputs/output_celegans_302_full.json and then emits a one-item summary dataset for the experiment runner.",
+  "graph": "../F12b_v2_summary.json",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "The seeded reconstruction preserves individual seed-hub role vectors with average cosine similarity at or above 0.80. This threshold is chosen as a conservative confirmatory floor for a same-species rerun using the top 15 seed hubs from the full C. elegans connectome.",
+      "test": {
+        "type": "dimension_value_comparison",
+        "item_a": "f12b_v2_run",
+        "dimension": "avg_seed_cosine",
+        "operator": "gte",
+        "value": 0.80
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "The seeded reconstruction preserves the full degree-rank distribution shape across both layers with average rank-vector cosine at or above 0.85. This is the primary confirmatory criterion for F12b_v2.",
+      "test": {
+        "type": "dimension_value_comparison",
+        "item_a": "f12b_v2_run",
+        "dimension": "avg_rank_cosine",
+        "operator": "gte",
+        "value": 0.85
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "The canonical chemical synapse layer is reconstructed with rank-vector cosine at or above 0.90, showing that the highest-signal layer of the C. elegans connectome remains strongly recoverable from the seed hub skeleton.",
+      "test": {
+        "type": "dimension_value_comparison",
+        "item_a": "f12b_v2_run",
+        "dimension": "chemical_synapse_rank_cosine",
+        "operator": "gte",
+        "value": 0.90
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "The gap junction layer is reconstructed with rank-vector cosine at or above 0.80, showing that the secondary electrical-coupling layer remains recoverable above a non-trivial threshold even though it is sparser than chemical synapse connectivity.",
+      "test": {
+        "type": "dimension_value_comparison",
+        "item_a": "f12b_v2_run",
+        "dimension": "gap_junction_rank_cosine",
+        "operator": "gte",
+        "value": 0.80
+      }
+    }
+  ],
+  "notes": "Methodological/generative confirmatory experiment. Excluded from the FPL primary count in paper-v8 because it does not test the inequality r(d1↔d2) > r(d1↔d3)."
+}

@@ -1,0 +1,24 @@
+{
+  "experiment": "F12b_v2 — Confirmatory generative compression rerun on the full C. elegans connectome",
+  "committed_at": "2026-05-29T15:14:53.578655+00:00",
+  "prediction_hash": "36c7aa7ebca2db6ffa2c77b758c7c2175a2727d723c91d74d7af0d2d65b0238f",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "The seeded reconstruction preserves individual seed-hub role vectors with average cosine similarity at or above 0.80. This threshold is chosen as a conservative confirmatory floor for a same-species rerun using the top 15 seed hubs from the full C. elegans connectome."
+    },
+    {
+      "id": "h2",
+      "statement": "The seeded reconstruction preserves the full degree-rank distribution shape across both layers with average rank-vector cosine at or above 0.85. This is the primary confirmatory criterion for F12b_v2."
+    },
+    {
+      "id": "h3",
+      "statement": "The canonical chemical synapse layer is reconstructed with rank-vector cosine at or above 0.90, showing that the highest-signal layer of the C. elegans connectome remains strongly recoverable from the seed hub skeleton."
+    },
+    {
+      "id": "h4",
+      "statement": "The gap junction layer is reconstructed with rank-vector cosine at or above 0.80, showing that the secondary electrical-coupling layer remains recoverable above a non-trivial threshold even though it is sparser than chemical synapse connectivity."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
