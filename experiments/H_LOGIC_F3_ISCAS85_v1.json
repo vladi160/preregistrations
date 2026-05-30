@@ -1,0 +1,43 @@
+{
+  "experiment": "H_LOGIC_F3_ISCAS85_v1",
+  "description": "Topology-as-Logic validation on the ISCAS85 c432 benchmark circuit (27-channel interrupt controller). 36 primary inputs, 7 primary outputs, 160 gates. Layer 1 (physical_wiring): structural gate connections from the published .bench netlist. Layer 2 (state_correlation): Pearson correlation of gate activation over 2000 Monte Carlo random input patterns (seed=42). Primary hypothesis: betweenness centrality persistence across layers — identifying load-bearing logic nodes regardless of fan-in degree. Secondary hypothesis: degree hub persistence, predicted to be weaker than betweenness based on findings from H_LOGIC_DIGITAL_v1.",
+  "graph": "../../datasets/F3_iscas85_c432.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "physical_wiring", "layer_b": "state_correlation" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Betweenness centrality of nodes in the physical_wiring layer is positively correlated with betweenness centrality in the state_correlation layer (Pearson r > 0.40). Nodes that lie on critical paths in the structural wiring graph also mediate information flow in the simulation state-correlation graph. This tests whether the load-bearing logic signal found in H_LOGIC_DIGITAL_v1 (betweenness r=0.771) replicates at larger circuit scale.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "physical_wiring",
+        "layer_b": "state_correlation",
+        "expected_direction": "positive",
+        "min_abs_r": 0.40
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "The cross-layer hub correlation (degree-based) between physical_wiring and state_correlation is positive but weaker than the betweenness-based persistence measured by h1. In H_LOGIC_DIGITAL_v1, degree hub-persistence collapsed to near-zero while betweenness persisted strongly. For a more complex circuit, degree may recover some signal but should remain below the betweenness correlation.",
+      "test": {
+        "type": "correlation_direction",
+        "layer_a": "physical_wiring",
+        "layer_b": "state_correlation",
+        "expected_direction": "positive"
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "The number of nodes showing rank divergence greater than 20 positions between physical_wiring degree rank and state_correlation degree rank is at least 30 (out of 196 nodes). Large rank gaps identify nodes that are structurally prominent but operationally peripheral (or vice versa) — the topology-as-logic divergence signal.",
+      "test": {
+        "type": "cross_layer_divergence_count",
+        "layer_a": "physical_wiring",
+        "layer_b": "state_correlation",
+        "min_divergence_count": 30,
+        "rank_gap_threshold": 20
+      }
+    }
+  ]
+}
