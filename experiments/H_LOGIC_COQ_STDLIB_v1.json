@@ -1,0 +1,43 @@
+{
+  "experiment": "H_LOGIC_COQ_STDLIB_v1",
+  "description": "Topology-as-Logic replication using the Coq standard library (Corelib). Independent formal-systems corpus from the one used in H_LOGIC_EXTRACTION (Lean 4 mathlib4). Layer 1 (require_dependency): structural module imports — directed edges from module A to B if A imports files from B. Layer 2 (git_co_development): operational development coupling — undirected edges between modules co-changed in the same commit over 2000 commits of history. Primary hypothesis: hub persistence across layers replicates the mathlib4 result (r=0.777). A positive confirmed result here provides the first independent formal-systems replication of the Topology-as-Logic claim.",
+  "graph": "../../datasets/COQ_STDLIB_v1.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "require_dependency", "layer_b": "git_co_development" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "There is a positive hub correlation between structural require_dependency imports and git_co_development co-change coupling (Pearson r > 0.30). Modules that are heavily imported by others in the structural dependency graph are also the modules that co-evolve with others in development history. This directly replicates the H_LOGIC_EXTRACTION mathlib4 finding (r=0.777) on an independent formal proof system (Coq Corelib).",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "require_dependency",
+        "layer_b": "git_co_development",
+        "expected_direction": "positive",
+        "min_abs_r": 0.30
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "The top hub in the require_dependency layer (most-imported module) is among the top 5 hubs in the git_co_development layer. Foundational modules — those most depended upon structurally — are also the ones most co-changed operationally.",
+      "test": {
+        "type": "cross_layer_top_hub_match",
+        "layer_a": "require_dependency",
+        "layer_b": "git_co_development",
+        "top_n": 5
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "At least 3 modules show rank divergence of 5 or more positions between their degree rank in require_dependency and their degree rank in git_co_development. Rank divergence identifies modules whose structural import role differs from their operational co-development role — the topology-as-logic divergence signal analogous to what was observed in mathlib4 (CategoryTheory, Combinatorics, Order).",
+      "test": {
+        "type": "cross_layer_divergence_count",
+        "layer_a": "require_dependency",
+        "layer_b": "git_co_development",
+        "min_divergence_count": 3,
+        "rank_gap_threshold": 5
+      }
+    }
+  ]
+}

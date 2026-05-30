@@ -1,0 +1,20 @@
+{
+  "experiment": "H_LOGIC_COQ_STDLIB_v1",
+  "committed_at": "2026-05-30T15:17:36.880782+00:00",
+  "prediction_hash": "ae32f0092ec03a703f991814d7641f94a095c7e0e36298add94f433545d0ac26",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "There is a positive hub correlation between structural require_dependency imports and git_co_development co-change coupling (Pearson r > 0.30). Modules that are heavily imported by others in the structural dependency graph are also the modules that co-evolve with others in development history. This directly replicates the H_LOGIC_EXTRACTION mathlib4 finding (r=0.777) on an independent formal proof system (Coq Corelib)."
+    },
+    {
+      "id": "h2",
+      "statement": "The top hub in the require_dependency layer (most-imported module) is among the top 5 hubs in the git_co_development layer. Foundational modules — those most depended upon structurally — are also the ones most co-changed operationally."
+    },
+    {
+      "id": "h3",
+      "statement": "At least 3 modules show rank divergence of 5 or more positions between their degree rank in require_dependency and their degree rank in git_co_development. Rank divergence identifies modules whose structural import role differs from their operational co-development role — the topology-as-logic divergence signal analogous to what was observed in mathlib4 (CategoryTheory, Combinatorics, Order)."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
