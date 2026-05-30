@@ -15,6 +15,8 @@ Public record of pre-registered scientific hypotheses for the
 
 **Post-hoc confirmatory runs (NOT pre-registered, not counted in totals):** BC3b c17 circuit (2026-05-22) — workflow was not followed for the original c17 run; BC3b_circuit_v2 is the properly pre-registered replication.
 
+**Protocol implementation gap note (2026-05-30):** In `H_LOGIC_F3_ISCAS85_v1` and `H_LOGIC_COQ_STDLIB_v1`, hypothesis `h2` returned `ERROR` at analysis time due to missing required test fields in the experiment JSON blocks (`dimension` for F3's selected test type; `layer_a`/`layer_b`/`expected_hub` for Coq top-hub match). These are protocol-specification issues, not data issues. Pre-registration hashes/timestamps remain valid and unchanged; affected `h2` verdicts are excluded from interpretation and will be re-specified in next runs.
+
 **Experiments in this repo (26 total):**
 
 | File | Experiment | Verdict |
