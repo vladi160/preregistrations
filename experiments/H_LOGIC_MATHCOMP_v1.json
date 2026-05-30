@@ -1,0 +1,43 @@
+{
+  "experiment": "H_LOGIC_MATHCOMP_v1",
+  "description": "Topology-as-Logic replication on MathComp as an independent formal corpus inside the Coq ecosystem. Layer 1 (require_dependency) captures declared package dependency via Coq Require statements. Layer 2 (git_co_development) captures behavioral coupling via package co-change in git history. This run follows the same d1-d3 logic used in Lean mathlib4 and Coq Corelib, with corrected h2 protocol fields.",
+  "graph": "../../datasets/COQ_MATHCOMP_v1.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "require_dependency", "layer_b": "git_co_development" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "MathComp shows positive cross-layer hub persistence between declared require_dependency structure and git_co_development behavior (Pearson r > 0 with permutation support).",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "require_dependency",
+        "layer_b": "git_co_development",
+        "expected_direction": "positive",
+        "min_abs_r": 0.2
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "The foundational package boot is the top betweenness hub in both require_dependency and git_co_development layers.",
+      "test": {
+        "type": "cross_layer_top_hub_match",
+        "layer_a": "require_dependency",
+        "layer_b": "git_co_development",
+        "expected_hub": "boot"
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "At least 2 MathComp packages show strong role divergence (betweenness rank gap >= 3) between require_dependency and git_co_development layers.",
+      "test": {
+        "type": "cross_layer_divergence_count",
+        "layer_a": "require_dependency",
+        "layer_b": "git_co_development",
+        "min_divergent": 2,
+        "min_gap": 3
+      }
+    }
+  ]
+}
