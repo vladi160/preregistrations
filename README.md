@@ -7,7 +7,7 @@ Public record of pre-registered scientific hypotheses for the
 
 **What pre-registration is and isn't.** Pre-registration is a logging and history mechanism. It records that a specific prediction was committed to this public repository with a git timestamp before the analysis result was seen. It makes the full prediction history — including denied results — publicly auditable. It does not prevent private analysis before registration; it does not guarantee that no exploratory work happened beforehand. Its value is in workflow discipline, a transparent public record, and reproducibility documentation.
 
-**Current status (May 2026):** 37 pre-registered experiment files are on record in this repository. Latest addition: **H_LOGIC_MATHCOMP_v1** (2026-05-30, hash `fe6b29dd…`, commit [`3ada0de`](https://github.com/vladi160/preregistrations/commit/3ada0de)) — MathComp formal-systems replication with corrected h2 protocol fields, resulting in **1/3 CONFIRMED, 1/3 PARTIAL, 1/3 DENIED** (h1 DENIED: Pearson `r=-0.0513`, `p=0.986`; h2 PARTIAL: `boot` top in `require_dependency` but not in `git_co_development`; h3 CONFIRMED: 4 divergent packages). Recent additions also include **F12b_v2**, **X9_prebiotic_autocatalytic_v2**, **H_MOTIF_BASIS_v1**, **X9_prebiotic_autocatalytic_v1**, **H_LOGIC_EXTRACTION_v1**, **F12c**, and **F13**. arXiv:2604.23639 is published; v2 remains in preparation. Platform live at [irdme.com](https://irdme.com).
+**Current status (May 2026):** 31 experiments on record (28 FPL/related + 3 Topology-as-Logic). Latest addition: **H_LOGIC_MATHCOMP_v1** (2026-05-30, hash `fe6b29dd…`, commit [`3ada0de`](https://github.com/vladi160/preregistrations/commit/3ada0de)) — MathComp formal-systems replication with corrected h2 protocol fields: **1/3 CONFIRMED, 1/3 PARTIAL, 1/3 DENIED** (h1 DENIED: `r=−0.0513`; h2 PARTIAL: `boot` top in require_dependency; h3 CONFIRMED: 4 divergent packages). arXiv:2604.23639 v2 live (May 26, 2026); v3 in preparation. Platform live at [irdme.com](https://irdme.com).
 
 **proteins_trust_cert_v1 exclusion note:** This experiment (5/5 CONFIRMED) uses the `dataset_trust_certification` methodology — it tests multi-source hub agreement across two data curation methodologies. It does NOT test the FPL inequality $r(d_1, d_2) > r(d_1, d_3)$ and is therefore excluded from the 25/31 FPL primary count. Its h4 independently replicates the FPL in both sources, which is reported as a secondary finding.
 
@@ -19,7 +19,7 @@ Public record of pre-registered scientific hypotheses for the
 
 **h2 re-specification follow-up (2026-05-30):** `H_LOGIC_MATHCOMP_v1` was pre-registered and run with corrected `cross_layer_top_hub_match` fields (`layer_a`, `layer_b`, `expected_hub`) and produced a valid non-error verdict (`PARTIAL`). This closes the schema-level h2 protocol issue for the Topology-as-Logic formal-corpus workflow.
 
-**Experiments in this repo (26 total):**
+**Experiments in this repo (31 total: 28 FPL/related + 3 Topology-as-Logic):**
 
 | File | Experiment | Verdict |
 |---|---|---|
@@ -31,7 +31,7 @@ Public record of pre-registered scientific hypotheses for the
 | `nextjs_oss2` | Next.js App-Router transition (M_OSS2) | 2/5 CONFIRMED, 3 DENIED (all informative) |
 | `flask_express_transfer` | Flask↔Express cross-language isomorphism (M_TRANSFER_2) | 4/5 CONFIRMED, 1 PARTIAL |
 | `ai_architecture_law` | AI Model Architecture graph (F6) | 4/5 CONFIRMED, 1 DENIED |
-| `proteins_trust_cert_v1` | p53 Dataset Integrity Certificate — M_DATASET_TRUST first run *(dataset_trust_certification methodology — excluded from FPL 21/25 count; see note above)* | **5/5 CONFIRMED** |
+| `proteins_trust_cert_v1` | p53 Dataset Integrity Certificate — M_DATASET_TRUST first run *(dataset_trust_certification methodology — excluded from FPL primary count; see note above)* | **5/5 CONFIRMED** |
 | `celegans_302_full` | C. elegans full 302-neuron connectome (F12) — law replication + hub compression test | **3/3 CONFIRMED** |
 | `mathlib4_F9_v1` | Lean 4 mathlib4: Functional Proximity Law on Formal Mathematics (F9) | **2/3 CONFIRMED, 1 PARTIAL** |
 | `H_LOGIC_EXTRACTION_v1` | Lean4/mathlib4 operational logic extraction: topology as logic-role geometry (extends F9) | **4/4 CONFIRMED** — r=0.777, p=0.004; Algebra d1 hub, Analysis d3 hub |
@@ -49,7 +49,11 @@ Public record of pre-registered scientific hypotheses for the
 | `F2_cobol_legacy_v1` | COBOL legacy banking multilayer: FPL in procedural mainframe code + dead code detection (software domain) | **4/4 CONFIRMED** |
 | `F13_drosophila_larval_v1` | *Drosophila melanogaster* larval connectome (Winding 2023): cross-species FPL replication, n=2952 neurons, ~600M years evolution from *C. elegans* (neuroscience/connectomics) | **h1 CONFIRMED** (Spearman r=0.663, Pearson r=0.363, p=0.002), **h2 PARTIAL** (Pearson<0.40, Spearman>0.40), **h3 CONFIRMED** (747 divergent neurons) |
 | `F12c_celegans_drosophila_transfer_v1` | *C. elegans* → *Drosophila* hub transfer: rank_vector_cosine similarity of C. elegans-seeded synthetic graph vs actual Drosophila degree distribution (cross-species generative compression test) | **3/3 CONFIRMED** — 2026-05-27; cosine 0.985/0.908/avg 0.947 |
-| `F12b_v2` | Confirmatory rerun of C. elegans generative compression using a pre-registered seeded reconstruction benchmark | **4/4 CONFIRMED** — avg_seed_cosine 0.8448, avg_rank_cosine 0.8882 |
+| `F12b_v2` | Confirmatory rerun of C. elegans generative compression using a pre-registered seeded reconstruction benchmark *(generative-compression methodology — excluded from FPL primary count; see note above)* | **4/4 CONFIRMED** — avg_seed_cosine 0.8448, avg_rank_cosine 0.8882 |
+| `H_LOGIC_MATHCOMP_v1` | MathComp formal corpus follow-up with corrected h2 schema fields — closes h2 protocol implementation gap | **1/3 CONFIRMED, 1/3 PARTIAL, 1/3 DENIED** — h1 DENIED (r=−0.0513, p=0.986); h2 PARTIAL (`boot` top in require_dependency, `field` top in git_co_development); h3 CONFIRMED (4 packages with rank_gap≥3). 2026-05-30, hash `fe6b29dd…`, commit [`3ada0de`](https://github.com/vladi160/preregistrations/commit/3ada0de) |
+| `H_LOGIC_DIGITAL_v1` | *(Topology-as-Logic)* Digital logic circuit: hub topology as operational logic-role geometry | Pre-registered 2026-05-27, commit [`87f7ddf`](https://github.com/vladi160/preregistrations/commit/87f7ddf) — verdict pending |
+| `H_LOGIC_F3_ISCAS85_v1` | *(Topology-as-Logic)* ISCAS85 F3 circuit: topology-as-logic formal extraction test | Pre-registered, run with h2 ERROR (protocol gap — missing test fields; see protocol gap note above). h1/h3 verdicts recorded in blog post. Commit [`8c0053f`](https://github.com/vladi160/preregistrations/commit/8c0053f) |
+| `H_LOGIC_COQ_STDLIB_v1` | *(Topology-as-Logic)* Coq standard library: formal proof dependency as logic-role geometry | Pre-registered, run with h2 ERROR (protocol gap — see protocol gap note above). h1/h3 verdicts recorded in blog post. Commit [`ca36fbf`](https://github.com/vladi160/preregistrations/commit/ca36fbf) |
 
 ### F12b_v2 — Confirmatory Generative Compression Rerun
 
