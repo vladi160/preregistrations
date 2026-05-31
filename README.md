@@ -7,7 +7,7 @@ Public record of pre-registered scientific hypotheses for the
 
 **What pre-registration is and isn't.** Pre-registration is a logging and history mechanism. It records that a specific prediction was committed to this public repository with a git timestamp before the analysis result was seen. It makes the full prediction history — including denied results — publicly auditable. It does not prevent private analysis before registration; it does not guarantee that no exploratory work happened beforehand. Its value is in workflow discipline, a transparent public record, and reproducibility documentation.
 
-**Current status (May 2026):** 31 experiments on record (28 FPL/related + 3 Topology-as-Logic). Latest addition: **H_LOGIC_MATHCOMP_v1** (2026-05-30, hash `fe6b29dd…`, commit [`3ada0de`](https://github.com/vladi160/preregistrations/commit/3ada0de)) — MathComp formal-systems replication with corrected h2 protocol fields: **1/3 CONFIRMED, 1/3 PARTIAL, 1/3 DENIED** (h1 DENIED: `r=−0.0513`; h2 PARTIAL: `boot` top in require_dependency; h3 CONFIRMED: 4 divergent packages). arXiv:2604.23639 v2 live (May 26, 2026); v3 in preparation. Platform live at [irdme.com](https://irdme.com).
+**Current status (May 2026):** 31 experiments on record (28 FPL/related + 3 Topology-as-Logic). Latest run: **H_LOGIC_DIGITAL_v1** (2026-05-31, hash `eaf485b3…`, commit [`87f7ddf`](https://github.com/vladi160/preregistrations/commit/87f7ddf)) — 4-bit ripple carry adder Topology-as-Logic test: **1/1 CONFIRMED** (Pearson r=0.5117, p=0.004, large effect; carry bits persistent hubs in both physical and behavioral layers, betweenness r=0.7714). arXiv:2604.23639 v2 live (May 26, 2026); v3 in preparation. Platform live at [irdme.com](https://irdme.com).
 
 **proteins_trust_cert_v1 exclusion note:** This experiment (5/5 CONFIRMED) uses the `dataset_trust_certification` methodology — it tests multi-source hub agreement across two data curation methodologies. It does NOT test the FPL inequality $r(d_1, d_2) > r(d_1, d_3)$ and is therefore excluded from the 25/31 FPL primary count. Its h4 independently replicates the FPL in both sources, which is reported as a secondary finding.
 
@@ -51,7 +51,7 @@ Public record of pre-registered scientific hypotheses for the
 | `F12c_celegans_drosophila_transfer_v1` | *C. elegans* → *Drosophila* hub transfer: rank_vector_cosine similarity of C. elegans-seeded synthetic graph vs actual Drosophila degree distribution (cross-species generative compression test) | **3/3 CONFIRMED** — 2026-05-27; cosine 0.985/0.908/avg 0.947 |
 | `F12b_v2` | Confirmatory rerun of C. elegans generative compression using a pre-registered seeded reconstruction benchmark *(generative-compression methodology — excluded from FPL primary count; see note above)* | **4/4 CONFIRMED** — avg_seed_cosine 0.8448, avg_rank_cosine 0.8882 |
 | `H_LOGIC_MATHCOMP_v1` | MathComp formal corpus follow-up with corrected h2 schema fields — closes h2 protocol implementation gap | **1/3 CONFIRMED, 1/3 PARTIAL, 1/3 DENIED** — h1 DENIED (r=−0.0513, p=0.986); h2 PARTIAL (`boot` top in require_dependency, `field` top in git_co_development); h3 CONFIRMED (4 packages with rank_gap≥3). 2026-05-30, hash `fe6b29dd…`, commit [`3ada0de`](https://github.com/vladi160/preregistrations/commit/3ada0de) |
-| `H_LOGIC_DIGITAL_v1` | *(Topology-as-Logic)* Digital logic circuit: hub topology as operational logic-role geometry | Pre-registered 2026-05-27, commit [`87f7ddf`](https://github.com/vladi160/preregistrations/commit/87f7ddf) — verdict pending |
+| `H_LOGIC_DIGITAL_v1` | *(Topology-as-Logic)* 4-bit ripple carry adder: physical wiring vs state correlation hub persistence | **1/1 CONFIRMED** — Pearson r=0.5117, Spearman=0.5138, p=0.004, large effect. Carry bits (cout_0/1/2) are persistent hubs across both layers (betweenness r=0.7714). 2026-05-31, commit [`87f7ddf`](https://github.com/vladi160/preregistrations/commit/87f7ddf) |
 | `H_LOGIC_F3_ISCAS85_v1` | *(Topology-as-Logic)* ISCAS85 F3 circuit: topology-as-logic formal extraction test | Pre-registered, run with h2 ERROR (protocol gap — missing test fields; see protocol gap note above). h1/h3 verdicts recorded in blog post. Commit [`8c0053f`](https://github.com/vladi160/preregistrations/commit/8c0053f) |
 | `H_LOGIC_COQ_STDLIB_v1` | *(Topology-as-Logic)* Coq standard library: formal proof dependency as logic-role geometry | Pre-registered, run with h2 ERROR (protocol gap — see protocol gap note above). h1/h3 verdicts recorded in blog post. Commit [`ca36fbf`](https://github.com/vladi160/preregistrations/commit/ca36fbf) |
 
@@ -672,6 +672,33 @@ IRDME identifies **topological dormancy signatures** via rank divergence — exe
 **Implementation note:** `dev.py synth --compare-to` computes node-level cosine (requires shared node IDs — inapplicable for cross-species comparison). Rank-vector cosine was computed as: `cosine(sorted_desc(degrees_synth_layer), sorted_desc(degrees_real_layer))`, truncated to `min(n_synth, n_real)`. This matches the pre-registered metric definition.
 
 **Output:** `outputs/output_F12c_transfer.json` in private repo.
+
+---
+
+## H_LOGIC_DIGITAL_v1 — 4-bit Ripple Carry Adder: Topology-as-Logic (May 31, 2026)
+
+| File | Description |
+|---|---|
+| [`experiments/H_LOGIC_DIGITAL_v1.json`](experiments/H_LOGIC_DIGITAL_v1.json) | 1 pre-registered hypothesis |
+| [`experiments/H_LOGIC_DIGITAL_v1.prediction`](experiments/H_LOGIC_DIGITAL_v1.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `eaf485b3607d09d70f8bf94e4fda1e6c4d9a0a594322bed7aa8aecb1cea0481b`
+**Registered:** `2026-05-29T16:11:46.691612+00:00` (before any analysis was run)
+
+**Context:** Topology-as-Logic validation on a 4-bit ripple carry adder physical circuit (n=29 nodes). Two layers: `physical_wiring` (gate-to-gate connections, 40 edges) and `state_correlation` (co-variation across 512 exhaustive input states, 48 edges). The hypothesis is that physical wiring topology predicts behavioral state correlation topology — i.e., nodes that are more connected physically will also govern stronger state correlations, without any symbolic circuit description needed.
+
+#### Verdicts (analysis run 2026-05-31)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | Positive hub correlation between physical wiring and state correlation (Pearson r ≥ 0.30, positive direction) | **CONFIRMED** | Pearson r=0.5117, Spearman=0.5138, permutation p=0.004, 95% CI [0.1787, 0.7395], effect size=large (R²=0.2618), n=29 |
+
+**Key findings:**
+- **Carry bits are persistent hubs across both layers:** cout_0, cout_1, cout_2 appear as top hubs in `state_correlation` (degree=8 each) and as top betweenness nodes in both layers. Cross-layer betweenness r=0.7714 (strong persistence in structural mediation role).
+- **Degree hub displacement in physical layer:** Input bits A0–A3, B0–B3 are tied at degree=2 in `physical_wiring` (symmetric adder architecture), while cout_0/1/2 dominate in `state_correlation`. This is a regime-mismatch in degree space (similar to BC_RADIAL pattern for input nodes), but betweenness correctly identifies cout_1 as top hub in **both** layers.
+- **TAL interpretation:** IRDME recovers the carry propagation path (the operational logic of the adder) purely from topology, without reading any circuit description. The carry bits are the structural "bottleneck" of all downstream state changes — topology encodes this as betweenness centrality without symbolic translation.
+
+**Output:** `outputs/output_H_LOGIC_DIGITAL_v1.json` in private repo.
 
 ---
 
