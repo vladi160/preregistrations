@@ -1,0 +1,28 @@
+{
+  "experiment": "M_PHYSICS_2_divergers_v1 — Standard Model Cross-Layer Structural Divergers",
+  "committed_at": "2026-06-02T16:55:39.356868+00:00",
+  "prediction_hash": "6119706e59832266aa44352dcad16f53fdac3128931bf9821f1e1701ae7a589c",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "photon ranks top-3 in force_coupling by degree. The photon mediates the electromagnetic force and couples to all electrically charged particles: 6 quarks (with fractional charge), electron, muon, tau, and W boson (charged). This gives photon a force_coupling degree of at least 10 out of 17 particles, placing it among the top 3 force hubs alongside W and Z bosons. This is the structural signature of the universal EM mediator."
+    },
+    {
+      "id": "h2",
+      "statement": "w_boson ranks higher than photon in mass_proximity. The photon is massless — it can only be mass-proximate to other near-massless particles (gluon, neutrinos), giving it degree 1 in mass_proximity. The W boson has rest mass 80.4 GeV, placing it within one order of magnitude of Z boson (91 GeV), Higgs (125 GeV), and top quark (172 GeV) — a rich heavy-mass cluster. Therefore w_boson has higher mass_proximity degree than photon. This tests the photon-as-massless-outlier prediction."
+    },
+    {
+      "id": "h3",
+      "statement": "gluon ranks top-5 in force_coupling by degree. The gluon mediates the strong (QCD) force and couples to all 6 quark flavors. Gluons also exhibit self-coupling (non-Abelian gauge theory: 3-gluon and 4-gluon vertices), which may appear as structural coupling in the graph. This gives gluon a high force_coupling degree. Prediction: gluon ranks top-5 among all 17 Standard Model particles in force_coupling."
+    },
+    {
+      "id": "h4",
+      "statement": "At least 3 particles are cross-layer structural divergers between force_coupling and mass_proximity, with rank gap >= 10 positions. Massless particles (photon, gluon) rank near the top of force_coupling (strong coupling to matter) but near the bottom of mass_proximity (zero mass = isolated from the heavy-particle cluster). This mass-force decoupling creates large rank gaps. With n=17 particles, a rank gap of 10 means a particle is in the top-third of one layer and the bottom-third of the other. Prediction: at least 3 particles show this cross-layer anomaly."
+    },
+    {
+      "id": "h5",
+      "statement": "photon ranks higher than nu_tau in force_coupling. The photon couples electromagnetically to all charged particles — one of the broadest coupling profiles in the Standard Model. The tau neutrino (nu_tau) interacts only via the weak force, coupling to a limited subset (tau lepton and W/Z bosons), giving it the minimum force_coupling degree among all SM particles. This tests the structural distinction between universal force mediators (photon) and minimally-coupled matter particles (neutrinos)."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
