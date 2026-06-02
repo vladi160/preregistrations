@@ -1,0 +1,28 @@
+{
+  "experiment": "M_PHYSICS_3_v1 — Standard Model Hub Structure: Significance Tests and Re-specification",
+  "committed_at": "2026-06-02T17:23:23.697041+00:00",
+  "prediction_hash": "08d934fe14f6a25f38655b4bec6beb937190948febf5acd6320981d08ba63206",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(force_coupling, mass_proximity) >= 0.35, direction positive, p < 0.05 via permutation. The null model (dev.py null, 200 permutations, 2026-06-02) showed observed r=0.501, p=0.030. This pre-registers the significance claim formally: hub persistence between force coupling and mass proximity is non-trivial and not a degree-distribution artifact. Prediction: the permutation p-value will be < 0.05 and Pearson r >= 0.35."
+    },
+    {
+      "id": "h2",
+      "statement": "w_boson is a top-2 hub in the mass_proximity layer. The W boson has rest mass 80.4 GeV — within one order of magnitude of Z boson (91 GeV), Higgs (125 GeV), and top quark (172 GeV). This places it at the center of the heavy-mass cluster, giving it the highest or second-highest degree in mass_proximity. This re-specifies the intent of M_PHYSICS_2 h2 (which errored due to unsupported test type) using top_hub_in_layer."
+    },
+    {
+      "id": "h3",
+      "statement": "higgs is a top-4 hub in the mass_proximity layer. The Higgs boson at 125 GeV is within one order of magnitude of the top quark (172 GeV), Z boson (91 GeV), and W boson (80 GeV), placing it in the heavy-mass cluster. This gives higgs degree >= 3 in mass_proximity and a rank of top-4 among all 17 Standard Model particles."
+    },
+    {
+      "id": "h4",
+      "statement": "r(force_coupling, decay_channel) >= 0.20, direction positive, p < 0.05 via permutation. The null model showed observed r=0.569, p=0.015 for this pair. The positive correlation is expected: particles with many force interactions (W, Z bosons) also tend to appear in many decay products. However, the correlation is expected to be non-perfect because force mediators (photon, gluon) are strong force hubs but rare decay endpoints — this divergence is the source of the photon/gluon structural anomaly. Prediction: significant positive correlation at r >= 0.20."
+    },
+    {
+      "id": "h5",
+      "statement": "tau is a top-4 hub in the decay_channel layer. The tau lepton appears as a decay product in W boson decays (W → tau + nu_tau), Z decays, and Higgs decays, giving it high degree in the decay_channel layer. The tau is the heaviest lepton and the most promiscuous decay endpoint among the leptons. Prediction: tau ranks top-4 among all 17 Standard Model particles in decay_channel degree. This re-specifies the intent of M_PHYSICS_2 h5 (the decay-sink prediction for tau/muon) using top_hub_in_layer."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
