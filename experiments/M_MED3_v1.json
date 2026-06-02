@@ -1,0 +1,56 @@
+{
+  "experiment": "M_MED3_v1 -- Opioid Evidence Chain: Structural Circularity Replication",
+  "description": "Structural analysis of the opioid prescribing epidemic evidence chain (1980s-2010s) as a multilayer graph. This experiment is a REPLICATION test for the M_MED1 antidepressant circularity finding in a different drug class. M_MED1 found that the monoamine hypothesis was the top hub in all three epistemic layers, encoding a self-referential structure. M_MED3 predicts the opioid evidence chain shows the same pattern: a founding claim (pain_undertreated_claim) should dominate both the justification layer and the citation layer. The opioid crisis has documented structural parallels with the antidepressant evidence chain: a founding claim (pain is undertreated) drove the entire prescribing program; short-term trial efficacy was extrapolated to long-term chronic use; a single misused citation (Porter & Jick 1980) was amplified into an addiction-safety claim; institutional campaigns (fifth vital sign, JCAHO mandates) converted the founding claim into prescribing requirements. Key additional test: Porter & Jick (porter_jick_letter) is predicted to be a structural anomaly -- high in the citation layer (widely cited) despite being peripheral in the justification layer (a 5-sentence letter, not a mechanistic foundation). This would be the structural fingerprint of a misused citation: high citation weight without justificatory standing. Dataset: examples/opioid_evidence_chain.json. Nodes n=8. Layers: d1=justifies, d2=selects_endpoints, d3=cites_as_support. Spawned by M_MED1.",
+  "graph": "../opioid_evidence_chain.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "justifies", "layer_b": "selects_endpoints" },
+    { "run": "cross_layer_analysis", "layer_a": "justifies", "layer_b": "cites_as_support" },
+    { "run": "cross_layer_analysis", "layer_a": "selects_endpoints", "layer_b": "cites_as_support" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(justifies <-> selects_endpoints) > r(justifies <-> cites_as_support). In the opioid evidence chain, justification (d1) and endpoint selection (d2) are structurally coupled: the founding claim (pain is undertreated, opioids reduce pain signals) directly constrains the endpoint selected (VAS patient-reported pain intensity). Citation (d3) encodes a weaker, more diffuse coupling: citations flow toward institutional outcomes (prescribing guidelines, FDA approval) and misused references (Porter & Jick), not tightly coupled to the justification hierarchy. FPL predicts d1-d2 correlation exceeds d1-d3 correlation. Note: n=8 limits statistical power; direction is the primary criterion.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "justifies",
+        "layer_b": "selects_endpoints",
+        "expected_direction": "positive",
+        "min_abs_r": 0.20
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "pain_undertreated_claim is a top-3 hub in the justifies layer. The chronic-pain-is-undertreated framing is the founding structural claim of the opioid prescribing movement: it justifies using the mu-opioid mechanism (undertreated pain justifies strong analgesia), creating the fifth vital sign campaign, and issuing prescribing guidelines. It is the structural root of the justification network. Additionally, the circular edge (prescribing guidelines justify the undertreated pain claim) means pain_undertreated_claim has both high out-degree (it justifies multiple things) AND non-zero in-degree (it receives justification from its own outputs). Prediction: pain_undertreated_claim ranks 1st, 2nd, or 3rd in justifies layer hub centrality.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "justifies",
+        "expected_hub": "pain_undertreated_claim",
+        "max_rank": 3
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "pain_undertreated_claim is a top-3 hub in the cites_as_support layer. This is the key structural circularity test. In a circular evidence chain, the founding claim persists as a top hub across ALL layers -- it is not only the theoretical justification (d1) but also the most-cited support (d3). In the opioid chain, pain_undertreated_claim is predicted to remain central in cites_as_support because: (1) Porter & Jick is misused to cite it (opioids are safe, therefore undertreated pain should be treated); (2) short-term RCT results are cited to support it (if opioids work, non-treatment is suboptimal); (3) prescribing guidelines circularly cite it (guidelines cite the undertreated-pain statistics they were designed to address). This replicates the M_MED1 pattern in a different drug class: the founding assumption dominates BOTH the justification and citation layers, encoding a structural self-referential loop. Contrast with M_MED2 (healthy vaccine chain), where the founding mechanism drops in the citation layer.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "cites_as_support",
+        "expected_hub": "pain_undertreated_claim",
+        "max_rank": 3
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "porter_jick_letter is a top-4 hub in the cites_as_support layer despite being peripheral (rank 6 or lower) in the justifies layer. This is the predicted structural signature of a misused citation: a node that is low in theoretical justification standing but high in citation weight. Porter & Jick is a 5-sentence letter about hospitalized acute-pain patients -- it provides minimal theoretical justification for chronic non-cancer outpatient prescribing (low justifies rank). Yet it was cited thousands of times as empirical support for the 'opioids are safe' claim (high cites_as_support rank). IRDME should detect this without reading the content: the letter appears as a citation hub (high degree in cites_as_support) that is not a justification hub (low degree in justifies) -- a structural diverger between the epistemic layers. Prediction: porter_jick_letter rank in cites_as_support <= 4.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "cites_as_support",
+        "expected_hub": "porter_jick_letter",
+        "max_rank": 4
+      }
+    }
+  ]
+}

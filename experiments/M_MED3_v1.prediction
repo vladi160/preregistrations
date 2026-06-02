@@ -1,0 +1,24 @@
+{
+  "experiment": "M_MED3_v1 -- Opioid Evidence Chain: Structural Circularity Replication",
+  "committed_at": "2026-06-02T18:10:04.447629+00:00",
+  "prediction_hash": "3a14a005218c2384c7977769bad59f23c5516390046d59289c8461ffa257c793",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(justifies <-> selects_endpoints) > r(justifies <-> cites_as_support). In the opioid evidence chain, justification (d1) and endpoint selection (d2) are structurally coupled: the founding claim (pain is undertreated, opioids reduce pain signals) directly constrains the endpoint selected (VAS patient-reported pain intensity). Citation (d3) encodes a weaker, more diffuse coupling: citations flow toward institutional outcomes (prescribing guidelines, FDA approval) and misused references (Porter & Jick), not tightly coupled to the justification hierarchy. FPL predicts d1-d2 correlation exceeds d1-d3 correlation. Note: n=8 limits statistical power; direction is the primary criterion."
+    },
+    {
+      "id": "h2",
+      "statement": "pain_undertreated_claim is a top-3 hub in the justifies layer. The chronic-pain-is-undertreated framing is the founding structural claim of the opioid prescribing movement: it justifies using the mu-opioid mechanism (undertreated pain justifies strong analgesia), creating the fifth vital sign campaign, and issuing prescribing guidelines. It is the structural root of the justification network. Additionally, the circular edge (prescribing guidelines justify the undertreated pain claim) means pain_undertreated_claim has both high out-degree (it justifies multiple things) AND non-zero in-degree (it receives justification from its own outputs). Prediction: pain_undertreated_claim ranks 1st, 2nd, or 3rd in justifies layer hub centrality."
+    },
+    {
+      "id": "h3",
+      "statement": "pain_undertreated_claim is a top-3 hub in the cites_as_support layer. This is the key structural circularity test. In a circular evidence chain, the founding claim persists as a top hub across ALL layers -- it is not only the theoretical justification (d1) but also the most-cited support (d3). In the opioid chain, pain_undertreated_claim is predicted to remain central in cites_as_support because: (1) Porter & Jick is misused to cite it (opioids are safe, therefore undertreated pain should be treated); (2) short-term RCT results are cited to support it (if opioids work, non-treatment is suboptimal); (3) prescribing guidelines circularly cite it (guidelines cite the undertreated-pain statistics they were designed to address). This replicates the M_MED1 pattern in a different drug class: the founding assumption dominates BOTH the justification and citation layers, encoding a structural self-referential loop. Contrast with M_MED2 (healthy vaccine chain), where the founding mechanism drops in the citation layer."
+    },
+    {
+      "id": "h4",
+      "statement": "porter_jick_letter is a top-4 hub in the cites_as_support layer despite being peripheral (rank 6 or lower) in the justifies layer. This is the predicted structural signature of a misused citation: a node that is low in theoretical justification standing but high in citation weight. Porter & Jick is a 5-sentence letter about hospitalized acute-pain patients -- it provides minimal theoretical justification for chronic non-cancer outpatient prescribing (low justifies rank). Yet it was cited thousands of times as empirical support for the 'opioids are safe' claim (high cites_as_support rank). IRDME should detect this without reading the content: the letter appears as a citation hub (high degree in cites_as_support) that is not a justification hub (low degree in justifies) -- a structural diverger between the epistemic layers. Prediction: porter_jick_letter rank in cites_as_support <= 4."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}

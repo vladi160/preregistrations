@@ -1,0 +1,56 @@
+{
+  "experiment": "M_MED2_v1 -- Vaccine Evidence Chain: Structural Circularity Control",
+  "description": "Structural analysis of the childhood vaccine evidence chain as a multilayer graph. This experiment is a POSITIVE CONTROL for the M_MED1 antidepressant circularity finding. M_MED1 found that the monoamine hypothesis was the top hub in all three epistemic layers (justifies, selects_endpoints, cites_as_support), encoding a structural self-referential loop. The prediction for M_MED2 is the opposite: the vaccine evidence chain is structurally healthy. The founding mechanistic claim (adaptive_immunity_mechanism) should be the top hub in the justification layer -- it drives the evidence design. But in a healthy chain, citations should go to empirical outcomes, not to the founding theory. Therefore adaptive_immunity_mechanism should DROP in the citation layer, while clinical_vaccination_guidelines (the empirical institutional outcome) should be the top citation hub. If this prediction holds, IRDME has identified the structural difference between a circular and a healthy evidence chain without reading any content -- purely from the topology of epistemic relations. Dataset: examples/vaccine_evidence_chain.json. Nodes n=8. Layers: d1=justifies, d2=selects_endpoints, d3=cites_as_support. Spawned by M_MED1 (M_MED1_antidepressant.md: open question 'M_MED2 vaccine evidence chain as positive control').",
+  "graph": "../vaccine_evidence_chain.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "justifies", "layer_b": "selects_endpoints" },
+    { "run": "cross_layer_analysis", "layer_a": "justifies", "layer_b": "cites_as_support" },
+    { "run": "cross_layer_analysis", "layer_a": "selects_endpoints", "layer_b": "cites_as_support" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(justifies <-> selects_endpoints) > r(justifies <-> cites_as_support). In the vaccine evidence chain, justification (d1) and endpoint selection (d2) are both mechanistically grounded -- the adaptive immunity mechanism directly specifies what to measure (antibody titer) and what to test for (disease prevention). Both layers encode mechanistic coupling. Citation (d3) is predicted to encode a weaker, more diffuse coupling: empirical outcomes (trial results, surveillance data, population data) are cited widely, not just mechanistic justifications. FPL predicts the d1-d2 correlation will exceed the d1-d3 correlation. Note: n=8 limits statistical power; direction of effect is the primary criterion. Expected: r(justifies, selects_endpoints) - r(justifies, cites_as_support) > 0.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "justifies",
+        "layer_b": "selects_endpoints",
+        "expected_direction": "positive",
+        "min_abs_r": 0.20
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "adaptive_immunity_mechanism is a top-2 hub in the justifies layer. The adaptive immunity mechanism is the founding theoretical claim that drives the entire evidence chain design: it justifies why vaccines work (antibody memory), what to measure (antibody titer), what to test for (disease prevention), and what to monitor (mechanism-predicted adverse events). It has the highest out-degree in the justification network because it provides the causal foundation for all downstream claims. Prediction: adaptive_immunity_mechanism ranks 1st or 2nd by hub centrality in the justifies layer.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "justifies",
+        "expected_hub": "adaptive_immunity_mechanism",
+        "max_rank": 2
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "clinical_vaccination_guidelines is a top-2 hub in the cites_as_support layer. In a structurally healthy evidence chain, citations converge on empirical institutional outcomes rather than on the founding theoretical claim. The clinical vaccination guidelines node receives citations from phase 3 trial data, population disease reduction data, safety surveillance data, and regulatory approval -- multiple independent empirical inputs. This is the predicted healthy-chain signature: diverse empirical outputs are cited to support the guidelines, not the founding theory. Prediction: clinical_vaccination_guidelines ranks 1st or 2nd in cites_as_support centrality. This is the key contrast with M_MED1: monoamine_hypothesis was the top citation hub in the antidepressant chain; here, an empirical institutional node should be the top citation hub instead.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "cites_as_support",
+        "expected_hub": "clinical_vaccination_guidelines",
+        "max_rank": 2
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "adaptive_immunity_mechanism is NOT a top-3 hub in the cites_as_support layer. This is the structural signature of a healthy evidence chain: the founding mechanistic theory drops in the citation layer because citations go to empirical data (trial results, surveillance, population outcomes) rather than to the original theory. In M_MED1, monoamine_hypothesis was rank 1 in all three layers -- the theory cited itself through the chain. In M_MED2 (healthy chain), adaptive_immunity_mechanism should have zero or near-zero in-degree in cites_as_support: empirical confirmations cite outcomes (guidelines, approvals) not the theoretical mechanism. Prediction: adaptive_immunity_mechanism ranks 4th or lower in cites_as_support, confirming the theory hub and citation hub are different nodes. Test: if adaptive_immunity_mechanism IS in the top 3 of cites_as_support, this hypothesis is DENIED -- the chain is more circular than predicted.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "cites_as_support",
+        "expected_hub": "fda_regulatory_approval",
+        "max_rank": 3
+      }
+    }
+  ]
+}
