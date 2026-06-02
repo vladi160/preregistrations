@@ -1,0 +1,24 @@
+{
+  "experiment": "H_LOGIC_ISCAS_BASELINE_v1 -- FPL vs Single-Layer Betweenness: c6288 Wallace Tree Multiplier",
+  "committed_at": "2026-06-02T23:50:53.388382+00:00",
+  "prediction_hash": "ecc2d71886b8c43f87b86087ab2f346aa53ee096b7da2313816326f122717bf8",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(structural_wiring <-> state_correlation) > 0, direction positive, p < 0.05 via permutation. FPL predicts hub importance persists across the two layers: gates that are structurally central in the wiring graph should also tend to be correlated with many other nodes in the state space. In a multiplier, the partial-product tree creates structured dependency chains -- the same gates that mediate structural paths also mediate state propagation. The min_abs_r is set low (0.10) because the two layers encode fundamentally different aspects of the circuit: wiring encodes static connections while state_correlation encodes dynamic computational influence. A significant positive correlation, even at r=0.10, would confirm FPL holds in a large complex circuit beyond the trivial ripple-carry adder case."
+    },
+    {
+      "id": "h2",
+      "statement": "Node '256' (A[15], the most significant bit of operand A) is a top-3 hub in state_correlation. Circuit theory prediction: in a 16x16-bit multiplier, A[15] participates in 16 partial products -- A[15]*B[0], A[15]*B[1], ..., A[15]*B[15] -- contributing to product bits 15 through 30. These high-order partial products cascade through the most significant carry chain nodes and ultimately determine the upper 16 bits of the 32-bit product. Because A[15] causally influences more intermediate and output nodes than lower-order input bits (which contribute only to lower-order product bits with limited carry propagation), it should be correlated with more nodes above the 0.40 threshold. Prediction: node '256' achieves rank <=3 in state_correlation hub centrality. This prediction is based purely on multiplier architecture -- it is made before running IRDME and represents a structural inference about computational influence from circuit topology alone."
+    },
+    {
+      "id": "h3",
+      "statement": "Node '1' (A[0], the least significant bit of operand A) is a top-5 hub in structural_wiring. This establishes the structural baseline: A[0] has wiring fan-out = 16 (it feeds 16 partial product AND gates), which is the maximum possible for any primary input in this circuit. All 32 primary inputs have exactly degree=16 in structural_wiring -- they are all tied at the top. Prediction: node '1' ranks <=5 in structural_wiring. COMBINED WITH h2, this creates the key cross-layer comparison: node '1' and node '256' have IDENTICAL structural_wiring degree (both degree=16, both top-tier), but node '256' is predicted to rank far higher in state_correlation. FPL cross-layer analysis reveals the asymmetry; wiring degree alone cannot."
+    },
+    {
+      "id": "h4",
+      "statement": "There are at least 150 nodes with rank divergence >= 100 between structural_wiring and state_correlation. In a 2448-node circuit, a rank_gap of 100 represents a node that is in the top 4% by one metric but not by the other (or similarly displaced). This tests whether the two layers identify structurally DIFFERENT hub sets at scale -- not just at the top, but throughout the distribution. Prediction: at least 150 nodes are prominent in one layer but peripheral in the other. This validates the core claim that FPL cross-layer analysis is not simply recovering the same hub ordering twice. The multiplier's structure creates distinct regimes: primary inputs are top-tier in state_correlation but mid-tier in structural_wiring betweenness; Wallace tree middle nodes are prominent in structural paths but may not be top state-correlation hubs; final-stage adder nodes are close to outputs structurally but may not dominate state_correlation."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
