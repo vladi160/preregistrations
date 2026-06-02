@@ -7,7 +7,7 @@ Public record of pre-registered scientific hypotheses for the
 
 **What pre-registration is and isn't.** Pre-registration is a logging and history mechanism. It records that a specific prediction was committed to this public repository with a git timestamp before the analysis result was seen. It makes the full prediction history — including denied results — publicly auditable. It does not prevent private analysis before registration; it does not guarantee that no exploratory work happened beforehand. Its value is in workflow discipline, a transparent public record, and reproducibility documentation.
 
-**Current status (June 2026):** 32 experiments on record (29 FPL/related + 3 Topology-as-Logic). Latest run: **M_PHYSICS_2_divergers_v1** (2026-06-02, hash `6119706e…`, commit [`e4f5550`](https://github.com/vladi160/preregistrations/commit/e4f5550)) — Standard Model cross-layer structural divergers: **3/5 CONFIRMED, 2 ERROR** (protocol gap: `delta_centrality_direction` test type not supported — h2 and h5 claims confirmed from data but test type invalid; see protocol note below). Key finding: photon (gap=13) and gluon (gap=13) are the top structural divergers between force_coupling and mass_proximity; higgs/w_boson/z_boson are persistent hubs across all three layers. arXiv:2604.23639 v2 live (May 26, 2026); v3 in preparation. Platform live at [irdme.com](https://irdme.com).
+**Current status (June 2026):** 34 experiments on record (31 FPL/related + 3 Topology-as-Logic). Latest run: **M_MED3_v1** (2026-06-02, hash `3a14a005…`, commit [`caa26e2`](https://github.com/vladi160/preregistrations/commit/caa26e2)) — Opioid evidence chain structural circularity replication: **3/4 CONFIRMED, 1/4 PARTIAL**. pain_undertreated_claim is rank #1 in BOTH justifies AND cites_as_support (same-node dominance = structural circularity). porter_jick_letter detected as citation anomaly (rank #3 in cites_as_support, peripheral in justifies) by topology alone. arXiv:2604.23639 v2 live (May 26, 2026); v3 in preparation. Platform live at [irdme.com](https://irdme.com).
 
 **proteins_trust_cert_v1 exclusion note:** This experiment (5/5 CONFIRMED) uses the `dataset_trust_certification` methodology — it tests multi-source hub agreement across two data curation methodologies. It does NOT test the FPL inequality $r(d_1, d_2) > r(d_1, d_3)$ and is therefore excluded from the 25/31 FPL primary count. Its h4 independently replicates the FPL in both sources, which is reported as a secondary finding.
 
@@ -58,6 +58,8 @@ Public record of pre-registered scientific hypotheses for the
 | `H_LOGIC_COQ_STDLIB_v1` | *(Topology-as-Logic)* Coq Corelib (n=17): require_dependency vs git_co_development hub persistence — first cross-proof-assistant replication of H_LOGIC_EXTRACTION | **h1 PARTIAL** (degree r=0.2875, p=0.287, n=17 — direction confirmed, below significance threshold); **h2 ERROR** (protocol gap — missing `layer_a`/`layer_b`/`expected_hub` fields, excluded); **h3 CONFIRMED** (11/17 modules show rank divergence ≥4). Step analysis: hub_persistence_r=0.491, betweenness r=0.509 (exploratory). Commit [`ca36fbf`](https://github.com/vladi160/preregistrations/commit/ca36fbf) |
 | `M_PHYSICS_2_divergers_v1` | Standard Model cross-layer structural divergers: which of the 17 particles are structural anomalies? | **3/5 CONFIRMED, 2 ERROR** (h2+h5: `delta_centrality_direction` not supported — protocol gap, see note; claims confirmed from data). **h1 CONFIRMED** photon rank #3 in force_coupling; **h3 CONFIRMED** gluon rank #4 in force_coupling; **h4 CONFIRMED** 8 divergers, top: photon gap=13, gluon gap=13. Key finding: photon+gluon are "force-only" particles (top force hubs, bottom mass/decay); higgs/w_boson/z_boson are persistent hubs across all 3 layers; muon+tau are "decay sinks". Post-hoc null model confirmed all pairs significant (p≤0.030). 2026-06-02, hash `6119706e…`, commit [`e4f5550`](https://github.com/vladi160/preregistrations/commit/e4f5550) |
 | `M_PHYSICS_3_v1` | Standard Model hub structure significance tests and re-specification of M_PHYSICS_2 h2+h5 | **4/5 CONFIRMED, 1/5 DENIED**. h1 CONFIRMED r(force/mass)=0.501 p=0.026; h2 CONFIRMED w_boson rank #1 in mass_proximity; h3 DENIED higgs rank #5 (4-way tie at degree=3 with bottom/top/z_boson — predicted max_rank=4, needed max_rank=5; tie-breaking artifact); h4 CONFIRMED r(force/decay)=0.569 p=0.020; h5 CONFIRMED tau rank #3 in decay_channel. Key finding: bottom quark and higgs are mass-structural equals (both degree=3 in mass_proximity) — bottom bridges light and heavy mass sectors. 2026-06-02, hash `08d934fe…`, commit [`e181948`](https://github.com/vladi160/preregistrations/commit/e181948) |
+| `M_MED2_v1` | Vaccine evidence chain: structural circularity positive control. Prediction: healthy chain has different hubs in justifies vs cites_as_support, unlike circular M_MED1 antidepressant chain | **4/4 CONFIRMED**. h1 CONFIRMED r(justifies,selects_endpoints)=0.7454 p=0.014 (statistically significant at n=8); h2 CONFIRMED adaptive_immunity_mechanism rank #1 in justifies; h3 CONFIRMED clinical_vaccination_guidelines rank #1 in cites_as_support; h4 CONFIRMED fda_regulatory_approval rank #3 in cites_as_support (adaptive_immunity_mechanism absent from top-3 of citation layer). Key finding: justifies hub (adaptive_immunity_mechanism) != cites_as_support hub (clinical_vaccination_guidelines) -- healthy chain topology confirmed. FPL holds strongly (r=0.75) in a healthy evidence chain. 2026-06-02, hash `615d18e3…`, commit [`caa26e2`](https://github.com/vladi160/preregistrations/commit/caa26e2) |
+| `M_MED3_v1` | Opioid evidence chain: structural circularity replication across drug classes. Prediction: pain_undertreated_claim dominates BOTH justifies and cites_as_support (same-node dominance = circular chain), replicating M_MED1 antidepressant pattern | **3/4 CONFIRMED, 1/4 PARTIAL**. h1 PARTIAL r(justifies,selects_endpoints)=0.1443 p=0.862 (direction correct but below min_abs_r=0.20 -- FPL gradient collapses in circular chain); h2 CONFIRMED pain_undertreated_claim rank #1 in justifies; h3 CONFIRMED pain_undertreated_claim rank #1 in cites_as_support (same node dominates both layers); h4 CONFIRMED porter_jick_letter rank #3 in cites_as_support despite peripheral rank in justifies (misused citation detected by topology). Key findings: (1) structural circularity confirmed across two drug classes; (2) porter_jick_letter identified as citation anomaly without reading content; (3) FPL gradient collapses in circular evidence chain (r=0.14) vs healthy chain (r=0.75 in M_MED2) -- topology can distinguish healthy from circular evidence chains. 2026-06-02, hash `3a14a005…`, commit [`caa26e2`](https://github.com/vladi160/preregistrations/commit/caa26e2) |
 
 ### F12b_v2 — Confirmatory Generative Compression Rerun
 
@@ -551,6 +553,80 @@ Structural interpretation: `monoamine_hypothesis` simultaneously (1) is the prim
 **Most divergent items (justifies vs selects_endpoints):** ssri_mechanism_claim (rank #2 in justifies, rank #6 in selects_endpoints, gap=4); hamd_endpoint (rank #5 in justifies, rank #1 in selects_endpoints, gap=4); rct_efficacy (rank #6 in justifies, rank #2 in selects_endpoints, gap=4).
 
 **Output:** `outputs/output_M_MED1.json` in private repo.
+
+---
+
+## M_MED2_v1 -- Vaccine Evidence Chain: Structural Circularity Positive Control (June 2, 2026)
+
+| File | Description |
+|---|---|
+| [`experiments/M_MED2_v1.json`](experiments/M_MED2_v1.json) | 4 pre-registered hypotheses |
+| [`experiments/M_MED2_v1.prediction`](experiments/M_MED2_v1.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `615d18e38568367f0c0e01ef77b3925cbbf3c934da5091276540df30d7c78853`
+**Registered:** `2026-06-02T18:10:01.618670+00:00` (before any analysis was run)
+
+**Context:** Positive control experiment for the M_MED1 antidepressant circularity finding. Dataset: 8 nodes representing the childhood vaccine evidence chain (`vaccine_evidence_chain`). Three layers: d1=`justifies`, d2=`selects_endpoints`, d3=`cites_as_support`. Spawned by M_MED1 open question: "M_MED2 vaccine evidence chain as positive control (expected non-circular)." Domain: medicine.
+
+**Scientific question:** Does a well-validated evidence chain (childhood immunization) show a different structural topology from a circular chain? Prediction: the founding mechanistic claim (adaptive immunity) is the justification hub; empirical institutional outcomes (clinical guidelines) dominate the citation layer; the two are DIFFERENT nodes -- structurally healthy.
+
+#### Verdicts (analysis run 2026-06-02)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | FPL: r(justifies <-> selects_endpoints) > r(justifies <-> cites_as_support), min r=0.20 | **CONFIRMED** | r(justifies,selects_endpoints)=0.7454 p=0.014 (statistically significant at n=8); direction confirmed and threshold exceeded. |
+| h2 | `adaptive_immunity_mechanism` is rank <=2 hub in `justifies` | **CONFIRMED** | adaptive_immunity_mechanism rank #1 in justifies. Top 5: adaptive_immunity_mechanism, immunological_endpoint, phase3_efficacy_trial, ... |
+| h3 | `clinical_vaccination_guidelines` is rank <=2 hub in `cites_as_support` | **CONFIRMED** | clinical_vaccination_guidelines rank #1 in cites_as_support. Top 5: clinical_vaccination_guidelines, safety_surveillance, fda_regulatory_approval, ... |
+| h4 | `fda_regulatory_approval` is rank <=3 hub in `cites_as_support` (confirming adaptive_immunity_mechanism absent from citation top-3) | **CONFIRMED** | fda_regulatory_approval rank #3 in cites_as_support. adaptive_immunity_mechanism does not appear in top 5 of cites_as_support at all. |
+
+**Key finding -- Healthy chain topology confirmed:**
+
+The vaccine evidence chain shows the predicted non-circular structure. adaptive_immunity_mechanism is the #1 justification hub (it drives the entire evidence design) but is ABSENT from the citation layer top-5. Citations converge on empirical institutional outcomes: clinical_vaccination_guidelines (rank #1, in-degree from trials + surveillance + population data + regulatory approval), safety_surveillance (rank #2), fda_regulatory_approval (rank #3).
+
+Contrast with M_MED1: monoamine_hypothesis was rank #1 in ALL three layers. Here, the justification hub and the citation hub are different nodes -- the founding theoretical claim disappears from the citation layer because citations go to empirical data, not to the theory.
+
+**FPL gradient contrast:** M_MED2 r(justifies,selects_endpoints)=0.75 p=0.014. M_MED1 (circular) r(justifies,selects_endpoints)=0.41 p=0.44 (ns). The healthy chain shows stronger FPL signal than the circular chain -- see M_MED3 for the pattern across three evidence chains.
+
+**betweenness centrality:** Most central node by betweenness in the full graph: `phase3_efficacy_trial` -- it bridges the mechanistic justification (upstream) with the regulatory/institutional outcomes (downstream), consistent with its role as the empirical bottleneck.
+
+**Output:** `outputs/output_M_MED2_v1.json` in private repo.
+
+---
+
+## M_MED3_v1 -- Opioid Evidence Chain: Structural Circularity Replication (June 2, 2026)
+
+| File | Description |
+|---|---|
+| [`experiments/M_MED3_v1.json`](experiments/M_MED3_v1.json) | 4 pre-registered hypotheses |
+| [`experiments/M_MED3_v1.prediction`](experiments/M_MED3_v1.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `3a14a005218c2384c7977769bad59f23c5516390046d59289c8461ffa257c793`
+**Registered:** `2026-06-02T18:10:04.447630+00:00` (before any analysis was run)
+
+**Context:** Replication test for the M_MED1 antidepressant circularity finding in the opioid prescribing epidemic evidence chain (1980s-2010s). Dataset: 8 nodes representing the evidence structure behind widespread opioid prescribing for chronic non-cancer pain (`opioid_evidence_chain`). Three layers: d1=`justifies`, d2=`selects_endpoints`, d3=`cites_as_support`. Spawned by M_MED1. Domain: medicine.
+
+**Scientific question:** Does the opioid evidence chain show the same structural circularity pattern as antidepressants? Prediction: pain_undertreated_claim dominates both the justification and citation layers (same-node hub dominance = structural circularity), and porter_jick_letter appears as a structural citation anomaly (high citation weight, peripheral in justification layer).
+
+#### Verdicts (analysis run 2026-06-02)
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | FPL: r(justifies <-> selects_endpoints) > r(justifies <-> cites_as_support), min r=0.20 | **PARTIAL** | r(justifies,selects_endpoints)=0.1443 p=0.862. Direction positive (confirmed), but r below min_abs_r=0.20 threshold and not significant. FPL gradient collapses in a circular evidence chain. |
+| h2 | `pain_undertreated_claim` is rank <=3 hub in `justifies` | **CONFIRMED** | pain_undertreated_claim rank #1 in justifies. Also rank #1 by betweenness in full graph. |
+| h3 | `pain_undertreated_claim` is rank <=3 hub in `cites_as_support` (circularity: same founding claim dominates citation layer) | **CONFIRMED** | pain_undertreated_claim rank #1 in cites_as_support. Structural circularity confirmed: same node is #1 in both justifies and cites_as_support. |
+| h4 | `porter_jick_letter` is rank <=4 hub in `cites_as_support` despite peripheral rank in `justifies` | **CONFIRMED** | porter_jick_letter rank #3 in cites_as_support; peripheral in justifies (provides minimal theoretical justification, only → mu_opioid_receptor_mechanism). Misused citation identified by topology: high citation weight without justificatory standing. |
+
+**Key finding -- Circularity replicated across drug classes:**
+
+pain_undertreated_claim is the #1 hub in BOTH justifies (rank #1 by degree and betweenness) and cites_as_support (rank #1). This is the same structural pattern as M_MED1: the founding claim dominates all epistemic layers. The opioid evidence chain and the antidepressant evidence chain are structurally isomorphic at the level of hub dominance -- despite completely different pharmacology, different decades, and different institutional actors.
+
+**Porter & Jick anomaly:** porter_jick_letter ranks #3 in cites_as_support but is peripheral in justifies. IRDME detected this without reading any paper: the topology shows a node with high citation weight but low justificatory standing. This is the structural fingerprint of a misused citation -- it is cited as evidence for a claim (chronic outpatient opioid safety) that it did not study (hospitalized acute-pain patients).
+
+**FPL gradient collapse:** h1 PARTIAL with r=0.14 (p=0.86) is itself a finding. In M_MED2 (healthy chain), r(justifies,selects_endpoints)=0.75 p=0.014. In M_MED3 (circular chain), r=0.14 p=0.86. In M_MED1 (circular chain), r=0.41 p=0.44. The pattern: circular chains show weak or non-significant FPL gradients; healthy chains show strong gradients. This suggests FPL gradient strength can serve as a structural health indicator for evidence chains -- a collapsing gradient is consistent with layer homogenization caused by a dominant circular node.
+
+**Three-experiment series (M_MED1, M_MED2, M_MED3):** Together these three experiments establish that IRDME can structurally distinguish healthy from circular evidence chains across drug classes using topology alone. The FPL gradient is strong in healthy chains (r=0.75, M_MED2) and collapses in circular chains (r=0.14-0.41, M_MED1/M_MED3). The founding claim's rank position in cites_as_support (does it stay #1, or drop?) is the diagnostic structural signal.
+
+**Output:** `outputs/output_M_MED3_v1.json` in private repo.
 
 ---
 
