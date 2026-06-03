@@ -1,0 +1,24 @@
+{
+  "experiment": "M_MED4_v1 -- Schizophrenia Evidence Chain: Dopamine Hypothesis Circularity Test",
+  "committed_at": "2026-06-03T15:55:18.801664+00:00",
+  "prediction_hash": "6631aad93bce1d22c1d90bdcb8949a253689f25c09f3bd0f045977485ea70a60",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(justifies <-> selects_endpoints) > r(justifies <-> cites_as_support) in the schizophrenia evidence chain. Justification (d1) and endpoint selection (d2) are mechanistically coupled: the positive-symptom theory of dopamine excess directly constrains which endpoints are selected (PANSS positive subscale, BPRS). Citation (d3=cites_as_support) encodes a more diffuse, institutionally amplified coupling because guidelines and regulatory approvals create circular citation loops back to the founding hypothesis. In a partially circular chain (stronger mechanistic grounding than M_MED1/M_MED3 but still institutionally self-referential), the d1-d2 coupling should exceed d1-d3 coupling, replicating the gradient direction found in M_MED1 h1 (PARTIAL) and M_MED3 h1 (PARTIAL). If DENIED: this would indicate that the schizophrenia chain is MORE institutionally locked-in than antidepressants or opioids, with citation patterns aligning more tightly to the theoretical structure than endpoint selection does -- a stronger form of circularity. Note: n=10 limits statistical power; direction is the primary criterion."
+    },
+    {
+      "id": "h2",
+      "statement": "dopamine_hyperactivity_hypothesis is a top-3 hub in the justifies layer. The dopamine hypothesis is the theoretical root of the schizophrenia treatment evidence chain: it directly justifies the D2 blocking mechanism (if D2 excess causes positive symptoms, block D2); it justifies the endpoint selection (if positive symptoms are the primary manifestation, measure positive symptoms); and it receives backward justification from PET imaging evidence (empirical grounding) and from the circular treatment guidelines edge (guidelines justify continuing the hypothesis). Unlike monoamine_hypothesis in M_MED1 and pain_undertreated_claim in M_MED3 -- both of which had less direct empirical support -- dopamine_hyperactivity_hypothesis has PET imaging as a non-circular justificatory anchor. This empirical anchor may reduce its dominance rank relative to M_MED1 (where monoamine_hypothesis was unanchored). Prediction: dopamine_hyperactivity_hypothesis ranks 1st, 2nd, or 3rd in justifies layer hub centrality."
+    },
+    {
+      "id": "h3",
+      "statement": "dopamine_hyperactivity_hypothesis is a top-3 hub in the cites_as_support layer. This is the key structural circularity test, directly replicating h3 from M_MED1 and h3 from M_MED3. In a circular evidence chain, the founding hypothesis persists as a top hub across ALL layers -- not just the theoretical justification layer but also the empirical citation layer. For the dopamine hypothesis: (1) chlorpromazine/haloperidol RCTs are cited to support it (drug works -> dopamine is the cause); (2) PET imaging studies are cited as direct support; (3) treatment guidelines circularly cite it as established theory; (4) the dopamine hypothesis itself cites the treatment guidelines as institutional validation. This bidirectional circular citation structure should produce high degree in cites_as_support for the founding hypothesis. Contrast with M_MED2 (vaccine healthy chain): the founding mechanism (adaptive immunity) dropped in citation rank because citations flowed to specific empirical studies rather than circularly back to the mechanism claim."
+    },
+    {
+      "id": "h4",
+      "statement": "dopamine_hyperactivity_hypothesis outranks nmda_hypofunction_hypothesis in the cites_as_support layer. This tests whether institutional commitment to the dominant paradigm suppresses a mechanistically richer alternative in the citation network. The NMDA hypothesis (Olney, Coyle) provides superior explanatory coverage: it explains positive symptoms (via downstream dopamine disinhibition), negative symptoms, and cognitive deficits -- everything the dopamine hypothesis explains plus what it cannot. It is also mechanistically upstream (NMDA hypofunction causes the dopamine excess detected by PET). Despite this, the NMDA hypothesis has not generated approved treatments, and APA/WFSBP guidelines do not cite it as the primary theoretical basis for antipsychotic prescribing. Prediction: in the citation layer, the dopamine hypothesis outranks the NMDA hypothesis in hub centrality, reflecting institutional commitment to the treatment-validated paradigm over the mechanistically more complete but therapeutically unresolved alternative. If confirmed: this is a structural signature of dominant-paradigm suppression -- the same pattern as monoamine_hypothesis suppressing non-monoamine evidence in M_MED1."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
