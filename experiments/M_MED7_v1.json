@@ -1,0 +1,56 @@
+{
+  "experiment": "M_MED7_v1 -- Epilepsy Evidence Chain: Three-Framework Structural Analysis",
+  "description": "Structural analysis of the epilepsy antiseizure medication evidence chain as a multilayer graph. Seventh in the M_MED series. Epilepsy is the first M_MED case with THREE mechanistically incompatible frameworks coexisting in the same clinical domain: (1) sodium channel / channelopathy model (SCN1A/Dravet, KCNQ2 -- strongest genetic causal grounding); (2) GABA/glutamate network hyperexcitability model (E/I imbalance -- dominant pharmacological framework, rationale for most AEDs); (3) autoimmune synaptopathy model (NMDAR/LGI1/CASPR2 antibodies -- structurally distinct research community, different treatment pathway). A mechanistic bridge connects frameworks 1 and 2: SCN1A haploinsufficiency specifically impairs GABAergic interneurons, causing E/I imbalance. This predicts graph_connected = True (unlike M_MED4 schizophrenia where paradigm islands = graph_connected = False). All three frameworks independently select seizure frequency as the clinical endpoint (convergent selection from multiple mechanistic sources) -- a structural mode of endpoint entrenchment distinct from both healthy chains (theory-derived, e.g. LDL-C from statin mechanism) and single-founder circular chains (one dominant hub, e.g. monoamine_hypothesis in antidepressants). The 50% seizure reduction threshold was FDA-accepted in the 1980s without derivation from any mechanistic framework. Previous M_MED results: M_MED2 vaccines r=+0.75 healthy; M_MED6 statins r=+0.68 healthy; M_MED1 antidepressants r=+0.41 mild circular; M_MED3 opioids r=+0.14 strong circular; M_MED5 Alzheimer's r=+0.09P/+0.43S hybrid; M_MED4 schizophrenia r=-0.13 measurement-layer dominance. Epilepsy is predicted to fall between M_MED3 (+0.14) and M_MED1 (+0.41), with partial circularity from the dominant GABA/glutamate framework and convergent endpoint lock-in from multiple frameworks. Dataset: examples/epilepsy_evidence_chain.json. Nodes n=12. Layers: d1=justifies, d2=selects_endpoints, d3=cites_as_support. Spawned by M_MED6 (research/M_MED6_statin_cvd.md: next -- M_MED7 epilepsy for paradigm islands replication + new hypothesis).",
+  "graph": "../epilepsy_evidence_chain.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "justifies", "layer_b": "selects_endpoints" },
+    { "run": "cross_layer_analysis", "layer_a": "justifies", "layer_b": "cites_as_support" },
+    { "run": "cross_layer_analysis", "layer_a": "selects_endpoints", "layer_b": "cites_as_support" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(justifies <-> selects_endpoints) > 0 with min_abs_r = 0.20 in the epilepsy evidence chain. Three mechanistically distinct frameworks (sodium channel, GABA/glutamate, autoimmune) all independently select seizure_frequency_endpoint via selects_endpoints edges. This CONVERGENT ENDPOINT SELECTION from multiple mechanistic sources produces a positive correlation between the justification layer (where the founding frameworks are hubs) and the endpoint selection layer (where seizure_frequency_endpoint concentrates edges from all three frameworks). The gaba_glutamate_hypothesis is predicted to be the top hub in both layers, contributing a positive aligned pair. However, the multi-framework structure dilutes the correlation compared to single-framework healthy chains (M_MED2 r=+0.75, M_MED6 r=+0.68): sodium_channel and autoimmune hypotheses are prominent in justifies but drop in selects_endpoints after the bridge node (inhibitory_interneuron_dysfunction) is interposed. Expected: r(justifies, selects_endpoints) >= 0.20, placing epilepsy between M_MED3 opioids (+0.14) and M_MED1 antidepressants (+0.41) on the FPL gradient spectrum. If DENIED (r < 0 or |r| < 0.20): multi-framework endpoint convergence fails to produce a meaningful signal, suggesting epilepsy's endpoint is selected entirely through institutional channels rather than mechanistic coupling. If PARTIAL (positive but below 0.20): the mechanistic justification for seizure frequency is real but weaker than the institutional channel.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "justifies",
+        "layer_b": "selects_endpoints",
+        "expected_direction": "positive",
+        "min_abs_r": 0.20
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "gaba_glutamate_hypothesis is a top-2 hub in the justifies layer. The GABA/glutamate network hyperexcitability framework is the dominant clinical paradigm: it directly justifies antiseizure medication trials (providing theoretical rationale for most drug classes), justifies the seizure frequency endpoint (E/I imbalance predicts seizures as the outcome), justifies the EEG biomarker endpoint (network hyperexcitability predicts epileptiform EEG activity), and justifies treatment guideline logic (AED selection is framed in E/I terms). Additionally, it receives a justification in-edge from inhibitory_interneuron_dysfunction (the bridge node connecting channelopathy genetics to the network framework), increasing its total degree. The combined out-degree (4 edges) and in-degree (1 edge from interneuron bridge) should give gaba_glutamate_hypothesis the highest total degree in the justifies layer, making it rank #1. Prediction: gaba_glutamate_hypothesis ranks 1st or 2nd by hub centrality in the justifies layer.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "justifies",
+        "expected_hub": "gaba_glutamate_hypothesis",
+        "max_rank": 2
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "gaba_glutamate_hypothesis is a top-3 hub in the cites_as_support layer. This tests PARTIAL STRUCTURAL CIRCULARITY: does the dominant clinical framework also accumulate citations, creating a self-reinforcing loop? The prediction is YES but less dominant than in fully circular chains. In M_MED1 (antidepressants), M_MED3 (opioids), and M_MED4 (schizophrenia), the founding hypothesis was rank #1 in cites_as_support. In epilepsy, treatment_guidelines_epilepsy is predicted to be rank #1 (multiple empirical sources support it: trials, immunotherapy evidence, approval). But gaba_glutamate_hypothesis is predicted to be rank #2 or #3 because: (1) AED trials cite it as their theoretical rationale; (2) treatment guidelines cite it as the mechanistic foundation for drug selection; (3) the interneuron dysfunction data cites it as mechanistic support. This would make epilepsy a PARTIAL CIRCULARITY case: the dominant framework achieves citation prominence but not complete dominance, unlike fully circular chains. If gaba_glutamate_hypothesis is OUTSIDE top-3: multi-framework plurality prevents any single framework from achieving citation dominance -- the epilepsy evidence chain is more structurally healthy than antidepressants. If CONFIRMED in top-3: partial circularity is the correct structural classification.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "cites_as_support",
+        "expected_hub": "gaba_glutamate_hypothesis",
+        "max_rank": 3
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "seizure_frequency_endpoint is a top-2 hub in the selects_endpoints layer. This tests CONVERGENT INSTITUTIONAL ENDPOINT LOCK-IN: a third mode of endpoint entrenchment distinct from healthy chains (where the endpoint is theory-derived from a single mechanism) and from single-founder circular chains (where the endpoint is selected by one dominant framework). In epilepsy, ALL THREE frameworks (sodium channel, GABA/glutamate, autoimmune) independently select seizure_frequency_endpoint, AND treatment_guidelines also selects it, giving it the maximum possible in-degree in the selects_endpoints layer. No other node receives more selects_endpoints edges. This predicts rank #1. The scientific significance: the 50% seizure reduction threshold is institutionally entrenched not because one theory imposed it (as in schizophrenia where PANSS was selected by D2-blocker effects) but because no theory challenged it -- all three frameworks accepted an arbitrary FDA threshold as their shared endpoint. This is a structurally distinct mode of entrenchment that produces the same measurement-level lock-in through a different causal mechanism.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "selects_endpoints",
+        "expected_hub": "seizure_frequency_endpoint",
+        "max_rank": 2
+      }
+    }
+  ]
+}
