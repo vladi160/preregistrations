@@ -62,6 +62,7 @@ Public record of pre-registered scientific hypotheses for the
 | `H_LOGIC_BLACKBOX_v1` | *(Topology-as-Logic)* Black-box gate identification: 4-bit ripple carry adder with all 29 node labels replaced by neutral IDs G_00-G_28. Predict carry-chain gates (G_20=cout_0, G_12=cout_1, G_21=cout_2) will be top structural hubs before any analysis. | **4/4 CONFIRMED**. h1 CONFIRMED r=0.5117 p=0.002 (FPL holds blind); h2 CONFIRMED G_20 rank #5 structural_wiring (cout_0); h3 CONFIRMED G_20 rank #2 state_correlation; h4 CONFIRMED G_12 rank #1 state_correlation (cout_1). REVEAL: state_correlation top-3 = G_12/G_20/G_21 = cout_1/cout_0/cout_2 = all three carry-chain gates. G_12 (cout_1) is #1 by both degree and betweenness. 14/29 nodes (inputs + outputs) correctly classified from topology alone with zero gate-type knowledge. 2026-06-02, hash `3ff502c3...`, commit [`08df545`](https://github.com/vladi160/preregistrations/commit/08df545) |
 | `M_MED2_v1` | Vaccine evidence chain: structural circularity positive control. Prediction: healthy chain has different hubs in justifies vs cites_as_support, unlike circular M_MED1 antidepressant chain | **4/4 CONFIRMED**. h1 CONFIRMED r(justifies,selects_endpoints)=0.7454 p=0.014 (statistically significant at n=8); h2 CONFIRMED adaptive_immunity_mechanism rank #1 in justifies; h3 CONFIRMED clinical_vaccination_guidelines rank #1 in cites_as_support; h4 CONFIRMED fda_regulatory_approval rank #3 in cites_as_support (adaptive_immunity_mechanism absent from top-3 of citation layer). Key finding: justifies hub (adaptive_immunity_mechanism) != cites_as_support hub (clinical_vaccination_guidelines) -- healthy chain topology confirmed. FPL holds strongly (r=0.75) in a healthy evidence chain. 2026-06-02, hash `615d18e3…`, commit [`caa26e2`](https://github.com/vladi160/preregistrations/commit/caa26e2) |
 | `M_MED3_v1` | Opioid evidence chain: structural circularity replication across drug classes. Prediction: pain_undertreated_claim dominates BOTH justifies and cites_as_support (same-node dominance = circular chain), replicating M_MED1 antidepressant pattern | **3/4 CONFIRMED, 1/4 PARTIAL**. h1 PARTIAL r(justifies,selects_endpoints)=0.1443 p=0.862 (direction correct but below min_abs_r=0.20 -- FPL gradient collapses in circular chain); h2 CONFIRMED pain_undertreated_claim rank #1 in justifies; h3 CONFIRMED pain_undertreated_claim rank #1 in cites_as_support (same node dominates both layers); h4 CONFIRMED porter_jick_letter rank #3 in cites_as_support despite peripheral rank in justifies (misused citation detected by topology). Key findings: (1) structural circularity confirmed across two drug classes; (2) porter_jick_letter identified as citation anomaly without reading content; (3) FPL gradient collapses in circular evidence chain (r=0.14) vs healthy chain (r=0.75 in M_MED2) -- topology can distinguish healthy from circular evidence chains. 2026-06-02, hash `3a14a005…`, commit [`caa26e2`](https://github.com/vladi160/preregistrations/commit/caa26e2) |
+| `M_MED6_v1` | Statin CVD evidence chain: second healthy chain control. Prediction: replicates M_MED2 vaccines topology — strong positive r(justifies,selects_endpoints), founding theory top hub in justifies, empirical output top hub in cites_as_support, no citation anomaly. Directly addresses n=1 healthy class vulnerability. | **4/4 CONFIRMED**. h1 CONFIRMED r(justifies,selects_endpoints)=+0.676 p=0.030 (statistically significant at n=10); h2 CONFIRMED ldl_cholesterol_hypothesis rank #1 in justifies; h3 CONFIRMED clinical_guidelines_statins rank #1 in cites_as_support; h4 CONFIRMED rct_statin_trials rank #4 in cites_as_support. Healthy class n=1→n=2. No citation anomaly detected (supports hypothesis that anomalies are predictive of circular chains). Gap between healthy floor (+0.68) and mild circularity (+0.41) is 0.27. 2026-06-03, hash `c7a8423c…`, commit [`8a5c232`](https://github.com/vladi160/preregistrations/commit/8a5c232) |
 
 ### F12b_v2 — Confirmatory Generative Compression Rerun
 
@@ -629,6 +630,57 @@ pain_undertreated_claim is the #1 hub in BOTH justifies (rank #1 by degree and b
 **Three-experiment series (M_MED1, M_MED2, M_MED3):** Together these three experiments establish that IRDME can structurally distinguish healthy from circular evidence chains across drug classes using topology alone. The FPL gradient is strong in healthy chains (r=0.75, M_MED2) and collapses in circular chains (r=0.14-0.41, M_MED1/M_MED3). The founding claim's rank position in cites_as_support (does it stay #1, or drop?) is the diagnostic structural signal.
 
 **Output:** `outputs/output_M_MED3_v1.json` in private repo.
+
+---
+
+## M_MED6_v1 -- Statin CVD Evidence Chain: Second Healthy Chain Control (June 3, 2026)
+
+| **Experiment file** | [`experiments/M_MED6_v1.json`](experiments/M_MED6_v1.json) |
+| **Prediction sidecar** | [`experiments/M_MED6_v1.prediction`](experiments/M_MED6_v1.prediction) |
+| **Pre-registration hash** | `c7a8423cbf32d82f3ab25f37171802b682afcf3e2df57f3f451b533a235dc43e` |
+| **Pre-registration timestamp** | 2026-06-03T19:35:58.750501+00:00 |
+| **Public repo push (pre-reg)** | commit `8a5c232` — before any analysis ran |
+| **Domain** | Medicine — statin therapy / cardiovascular disease prevention |
+| **Dataset** | `examples/statin_cvd_evidence_chain.json` — 10 nodes, 23 relations across 3 layers |
+| **Layers** | d1=`justifies`, d2=`selects_endpoints`, d3=`cites_as_support` |
+
+**Result: 4/4 CONFIRMED.**
+
+| Hypothesis | Prediction | Result |
+|---|---|---|
+| h1 | r(justifies ↔ selects_endpoints) > 0, min_abs_r=0.40 | ✅ CONFIRMED: Pearson r=+0.676, Spearman r=+0.756, p=0.030 |
+| h2 | `ldl_cholesterol_hypothesis` top-2 hub in justifies | ✅ CONFIRMED: rank #1 |
+| h3 | `clinical_guidelines_statins` top-2 hub in cites_as_support | ✅ CONFIRMED: rank #1 |
+| h4 | `rct_statin_trials` top-5 hub in cites_as_support | ✅ CONFIRMED: rank #4 |
+
+**Cross-layer correlations:**
+- r(justifies ↔ selects_endpoints): Pearson=**+0.676**, Spearman=**+0.756**, p=**0.030** (statistically significant)
+- r(justifies ↔ cites_as_support): low (theory hub drops in citation layer — healthy chain signature)
+
+**Key findings:**
+
+**Healthy class n=1→n=2.** The statin chain replicates the M_MED2 vaccines healthy topology: strong positive r(justifies, selects_endpoints) with p<0.05 in both cases. The healthy class now has n=2 statistically significant cases, directly addressing the primary vulnerability of the 6-experiment M_MED series.
+
+**Healthy chain structural signature confirmed.** The founding theoretical claim (`ldl_cholesterol_hypothesis`) is rank #1 in the `justifies` layer but drops substantially in the `cites_as_support` layer. An empirical institutional output (`clinical_guidelines_statins`) is rank #1 in citations. This is the same pattern as M_MED2 vaccines and is the structural opposite of M_MED1/M_MED3/M_MED4 circular chains where the founding hypothesis dominates all epistemic layers.
+
+**No citation anomaly detected.** Unlike M_MED3 (porter_jick_letter) and M_MED5 (lesne_2006_oligomers), no node in the statin chain shows the structural fingerprint of a citation anomaly (high cites_as_support rank, zero justifies edges). This supports the hypothesis that citation anomalies are predictive of circular chains specifically, not a general property of large citation networks.
+
+**Design rationale:** The statin chain was selected as the second healthy control because: (1) the LDL hypothesis predated statin development by decades — the theory was not derived from drug effects; (2) the LDL receptor mechanism (Brown & Goldstein, Nobel 1985) is independently grounded in cell biology and familial hypercholesterolemia genetics; (3) LDL-C as surrogate endpoint is directly specified by the mechanism. This temporal and mechanistic independence is the structural property predicted to produce healthy chain topology.
+
+**Updated FPL gradient spectrum (6 experiments):**
+
+| Chain | Pearson r(d1,d2) | p-value | Regime |
+|---|---|---|---|
+| M_MED2 vaccines | +0.75 | 0.014 | Healthy differentiation (n=2) |
+| **M_MED6 statins** | **+0.68** | **0.030** | **Healthy differentiation (n=2)** |
+| M_MED1 antidepressants | +0.41 | ns | Mild circularity |
+| M_MED3 opioids | +0.14 | ns | Strong circularity |
+| M_MED5 Alzheimer's | +0.09P/+0.43S | ns | Hybrid endpoint lock-in |
+| M_MED4 schizophrenia | −0.13 | ns | Measurement-layer dominance |
+
+The gap between the healthy class floor (+0.68) and mild circularity (+0.41) is 0.27 — larger than the gap between adjacent positions elsewhere in the spectrum. Both healthy cases are statistically significant; no circular case reaches significance. The structural signature of health vs circularity is now supported by n=2 independent cases.
+
+**Output:** `outputs/output_M_MED6_v1.json` in private repo.
 
 ---
 
