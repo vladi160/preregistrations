@@ -63,6 +63,7 @@ Public record of pre-registered scientific hypotheses for the
 | `M_MED2_v1` | Vaccine evidence chain: structural circularity positive control. Prediction: healthy chain has different hubs in justifies vs cites_as_support, unlike circular M_MED1 antidepressant chain | **4/4 CONFIRMED**. h1 CONFIRMED r(justifies,selects_endpoints)=0.7454 p=0.014 (statistically significant at n=8); h2 CONFIRMED adaptive_immunity_mechanism rank #1 in justifies; h3 CONFIRMED clinical_vaccination_guidelines rank #1 in cites_as_support; h4 CONFIRMED fda_regulatory_approval rank #3 in cites_as_support (adaptive_immunity_mechanism absent from top-3 of citation layer). Key finding: justifies hub (adaptive_immunity_mechanism) != cites_as_support hub (clinical_vaccination_guidelines) -- healthy chain topology confirmed. FPL holds strongly (r=0.75) in a healthy evidence chain. 2026-06-02, hash `615d18e3…`, commit [`caa26e2`](https://github.com/vladi160/preregistrations/commit/caa26e2) |
 | `M_MED3_v1` | Opioid evidence chain: structural circularity replication across drug classes. Prediction: pain_undertreated_claim dominates BOTH justifies and cites_as_support (same-node dominance = circular chain), replicating M_MED1 antidepressant pattern | **3/4 CONFIRMED, 1/4 PARTIAL**. h1 PARTIAL r(justifies,selects_endpoints)=0.1443 p=0.862 (direction correct but below min_abs_r=0.20 -- FPL gradient collapses in circular chain); h2 CONFIRMED pain_undertreated_claim rank #1 in justifies; h3 CONFIRMED pain_undertreated_claim rank #1 in cites_as_support (same node dominates both layers); h4 CONFIRMED porter_jick_letter rank #3 in cites_as_support despite peripheral rank in justifies (misused citation detected by topology). Key findings: (1) structural circularity confirmed across two drug classes; (2) porter_jick_letter identified as citation anomaly without reading content; (3) FPL gradient collapses in circular evidence chain (r=0.14) vs healthy chain (r=0.75 in M_MED2) -- topology can distinguish healthy from circular evidence chains. 2026-06-02, hash `3a14a005…`, commit [`caa26e2`](https://github.com/vladi160/preregistrations/commit/caa26e2) |
 | `M_MED6_v1` | Statin CVD evidence chain: second healthy chain control. Prediction: replicates M_MED2 vaccines topology — strong positive r(justifies,selects_endpoints), founding theory top hub in justifies, empirical output top hub in cites_as_support, no citation anomaly. Directly addresses n=1 healthy class vulnerability. | **4/4 CONFIRMED**. h1 CONFIRMED r(justifies,selects_endpoints)=+0.676 p=0.030 (statistically significant at n=10); h2 CONFIRMED ldl_cholesterol_hypothesis rank #1 in justifies; h3 CONFIRMED clinical_guidelines_statins rank #1 in cites_as_support; h4 CONFIRMED rct_statin_trials rank #4 in cites_as_support. Healthy class n=1→n=2. No citation anomaly detected (supports hypothesis that anomalies are predictive of circular chains). Gap between healthy floor (+0.68) and mild circularity (+0.41) is 0.27. 2026-06-03, hash `c7a8423c…`, commit [`8a5c232`](https://github.com/vladi160/preregistrations/commit/8a5c232) |
+| `M_MED7_v1` | Epilepsy evidence chain: three-framework structural analysis. Three competing frameworks (sodium channel/channelopathy, GABA/glutamate network, autoimmune synaptopathy) tested for paradigm islands vs connected structure. Pre-registered: graph_connected=True, gaba_glutamate dominant in justifies and prominent in cites, seizure_frequency_endpoint entrenched via convergent selection from all three frameworks. | **3/4 CONFIRMED, 1/4 PARTIAL**. h1 PARTIAL r=+0.490 Spearman=+0.587 p=0.086 (direction confirmed, above min_abs_r=0.20 confirmed, not significant at p<0.05); h2 CONFIRMED gaba_glutamate rank #1 justifies (degree=5, most betweenness); h3 CONFIRMED gaba_glutamate rank #2 cites_as_support; h4 CONFIRMED seizure_frequency rank #1 selects (convergent lock-in from all 3 frameworks). graph_connected=True (NOT paradigm islands). UNEXPECTED: r=+0.490 sits above antidepressants (r=+0.41) -- multi-framework convergent selection produces stronger j-se coupling than single-founder circularity. New structural concept: convergent endpoint lock-in. New finding: citation shadow (sodium_channel j=rank#2, c=rank#10). No citation anomaly detected. 2026-06-03, hash `a12ac8db…`, commit [`13c1894`](https://github.com/vladi160/preregistrations/commit/13c1894) |
 
 ### F12b_v2 — Confirmatory Generative Compression Rerun
 
@@ -681,6 +682,52 @@ pain_undertreated_claim is the #1 hub in BOTH justifies (rank #1 by degree and b
 The gap between the healthy class floor (+0.68) and mild circularity (+0.41) is 0.27 — larger than the gap between adjacent positions elsewhere in the spectrum. Both healthy cases are statistically significant; no circular case reaches significance. The structural signature of health vs circularity is now supported by n=2 independent cases.
 
 **Output:** `outputs/output_M_MED6_v1.json` in private repo.
+
+---
+
+## M_MED7_v1 -- Epilepsy Evidence Chain: Three-Framework Structural Analysis (June 3, 2026)
+
+| **Experiment file** | [`experiments/M_MED7_v1.json`](experiments/M_MED7_v1.json) |
+| **Prediction sidecar** | [`experiments/M_MED7_v1.prediction`](experiments/M_MED7_v1.prediction) |
+| **Pre-registration hash** | `a12ac8db8eaecd0c4aae01195922afeaeb9931aef73829aefbdfc0ec942a6700` |
+| **Pre-registration timestamp** | 2026-06-03T19:55:26.307107+00:00 |
+| **Public repo push (pre-reg)** | commit `13c1894` — before any analysis ran |
+| **Domain** | Medicine — epilepsy / antiseizure medication evidence chain |
+| **Dataset** | `examples/epilepsy_evidence_chain.json` — 12 nodes, 29 relations across 3 layers |
+| **Layers** | d1=`justifies`, d2=`selects_endpoints`, d3=`cites_as_support` |
+
+**Result: 3/4 CONFIRMED, 1/4 PARTIAL.**
+
+| Hypothesis | Prediction | Result |
+|---|---|---|
+| h1 | r(justifies ↔ selects_endpoints) > 0, min_abs_r=0.20 | ⚡ PARTIAL: Pearson r=+0.490, Spearman r=+0.587, p=0.086 |
+| h2 | `gaba_glutamate_hypothesis` top-2 hub in justifies | ✅ CONFIRMED: rank #1 (degree=5, highest betweenness) |
+| h3 | `gaba_glutamate_hypothesis` top-3 hub in cites_as_support | ✅ CONFIRMED: rank #2 |
+| h4 | `seizure_frequency_endpoint` top-2 hub in selects_endpoints | ✅ CONFIRMED: rank #1 (degree=4) |
+
+**graph_connected = True** — NOT paradigm islands. All three frameworks connected via inhibitory interneuron dysfunction bridge (channelopathy → GABA/glutamate), shared seizure endpoint (all frameworks converge), and treatment guidelines (all frameworks cited in same institutional output).
+
+**Unexpected finding.** r(j,se) = +0.490 for epilepsy sits ABOVE M_MED1 antidepressants (+0.41) on the spectrum, despite epilepsy having three competing frameworks. Multi-framework convergent selection of the same endpoint produces stronger cross-layer coupling than single-founder circular chains, where one hub dominates all layers and compresses ranking variation.
+
+**New structural concept: convergent endpoint lock-in.** seizure_frequency_endpoint receives selects_endpoints edges from ALL THREE frameworks (sodium channel, GABA/glutamate, autoimmune) plus treatment guidelines — maximum possible in-degree. The 50% seizure reduction threshold was FDA-accepted without derivation from any framework. All frameworks accepted an arbitrary regulatory threshold rather than any single framework imposing it. Third mode of endpoint entrenchment identified (after theory-derived and single-founder circular).
+
+**New finding: citation shadow.** sodium_channel_hypothesis is rank #2 in justifies (degree=4) but rank #10 in cites_as_support (degree=1). Inverse of citation anomaly: high justification standing, low citation rank. The channelopathy framework provides genuine mechanistic grounding (SCN1A → interneuron loss → E/I imbalance) but its contributions are structurally absorbed into the GABA/glutamate framework, which accumulates the clinical citations.
+
+**No citation anomaly detected.** Consistent with M_MED6 (statins). Citation anomalies (porter_jick in M_MED3, lesne_2006 in M_MED5) have appeared only in single-founder circular chains. Multi-framework and healthy chains distribute citation weight without concentrating it on low-justification nodes.
+
+**Updated 7-experiment FPL gradient spectrum:**
+
+| Chain | Pearson r(d1,d2) | p-value | Regime |
+|---|---|---|---|
+| M_MED2 vaccines | +0.75 | 0.014 | Healthy (n=2) |
+| M_MED6 statins | +0.68 | 0.030 | Healthy (n=2) |
+| **M_MED7 epilepsy** | **+0.49** | **0.086** | **Multi-framework convergent** |
+| M_MED1 antidepressants | +0.41 | ns | Mild circularity |
+| M_MED3 opioids | +0.14 | ns | Strong circularity |
+| M_MED5 Alzheimer's | +0.09P/+0.43S | ns | Hybrid lock-in |
+| M_MED4 schizophrenia | −0.13 | ns | Measurement-layer dominance |
+
+**Output:** `outputs/output_M_MED7_v1.json` in private repo.
 
 ---
 
