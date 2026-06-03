@@ -1,0 +1,56 @@
+{
+  "experiment": "M_MED8_v1 -- Parkinson's Disease Evidence Chain: Competition Rule Test (ETD vs Institutional Inertia)",
+  "description": "Structural analysis of the Parkinson's disease treatment evidence chain. Eighth in the M_MED series. This experiment is a COMPETITION RULE TEST, not a spectrum-position test. Two structural forces are in direct conflict: ETD (Endpoint Theory-Derivation) is potentially high -- dopamine depletion in substantia nigra is one of the best-confirmed mechanisms in neurology, established by Ehringer and Hornykiewicz in 1960 BEFORE L-DOPA treatment was developed, and validated independently by pharmacology (L-DOPA response), genetics (SNCA/LRRK2/PINK1/PRKN), and imaging (DAT-SPECT). UPDRS institutional inertia is also high -- UPDRS (1987) is a composite motor symptom scale entrenched by FDA approval requirements and MDS guideline specification, structurally analogous to PANSS in schizophrenia in its institutional-not-mechanistic derivation. Secondary structural question: does alpha-synuclein pathology create integrated pluralism (like Alzheimer's amyloid-tau, where one framework predicts the other as downstream) or something else? Alpha-synuclein pathology EXPLAINS the mechanism of dopamine neuron death (Braak staging shows SNc involvement at stage 3-4 causing dopamine depletion) -- predicting a justification bridge, not paradigm isolation. A structurally novel element: neuroprotection_failure encodes negative empirical evidence (failed trials) that constrains guideline scope -- a structural moderator absent from all M_MED circular chains. 3-axis model predictions: EM=HIGH (dopamine hypothesis prominent in both justifies and cites), ETD=MEDIUM (mechanism specifies DAT-SPECT purely and UPDRS domain partially; UPDRS thresholds are institutional), MSC=LOW (one dominant framework). The competition rule outcome is pre-registered: if r(j,se) >= +0.40, ETD wins; if r(j,se) < +0.20, institutional inertia wins; +0.20 to +0.40 = balanced. All previous M_MED results for reference: M_MED2 vaccines +0.75 healthy; M_MED6 statins +0.68 healthy; M_MED7 epilepsy +0.49 MSC; M_MED1 antidepressants +0.41 mild circular; M_MED3 opioids +0.14 strong circular; M_MED5 Alzheimer's +0.09P hybrid; M_MED4 schizophrenia -0.13 measurement-layer dominance. Dataset: examples/parkinson_evidence_chain.json. Nodes n=12. Layers: d1=justifies, d2=selects_endpoints, d3=cites_as_support. Spawned by M_MED8 design in research/M_MED_next_steps.md.",
+  "graph": "../parkinson_evidence_chain.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "justifies", "layer_b": "selects_endpoints" },
+    { "run": "cross_layer_analysis", "layer_a": "justifies", "layer_b": "cites_as_support" },
+    { "run": "cross_layer_analysis", "layer_a": "selects_endpoints", "layer_b": "cites_as_support" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(justifies <-> selects_endpoints) > 0 with min_abs_r = 0.20 in the Parkinson's disease evidence chain. This is the COMPETITION RULE TEST: the dopamine depletion mechanism specifies both the DAT-SPECT biomarker (directly measuring dopamine transporter = the mechanism itself, purely ETD-derived) and the motor symptom domain (UPDRS Part III measures motor deficits caused by dopamine loss, partially ETD-derived). These two ETD contributions should produce positive r(j,se). However, institutional forces (FDA requiring UPDRS and MDS guidelines specifying UPDRS as standard endpoint) add selects_endpoints edges to updrs_motor_endpoint without theoretical content, amplifying its endpoint prominence beyond pure mechanistic grounding. The net effect depends on whether ETD edges or institutional edges dominate the selects_endpoints layer structure. Pre-registered competition rule outcome: r >= +0.40 = ETD wins (mechanism quality overrides institutional history); r in +0.20 to +0.40 = balanced (both forces at play); r < +0.20 or negative = institutional inertia wins (UPDRS structurally equivalent to PANSS in schizophrenia despite superior Parkinson's mechanism). Minimum pre-registered claim: r > 0 with |r| >= 0.20 (positive coupling exists -- ETD contributes even if institutional forces dominate). If DENIED with negative r: Parkinson's is structurally classified with schizophrenia -- endpoint institutional history completely overrides mechanism quality.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "justifies",
+        "layer_b": "selects_endpoints",
+        "expected_direction": "positive",
+        "min_abs_r": 0.20
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "dopamine_depletion_hypothesis is a top-2 hub in the justifies layer. The founding mechanistic claim has the highest out-degree in the justification network: it directly justifies nigrostriatal_pathway (the anatomical locus), dat_spect_biomarker (the mechanistic endpoint), updrs_motor_endpoint (the clinical domain), and levodopa_response_evidence (the therapeutic prediction). Additionally it receives one in-edge from alpha_synuclein_pathology (which explains WHY dopamine neurons die, bridging the two mechanistic frameworks). This combined degree of 5 (4 out + 1 in) should make it rank #1 in the justifies layer. This confirms high EM in the 3-axis model -- the founding dopamine hypothesis is the structural root of the evidence chain. Contrast with epilepsy (M_MED7) where the dominant framework was also rank #1 in justifies but was one of three competing frameworks; here the dopamine depletion hypothesis faces no comparable competitor in the justification structure.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "justifies",
+        "expected_hub": "dopamine_depletion_hypothesis",
+        "max_rank": 2
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "dopamine_depletion_hypothesis is a top-3 hub in the cites_as_support layer. This tests high EM (epistemic monopoly): the founding hypothesis accumulates citations from three independent empirical sources: (1) levodopa_response_evidence -- L-DOPA's pharmacological response is cited as primary mechanistic confirmation; (2) genetic_pd_evidence -- SNCA, LRRK2, PINK1, PRKN, GBA variants are cited as molecular confirmation of dopaminergic vulnerability; (3) dat_spect_biomarker -- DAT-SPECT imaging data is cited as in-vivo biomarker confirmation. These three independent citation paths (pharmacological + genetic + imaging) give dopamine_depletion_hypothesis an in-degree of 3 in cites_as_support. Compare with circular chains: monoamine_hypothesis in antidepressants was rank #1 in both layers (full EM). If Parkinson's dopamine hypothesis is also top-3 in cites: EM is HIGH despite the stronger mechanistic grounding. This is the Parkinson's paradox -- a well-confirmed hypothesis that is ALSO a circular hub (its own evidence chain cites it prominently). The question is whether this produces the same structural consequences (citation anomaly risk) as in poorly-confirmed circular chains.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "cites_as_support",
+        "expected_hub": "dopamine_depletion_hypothesis",
+        "max_rank": 3
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "dat_spect_biomarker is a top-4 hub in the selects_endpoints layer. This is the ETD presence test: does the purely mechanistic endpoint (DAT-SPECT, directly theory-derived -- measuring dopamine transporter IS measuring the mechanism) achieve structural prominence in endpoint selection alongside the institutional endpoint (updrs_motor_endpoint, which has more total selects_endpoints edges due to institutional amplification)? DAT-SPECT receives selects_endpoints edges from dopamine_depletion_hypothesis (theory specifies it) and nigrostriatal_pathway (the pathway's integrity is exactly what DAT-SPECT measures) -- giving it in-degree=2. updrs_motor_endpoint receives 3 selects_endpoints edges (dopamine_depletion + treatment_guidelines + fda_approval). Prediction: updrs_motor_endpoint rank #1 (3 edges), dat_spect_biomarker rank #2 (2 edges). Both endpoints should be present in the selects_endpoints layer. If DENIED (dat_spect outside top-4): the purely mechanistic endpoint is structurally marginalized despite being the most theory-grounded measurement -- institutional inertia wins completely and the evidence chain looks like schizophrenia from the selects_endpoints perspective alone. If CONFIRMED: ETD is contributing -- both mechanistic (dat_spect) and institutional (updrs) endpoints are structurally visible.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "selects_endpoints",
+        "expected_hub": "dat_spect_biomarker",
+        "max_rank": 4
+      }
+    }
+  ]
+}
