@@ -1,0 +1,16 @@
+{
+  "experiment": "DISC_CANCER_3_v1 -- NSCLC Perturbation Iteration 3: Does MEK1 inhibition address the ERK1 structural weak point?",
+  "committed_at": "2026-06-05T23:18:44.141201+00:00",
+  "prediction_hash": "148747c949f6c8edbf9f7a9a3fa0e060f8cba1fcdbb304a959d0cb6ec04ddf87",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "After removing MEK1, r(physical_interaction, coexpression_cancer) stays >= 0.62 -- meaning MEK1 removal causes LESS structural disruption than ERK1 removal (which dropped r to 0.5798). MEK1 is ERK1's direct input (MEK1->ERK1 in d1) and has d1=2, d2=1. Removing it: ERK1 loses one d1 in-edge (MEK1->ERK1 gone) but ERK1 itself remains. ERK1 still holds its correlation-anchor role: KRAS->ERK1 coexpression still exists (d2), ERK1->MYC physical still exists (d1). MEK1's own contribution: d1=2, d2=1 -- moderately aligned; its removal is not expected to break the KRAS-MYC coupling chain that ERK1 provides. If CONFIRMED (r >= 0.62): MEK inhibitors (trametinib) do NOT structurally address the ERK1 weak point -- ERK-direct inhibition is needed. If DENIED (r < 0.62, comparable to ERK1 removal): MEK1 is equivalent to ERK1 structurally -- existing MEK inhibitors already address the weak point."
+    },
+    {
+      "id": "h2",
+      "statement": "After removing MEK1, ERK1 remains a top-5 hub in physical_interaction. MEK1 removal removes MEK1->ERK1 (one of ERK1's in-edges), reducing ERK1's d1 degree from 2 to 1 (only ERK1->MYC remains). ERK1 was already rank ~8-10 in d1. With degree dropping to 1, ERK1 may fall to rank 12-14. If CONFIRMED (ERK1 still top-5): ERK1 maintains structural prominence despite losing its input -- it stays as structural hub through ERK1->MYC output. If DENIED (ERK1 falls below rank 5): MEK1 removal significantly degrades ERK1's structural position, suggesting MEK and ERK1 are structurally co-dependent rather than independent."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
