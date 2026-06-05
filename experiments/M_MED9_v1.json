@@ -1,0 +1,56 @@
+{
+  "experiment": "M_MED9_v1 -- Focused Ultrasound BBB Opening: Mechanistically Grounded Surrogate Capture Test",
+  "description": "Structural analysis of the evidence chain for Focused Ultrasound (FUS) + microbubble-mediated blood-brain barrier (BBB) opening for CNS drug delivery. Ninth in the M_MED series. This experiment tests a structurally novel hypothesis: can a STRONG physical mechanism (acoustic cavitation -> tight junction disruption) produce ETD-positive endpoint selection (gadolinium MRI is mechanism-derived), while simultaneously showing that institutional endpoint substitution (regulatory framework selects gadolinium as surrogate, displacing the true mechanistic endpoint of drug brain concentration) breaks or weakens the r(justifies, selects_endpoints) coupling? This is distinct from all M_MED1-8 cases: previous cases had either weak mechanisms (antidepressants, opioids, schizophrenia) or strong mechanisms where the institutional endpoint partially tracked the theory (vaccines, statins, Parkinson's). FUS-BBB has a physically well-characterized mechanism (same acoustic cavitation physics as acoustic levitation -- both involve acoustic radiation pressure and oscillating pressure fields) where the surrogate endpoint (gadolinium) IS mechanistically derived (tight junction disruption implies gadolinium leakage), yet the regulatory framework independently structures endpoint selection. The core structural question: does Mechanistically Grounded Surrogate Capture -- where the surrogate IS theory-derived but substitutes for the mechanistically primary endpoint (drug concentration) -- produce positive or near-zero r(j,se)? Three-axis model predictions: EM=HIGH (founding FUS-BBB hypothesis and acoustic_cavitation_mechanism dominate both justifies and cites layers); ETD=MEDIUM (gadolinium endpoint IS mechanism-derived, but drug brain concentration is the mechanistically primary endpoint and has been institutionally displaced); MSC=LOW (single dominant mechanistic framework, no multi-framework convergence on endpoints). All M_MED r(j,se) reference values: M_MED2 vaccines +0.75P/+0.81S (high ETD); M_MED6 statins +0.68P/+0.76S (high ETD); M_MED7 epilepsy +0.49P/+0.59S (MSC); M_MED1 antidepressants +0.41P (medium EM+ETD); M_MED8 Parkinson's +0.28P/+0.08S (MPI); M_MED3 opioids +0.14P (high EM, low ETD); M_MED5 Alzheimer's +0.09P/+0.43S (RPA); M_MED4 schizophrenia -0.13P (measurement-layer dominance). Dataset: examples/fus_bbb_evidence_chain.json. Nodes n=12. Layers: d1=justifies, d2=selects_endpoints, d3=cites_as_support.",
+  "graph": "../fus_bbb_evidence_chain.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "justifies", "layer_b": "selects_endpoints" },
+    { "run": "cross_layer_analysis", "layer_a": "justifies", "layer_b": "cites_as_support" },
+    { "run": "cross_layer_analysis", "layer_a": "selects_endpoints", "layer_b": "cites_as_support" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(justifies <-> selects_endpoints) > 0 with min_abs_r = 0.20 in the FUS-BBB evidence chain. This is the ETD-vs-institutional-substitution test: the acoustic cavitation mechanism directly implies gadolinium MRI as its measurement (if tight junction disruption creates paracellular gaps, gadolinium passively enters -- this IS the mechanism-to-endpoint ETD chain), which should contribute positive r(j,se). However, the regulatory_framework_fus node selects three endpoints (gadolinium, safety imaging, clinical outcome) orthogonal to the theoretical chain -- it has zero or minimal justification standing but high selects_endpoints out-degree. The competition between ETD signal (acoustic_cavitation_mechanism -> mri_gadolinium_endpoint) and institutional orthogonality (regulatory_framework_fus -> multiple endpoints without justification participation) determines the outcome. Pre-registered competition rule: r >= +0.40 = ETD dominates (mechanism quality shapes endpoint selection despite regulatory overlay); r in +0.10 to +0.40 = mixed (both ETD and institutional forces visible); r near zero (-0.10 to +0.10) = institutional substitution breaks mechanism-endpoint coupling despite ETD link; r < -0.10 = institutional override (structurally similar to schizophrenia despite strong mechanism). Minimum pre-registered claim: r > 0 with |r| >= 0.20. If DENIED: FUS-BBB exhibits Mechanistically Grounded Surrogate Capture -- a case where a valid ETD link exists (cavitation -> gadolinium) but the regulatory framework inserts endpoint selection orthogonal to theory, producing near-zero or negative r(j,se) indistinguishable from weak-mechanism cases. This would be a structurally novel finding: strong mechanism != positive r(j,se) when institutional substitution is strong.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "justifies",
+        "layer_b": "selects_endpoints",
+        "expected_direction": "positive",
+        "min_abs_r": 0.20
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "mri_gadolinium_endpoint is the rank #1 hub in the selects_endpoints layer. Predicted by surrogate capture dynamics: gadolinium MRI receives selects_endpoints edges from (1) fus_bbb_hypothesis -- founding hypothesis operationalized via gadolinium; (2) acoustic_cavitation_mechanism -- mechanism directly selects gadolinium as measurement; (3) reversibility_claim -- reversibility testing requires serial gadolinium scans; (4) regulatory_framework_fus -- institutional mandate for gadolinium in all FUS clinical trials. This gives gadolinium in-degree=4 in selects_endpoints, substantially higher than any other node. If CONFIRMED: surrogate endpoint dominance is structurally documented -- gadolinium has become the dominant endpoint through a combination of theory-derived selection (ETD) AND institutional entrenchment (regulatory mandate), making it rank #1 even though it is NOT the mechanistically primary endpoint (drug brain concentration would be the primary endpoint from first principles).",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "selects_endpoints",
+        "expected_hub": "mri_gadolinium_endpoint",
+        "max_rank": 1
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "fus_bbb_hypothesis is a top-2 hub in the cites_as_support layer. This tests whether high Epistemic Monopoly (EM) holds: the founding hypothesis should dominate the citation layer because it receives cites_as_support edges from (1) preclinical_animal_data -- all animal studies are cited as supporting the clinical hypothesis; (2) mri_gadolinium_endpoint -- human trial gadolinium data is cited back as clinical hypothesis confirmation; (3) regulatory_framework_fus -- FDA Breakthrough Device Designation is cited as institutional hypothesis validation; (4) clinical_outcome_endpoint -- early Phase I/II clinical outcome data is cited as hypothesis support. This gives fus_bbb_hypothesis in-degree=4 in cites_as_support. If CONFIRMED: EM is HIGH for FUS-BBB -- the founding claim exercises epistemic monopoly in the citation layer. Combined with the mechanism analysis, this would establish FUS-BBB as a HIGH EM + MEDIUM ETD case (like Alzheimer's amyloid, not like vaccines). The structural implication: high EM + surrogate substitution creates conditions for citation anomaly risk in the preclinical evidence base (all preclinical data funneled into supporting one hypothesis).",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "cites_as_support",
+        "expected_hub": "fus_bbb_hypothesis",
+        "max_rank": 2
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "acoustic_cavitation_mechanism or fus_bbb_hypothesis is the top-2 hub in the justifies layer. This tests whether the mechanistic chain is structurally prominent (the physical mechanism IS in the theoretical layer -- unlike weak-mechanism cases like schizophrenia or opioids where the founding hypothesis was empirically tenuous). acoustic_cavitation_mechanism has total degree=4 in justifies (out-degree=3 to tight_junction_disruption, drug_brain_concentration, mri_gadolinium_endpoint; in-degree=1 from fus_bbb_hypothesis). fus_bbb_hypothesis has out-degree=4 (to acoustic_cavitation_mechanism, tight_junction_disruption, reversibility_claim, drug_brain_concentration). Both should be top-2 hubs. If CONFIRMED: the mechanism layer is structurally strong -- this distinguishes FUS-BBB from schizophrenia (where the founding dopamine hypothesis also scored high in justifies but the endpoint was completely decoupled). The critical comparison: does strong mechanism in justifies co-occur with positive r(j,se) (H1)? If H4 CONFIRMED + H1 DENIED: we have documented the Mechanistically Grounded Surrogate Capture regime -- strong mechanism in the theoretical layer, but r(j,se) broken by institutional substitution.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "justifies",
+        "expected_hub": "acoustic_cavitation_mechanism",
+        "max_rank": 2
+      }
+    }
+  ]
+}
