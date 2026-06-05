@@ -1,0 +1,20 @@
+{
+  "experiment": "DISC_CANCER_4_v1 -- NSCLC External Validation: Does delta-r coupling sensitivity predict DepMap CRISPR essentiality?",
+  "committed_at": "2026-06-05T23:42:56.935796+00:00",
+  "prediction_hash": "c81953baaa20d0820c9011e6754cb2c09e861db39fb25c16ffb159659392da04",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "ERK1 depmap_crispr_nsclc_mean < MEK1 depmap_crispr_nsclc_mean -- meaning ERK1 is more essential (more negative score) than MEK1 across the 4 NSCLC lines (A549, NCI-H1299, HCC827, NCI-H460). Structural basis: delta-r|ERK1=-0.135 vs delta-r|MEK1=-0.011. ERK1 is the terminal MAPK effector that directly phosphorylates MYC (S62 stabilization) -- removing ERK1 breaks the KRAS-coexpression anchor that no other node replicates. MEK1 is ERK1's direct input, but MEK2 provides redundancy in cell survival that ERK1 does not have at the terminal node. If CONFIRMED (ERK1 score < MEK1 score): coupling sensitivity predicts functional essentiality; the structural analysis identifies ERK1 as a better target than MEK1, consistent with the clinical gap (no approved ERK inhibitor vs. approved MEK inhibitors). If DENIED (MEK1 more essential or equal): delta-r does not distinguish functional essentiality within the MAPK cascade; structural coupling and cell survival essentiality decouple at this level."
+    },
+    {
+      "id": "h2",
+      "statement": "TP53 depmap_crispr_nsclc_mean > -0.30 -- meaning TP53 is non-essential (score above the -0.30 essentiality threshold) in the NSCLC cell line panel. Structural basis: delta-r|TP53=-0.090 (third-most disruptive node), yet TP53 is loss-of-function mutated in ~50% NSCLC including A549 (R273H) and H1299 (null). Cancer cells that have already removed TP53 do not require it for survival -- CRISPR knockout of a mutant allele has no phenotypic effect. Across the mixed 4-line panel, the mean CRISPR score should be near-zero or non-essential. This tests the structural void hypothesis: delta-r detects that TP53 is a structural coupling hub whose ABSENCE destabilizes cross-layer alignment, but this is a retrospective structural measure of cancer's past evolutionary action, not a prediction of a currently druggable target. TP53's high delta-r and near-zero CRISPR essentiality are BOTH correct -- they measure different things. If CONFIRMED (score > -0.30): TP53 is structurally important but functionally non-essential in established cancer lines -- structural void hypothesis supported. If DENIED (score < -0.30): TP53 shows residual essentiality, possibly driven by TP53-wt lines (HCC827, H460) dominating the panel mean -- would require per-line analysis to separate WT from mutant subsets."
+    },
+    {
+      "id": "h3",
+      "statement": "PTEN depmap_crispr_nsclc_mean > -0.20 -- meaning PTEN is non-essential (score above -0.20) in the NSCLC cell line panel. Structural basis: delta-r|PTEN=-0.080 (fourth-most disruptive node), yet PTEN is a loss-of-function negative regulator: it dephosphorylates PIP3, suppressing AKT1 activation. In cancer cells, PTEN loss is a selective advantage -- the cell removes its own brake on PI3K signaling. CRISPR knockout of an already-non-functional or already-absent PTEN has minimal survival effect. The threshold -0.20 (less strict than TP53's -0.30) accounts for the fact that some NSCLC lines retain PTEN and knockdown might have mild effects; but genuine essentiality (< -0.50) would be unexpected. If CONFIRMED (score > -0.20): PTEN structural importance and CRISPR non-essentiality co-exist -- the structural void hypothesis holds for both tumor suppressors tested. If DENIED (score < -0.20): PTEN shows residual essentiality; requires investigating which lines drive the effect and whether it reflects PTEN's structural role or a cell-line-specific dependency."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
