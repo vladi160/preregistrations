@@ -1,0 +1,20 @@
+{
+  "experiment": "DISC_CANCER_2_v1 -- NSCLC Perturbation Loop: Which node removal collapses structural organization most?",
+  "committed_at": "2026-06-05T23:15:38.933443+00:00",
+  "prediction_hash": "e851ae24f7730c96ea00c04c8daa09f05b80c7a7beeb6a39546683c75e050b00",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "After removing MYC from the NSCLC network, r(physical_interaction, coexpression_cancer) drops below the baseline (baseline = 0.7145 from DISC_CANCER_1). Pre-registered threshold: r < 0.65 after MYC removal. MYC contributes to d1-d2 correlation because it is a physical interaction hub receiving from ERK1 and mTOR (d1) AND the #2 coexpression hub in TCGA data (d2). Removing MYC: (a) removes the convergence point of both MAPK and PI3K pathways in the physical network, (b) removes 3 coexpression edges (MYC-mTOR, MYC-PI3K, MDM2-MYC) that contribute to d2 density. Expected: r drops to ~0.55-0.65. If CONFIRMED (r still >= 0.65): MYC removal is surprisingly resilient -- the network has structural redundancy that compensates. If DENIED (r < 0.65): MYC removal disrupts cross-layer coupling -- MYC is the structural weak point whose removal most degrades the cancer network's organization."
+    },
+    {
+      "id": "h2",
+      "statement": "After MYC removal, EGFR remains the top hub in physical_interaction. MYC removal does not affect EGFR's degree in d1 (EGFR had no edges to/from MYC). EGFR degree in d1 was 6 and remains 6 after MYC removal. If CONFIRMED: the top physical hub is stable -- drug development correctly identified EGFR as the primary target. If DENIED (another protein takes rank #1): an unexpected structural reorganization has occurred, meaning the network structure is more sensitive to MYC than anticipated."
+    },
+    {
+      "id": "h3",
+      "statement": "After MYC removal, AKT1 or PI3K becomes the top betweenness hub, displacing EGFR. Reasoning: MYC removal disconnects the path from ERK1 to TP53 (ERK1->MYC->TP53 no longer exists). The remaining paths to TP53 go through MDM2->TP53 only. This changes betweenness distribution: nodes on the AKT1->MDM2->TP53 path (AKT1, MDM2) may accumulate more betweenness as they become the sole bottleneck to TP53. If CONFIRMED: betweenness shifts from EGFR to PI3K/AKT1 pathway after MYC removal -- meaning PI3K pathway becomes the new structural bottleneck. This would be a direct prescription: if MYC is the structural weak point, the SECOND priority target is the PI3K-AKT1 arm. If DENIED (EGFR still top betweenness): EGFR maintains structural dominance regardless of MYC presence."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
