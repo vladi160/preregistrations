@@ -1,0 +1,57 @@
+{
+  "experiment": "DISC_CANCER_1_v1 -- NSCLC Structural Weak Points: Which proteins are biological hubs with no drug coverage?",
+  "description": "First iteration of a discovery-mode loop on the NSCLC EGFR signaling network. Goal: identify proteins that are structurally central in cancer biology (high degree in physical_interaction and coexpression_cancer layers) but absent from current therapeutic coverage (zero or near-zero degree in drug_coverage layer). These are the structural weak points -- nodes whose removal would most disrupt the cancer network, but which currently have no approved drug pointing at them. This is NOT an FPL confirmation experiment. The question is not 'does FPL hold?' The question is 'which specific proteins are the structural gap between what cancer biology uses as hubs and what drug development has targeted?' The result of this experiment will directly generate the dataset for iteration 2: the local neighborhood of the top under-covered structural hub. Dataset: examples/nsclc_egfr_signaling.json. Nodes n=16 proteins. Layers: d1=physical_interaction, d2=coexpression_cancer, d3=drug_coverage.",
+  "graph": "../nsclc_egfr_signaling.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "physical_interaction", "layer_b": "coexpression_cancer" },
+    { "run": "cross_layer_analysis", "layer_a": "physical_interaction", "layer_b": "drug_coverage" },
+    { "run": "cross_layer_analysis", "layer_a": "coexpression_cancer", "layer_b": "drug_coverage" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "MYC is a top-5 hub in the physical_interaction layer (d1). MYC is downstream of two independent signaling pathways (ERK1 from MAPK and mTOR from PI3K) and upstream of TP53 via ARF. It receives phosphorylation from ERK1 (S62 stabilization) and translational activation from mTOR (via S6K1), making it a convergence point for both the KRAS-MAPK and PI3K-AKT-mTOR axes. Physical degree in d1: in-edges from ERK1 and mTOR (degree >= 2 in), out-edge to TP53 (degree 1 out) = minimum total degree 3. This should place MYC in the top half of physical hubs despite being a downstream transcription factor rather than a receptor or kinase. DISCOVERY SIGNIFICANCE: if MYC is confirmed as a top-5 physical hub with zero drug coverage (d3 degree = 0), it is the most structurally important therapeutically uncovered node in the network.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "physical_interaction",
+        "expected_hub": "MYC",
+        "max_rank": 5
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "MYC is a top-3 hub in the coexpression_cancer layer (d2). In TCGA LUAD data, MYC expression co-varies with mTOR (co-amplification in aggressive subtype), PI3K (co-amplification in ~12% LUAD), and MDM2 (co-amplification in high-proliferation tumors). Out-degree = 2 (to mTOR, to PI3K) and in-degree = 1 (from MDM2) = total d2 degree of 3. EGFR also has d2 degree = 3. Prediction: MYC and EGFR are tied for the top coexpression hub. This would confirm that MYC is not just a physical bottleneck -- it is also a marker of the most aggressive cancer expression profile. If MYC is top-3 in BOTH d1 and d2 with zero d3 coverage, this is the clearest structural weak point in the NSCLC network: maximum biological prominence, minimum therapeutic coverage.",
+      "test": {
+        "type": "top_hub_in_layer",
+        "layer": "coexpression_cancer",
+        "expected_hub": "MYC",
+        "max_rank": 3
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "At least 3 proteins have a rank gap >= 6 between physical_interaction (d1) and drug_coverage (d3) in the direction of being more physically central than therapeutically covered. These are the structural weak points. Predicted candidates: MYC (d1 rank ~4-5, d3 rank ~13-16 since degree=0), GRB2 (d1 rank ~4-5 via EGFR-GRB2-SOS1 adaptor role, d3 rank ~13-16 since degree=0), ERK1 (d1 rank ~8-10, d3 rank ~13-16 since degree=0), STAT3 (d1 rank ~8-10, d3 rank ~13-16 since degree=0). Minimum 3 of these 4 should show rank gap >= 6. This is the core discovery test: topology can identify which proteins are structurally load-bearing in cancer biology but have been missed by drug development. The null model is required to confirm this pattern is not a degree-distribution artifact.",
+      "test": {
+        "type": "cross_layer_divergence_count",
+        "layer_a": "physical_interaction",
+        "layer_b": "drug_coverage",
+        "min_divergence_count": 3,
+        "rank_gap_threshold": 6
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "r(physical_interaction, coexpression_cancer) > 0 with min_abs_r = 0.30. This is a structural sanity check: proteins that are physically central in the signaling network should also show correlated expression in cancer tissue, because the cancer phenotype amplifies the activity of its own structural hubs. If this does NOT hold, it would mean the expression data and the physical network describe structurally independent things -- invalidating the combined d1+d2 hub analysis. If CONFIRMED: the two biological data sources (physical interaction network and cancer expression correlation) are structurally consistent, giving the hub analysis in h1/h2/h3 a stronger evidential basis. The permutation null model will determine if this r is non-artifactual given the network's degree distribution.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "physical_interaction",
+        "layer_b": "coexpression_cancer",
+        "expected_direction": "positive",
+        "min_abs_r": 0.30
+      }
+    }
+  ]
+}
