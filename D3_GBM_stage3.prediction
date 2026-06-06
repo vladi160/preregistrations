@@ -1,0 +1,204 @@
+{
+  "experiment": "D3_GBM_stage3 -- Prospective Blind Drug Prediction in GBM (Stage 3)",
+  "stage": 3,
+  "stage_description": "First genuinely prospective blind prediction in the IRDME cancer drug discovery pipeline. Prior experiments (D3_v1, D3_v2, D3_CRC_v1, D3_PDAC_v1) were retrospective against existing PRISM data. In this experiment, we (1) build the GBM network, (2) run the perturbation loop to get delta-r values, (3) commit this prediction file, and ONLY THEN (4) open PRISM glioma LFC data and test. The delta-r values were computed without accessing any PRISM LFC data for glioma lines.",
+  "parent_experiments": [
+    "D3_v2_KRAS_stratified (1e8b0ad) -- NSCLC: mTOR(damper)>MEK1(anchor) H2 CONFIRMED",
+    "D3_CRC_v1 (e727cf2) -- CRC: MEK1(damper)>mTOR(anchor) H2 CONFIRMED [topology flip]",
+    "D3_PDAC_v1 (201dfd2) -- PDAC: CDK4/6 cytostatic class identified (H1/H2 DENIED), mTOR anchor (-0.075), LFC=-0.434"
+  ],
+  "scientific_question": "Can the ODS perturbation loop (delta-r from physical_interaction vs coexpression_cancer layers) prospectively predict the relative efficacy ordering of drug classes in glioblastoma multiforme (GBM), BEFORE examining PRISM glioma cell viability data? Specifically: in GBM, MEK1 (+0.099) and MET (+0.185) are structural DAMPERS, while mTOR (-0.093) and EGFR (-0.111) are structural ANCHORS. This is the topology FLIP relative to NSCLC (where mTOR was the damper). ODS predicts: MEK1/MET inhibitors should outperform mTOR/EGFR inhibitors in EGFR-dependent GBM lines.",
+  "network_file": "examples/gbm_egfr_signaling.json",
+  "perturbation_output": "outputs/perturbation_GBM_stage3.json",
+  "baseline_r": 0.3651,
+  "delta_r_values": {
+    "MET": 0.185,
+    "CDK4": 0.1789,
+    "TP53": 0.0991,
+    "MEK1": 0.0991,
+    "AKT1": 0.0875,
+    "MDM2": 0.0657,
+    "PTEN": 0.0376,
+    "RB1": 0.0228,
+    "ERK1": 0.0075,
+    "GRB2": -0.0148,
+    "PI3K": -0.0183,
+    "CDKN2A": -0.0332,
+    "MYC": -0.0893,
+    "mTOR": -0.0925,
+    "EGFR": -0.1111,
+    "STAT3": -0.1551
+  },
+  "structural_taxonomy": {
+    "DAMPERS_large": [
+      "MET (+0.185)",
+      "CDK4 (+0.179)"
+    ],
+    "DAMPERS_moderate": [
+      "TP53 (+0.099)",
+      "MEK1 (+0.099)",
+      "AKT1 (+0.088)",
+      "MDM2 (+0.066)"
+    ],
+    "DAMPERS_small": [
+      "PTEN (+0.038)",
+      "RB1 (+0.023)",
+      "ERK1 (+0.008)"
+    ],
+    "ANCHORS_small": [
+      "GRB2 (-0.015)",
+      "PI3K (-0.018)",
+      "CDKN2A (-0.033)"
+    ],
+    "ANCHORS_moderate": [
+      "MYC (-0.089)",
+      "mTOR (-0.093)",
+      "EGFR (-0.111)"
+    ],
+    "ANCHORS_large": [
+      "STAT3 (-0.155)"
+    ]
+  },
+  "nodes_excluded_from_prism_test": {
+    "CDK4": "Cytostatic class — CDK4/6 inhibitors (palbociclib/ribociclib/abemaciclib) arrest cells in G1 but do not kill; PRISM LFC is inadequate readout. Established in D3_PDAC_v1.",
+    "MYC": "BET inhibitor potency gap — JQ1/OTX015 suppress MYC ~70% but residual MYC is sufficient for survival. Confirmed D3_v1 (LFC=-0.128) and D3_v2 (LFC=+0.240, cells GROW).",
+    "MDM2": "TP53-WT gating — nutlin-3/AMG-232 only effective in TP53-WT cells. GBM is ~30% TP53-mutant in primary GBM, so unselected glioma lines are mixed TP53 status. Cannot test without TP53-WT stratification.",
+    "TP53": "Tumor suppressor — no direct drug in PRISM targeting TP53; MDM2 inhibitors are the proxy but excluded above.",
+    "PTEN": "Tumor suppressor — no direct drug targeting PTEN in PRISM; loss drives PI3K vulnerability.",
+    "RB1": "Not druggable (delta_r=+0.023).",
+    "GRB2": "No direct GRB2 inhibitor in PRISM 20Q2 (delta_r=-0.015).",
+    "ERK1": "No ERK inhibitors in PRISM 20Q2 (delta_r=+0.008).",
+    "CDKN2A": "Not druggable (delta_r=-0.033); CDKN2A loss drives CDK4 vulnerability but excluded above.",
+    "STAT3": "No approved STAT3 inhibitor in PRISM 20Q2 with sufficient coverage."
+  },
+  "druggable_nodes_for_test": {
+    "MET": {
+      "delta_r": 0.185,
+      "class": "DAMPER",
+      "drugs": [
+        "crizotinib",
+        "cabozantinib"
+      ],
+      "note": "MET amplified ~40% GBM; biggest druggable damper"
+    },
+    "MEK1": {
+      "delta_r": 0.0991,
+      "class": "DAMPER",
+      "drugs": [
+        "trametinib",
+        "selumetinib",
+        "Ro-4987655",
+        "TAK-733",
+        "PD-0325901",
+        "MEK162",
+        "refametinib",
+        "PD-198306"
+      ]
+    },
+    "AKT1": {
+      "delta_r": 0.0875,
+      "class": "DAMPER",
+      "drugs": [
+        "MK-2206",
+        "uprosertib",
+        "GDC-0068",
+        "AZD5363",
+        "GSK2110183",
+        "triciribine"
+      ]
+    },
+    "PI3K": {
+      "delta_r": -0.0183,
+      "class": "near-anchor",
+      "drugs": [
+        "alpelisib",
+        "idelalisib",
+        "copanlisib",
+        "GDC-0941",
+        "taselisib",
+        "ZSTK-474",
+        "AZD6482",
+        "TG100-115",
+        "buparlisib",
+        "GDC-0349"
+      ]
+    },
+    "mTOR": {
+      "delta_r": -0.0925,
+      "class": "anchor",
+      "drugs": [
+        "AZD2014",
+        "AZD8055",
+        "everolimus",
+        "temsirolimus",
+        "sirolimus",
+        "PP242",
+        "OSI-027",
+        "torin-1",
+        "torin-2",
+        "WYE-354",
+        "WYE-125132",
+        "WAY-600",
+        "PKI-179",
+        "XL388",
+        "deforolimus",
+        "LY3023414",
+        "palomid-529",
+        "ku-0063794"
+      ]
+    },
+    "EGFR": {
+      "delta_r": -0.1111,
+      "class": "anchor",
+      "drugs": [
+        "erlotinib",
+        "gefitinib",
+        "osimertinib",
+        "lapatinib",
+        "afatinib",
+        "neratinib"
+      ],
+      "note": "Poor BBB penetration in vivo, but PRISM is in vitro so BBB not a confounder here"
+    }
+  },
+  "pi3k_exclusion": "PIK-75 excluded from PI3K class (off-target cytotoxicity, established exclusion)",
+  "cell_line_filter": {
+    "secondary_tissue_or_primary": "glioma (secondary_tissue) or brain (primary_tissue subtype)",
+    "source": "PRISM 20Q2 secondary-screen-cell-line-info.csv",
+    "driver_stratification": "EGFR Chronos score (CRISPRGeneEffect.csv column \"EGFR (1956)\") < -0.5",
+    "rationale": "GBM is EGFR-driven (amplified ~60% of GBM); EGFR Chronos < -0.5 selects EGFR-essential lines, analogous to KRAS Chronos < -0.5 in KRAS-mutant series. This identifies GBM lines with constitutive EGFR dependency.",
+    "note": "If fewer than 10 lines pass EGFR filter, test on all glioma lines without stratification as secondary analysis."
+  },
+  "prism_dataset": "PRISM Repurposing 20Q2 Secondary Screen (replicate-collapsed LFC)",
+  "committed_at": "2026-06-06T06:15:56.484103+00:00",
+  "topology_context": {
+    "GBM_vs_NSCLC_flip": "In NSCLC, mTOR was the damper (+0.049), MEK1 was the anchor (-0.011). In GBM, mTOR is the anchor (-0.093) and MEK1 is the damper (+0.099). This is a topology flip — same two drugs but opposite structural positions.",
+    "GBM_vs_CRC_same": "In CRC, MEK1 was the damper (+0.120), mTOR was the anchor (-0.117). In GBM, MEK1 is also the damper (+0.099), mTOR is also the anchor (-0.093). Same topology as CRC — GBM and CRC are in the same structural regime for MEK/mTOR.",
+    "mTOR_4cancer_series": "Monotonic mTOR efficacy prediction: NSCLC (damper +0.049) most effective, PDAC (weak anchor -0.075) 2nd, GBM (intermediate anchor -0.093) 3rd, CRC (strong anchor -0.117) least effective. GBM predicts: mTOR LFC between -0.434 (PDAC) and -0.270 (CRC).",
+    "EGFR_anchor_insight": "EGFR is the primary GBM oncogene but is a structural ANCHOR (delta_r=-0.111). This is consistent with ODS: the anchor is the integration hub of both layers; removing it disrupts network coupling. EGFR inhibitors have failed in GBM clinical trials (ascribed to BBB), but PRISM is in vitro — if EGFR is an anchor, ODS predicts EGFR inhibitors should also be LESS effective in vitro, even without BBB confounding.",
+    "STAT3_biggest_anchor": "STAT3 is the biggest structural anchor in GBM (delta_r=-0.155). This makes biological sense — STAT3 is the core GBM stem cell hub, activating MYC, VEGF, BCL-2. But there are no STAT3 inhibitors in PRISM 20Q2, so this cannot be directly tested."
+  },
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Spearman r(delta_r, mean PRISM LFC) < -0.40 across 6 druggable cytotoxic nodes (MET, MEK1, AKT1, PI3K, mTOR, EGFR) within EGFR-dep glioma lines (EGFR Chronos < -0.5). delta_r range: +0.185 (MET, damper) to -0.111 (EGFR, anchor). Predicted ordering: MET > MEK1 > AKT1 > PI3K > mTOR > EGFR (more negative LFC = more killing)."
+    },
+    {
+      "id": "h2",
+      "label": "Topology flip test (GBM: same regime as CRC)",
+      "statement": "MEK1 mean PRISM LFC < mTOR mean PRISM LFC within EGFR-dep glioma lines (MEK1 kills more than mTOR, same topology as CRC). MEK1 is structural DAMPER (+0.099) in GBM; mTOR is structural ANCHOR (-0.093). In NSCLC: mTOR was the damper → mTOR killed more (CONFIRMED). In CRC: MEK1 was the damper → MEK1 killed more (CONFIRMED). In GBM: MEK1 is the damper again → predicts MEK1 kills more than mTOR."
+    },
+    {
+      "id": "h3",
+      "label": "mTOR 4-cancer monotonic test (prospective)",
+      "statement": "mTOR mean PRISM LFC in GBM is between PDAC ref (-0.434) and CRC ref (-0.270). That is: -0.434 < mTOR_GBM_LFC < -0.270. GBM mTOR is an anchor (delta_r=-0.093), intermediate between PDAC (-0.075) and CRC (-0.117). The 3-cancer monotonic trend predicts GBM mTOR falls in the intermediate range. PDAC ref: outputs/D3_PDAC_v1_results.json mTOR mean_lfc=-0.434. CRC ref: outputs/D3_CRC_v1_results.json mTOR mean_lfc=-0.270."
+    },
+    {
+      "id": "h4",
+      "label": "EGFR anchor in vitro test",
+      "statement": "EGFR inhibitors in EGFR-dep glioma lines show mean PRISM LFC > -0.400 (relatively weak killing, consistent with anchor structural position delta_r=-0.111). Counterintuitive prediction: even in EGFR-essential cells, EGFR inhibitors kill less efficiently than MEK1 inhibitors, because EGFR is an anchor (structural integrator) not a damper. This would establish that in vitro EGFR inhibitor failure is partly structural (topology), not only pharmacological (BBB)."
+    }
+  ],
+  "_note": "Do not edit — pre-registered before PRISM LFC loading for glioma lines. Prospective Stage 3 test.",
+  "prediction_hash": "34de8f26d10618ead82ec36b9c2532be1d65c6cd90ad9bad86b196e1ecb556f4"
+}
