@@ -1,0 +1,109 @@
+{
+  "experiment": "D3_CRC_v1 -- Topology Regime Shift Test: Does delta-r preserve drug sensitivity ordering across topology regimes?",
+  "parent_experiments": [
+    "D3_NSCLC_v1 (5b60be0) -- DENIED across unselected panel",
+    "D3_v2_KRAS_stratified (1e8b0ad) -- H1 DENIED at boundary (r=-0.400); H2 CONFIRMED (mTOR>MEK1 in NSCLC KRAS-dep lines)"
+  ],
+  "scientific_question": "This is NOT a drug discovery test. It is a topology regime generalization test: In NSCLC, mTOR is the largest structural damper (delta_r=+0.049) and MEK1 is near-neutral (delta_r=-0.011). mTOR inhibitors outperformed MEK inhibitors in KRAS-dependent NSCLC lines (D3_v2 H2 CONFIRMED). In CRC, the topology flips: MEK1 becomes the largest structural damper (delta_r=+0.120) and mTOR becomes the largest structural anchor (delta_r=-0.117). Question: do the SAME drug classes swap their relative efficacy in CRC, consistent with the topology change? If MEK inhibitors outperform mTOR inhibitors in KRAS-dependent CRC lines, ODS structural position preserves monotonic drug sensitivity ordering across topology regimes.",
+  "operator_framework": "Perturbation operators: (1) CRISPR -- structural removal -- delta_r aligned (DISC_CANCER_4 r=-0.722); (2) kinase pathway inhibitors -- flow inhibition -- delta_r partially aligned within pathway module; (3) BET/transcriptional drugs -- state reprogramming -- delta_r misaligned (established exclusion). This experiment tests whether operator class (2) generalization holds across topology regimes.",
+  "network_file": "examples/crc_kras_signaling.json",
+  "delta_r_source": "outputs/perturbation_DISC_CANCER_5.json (prereg commit 9934403)",
+  "delta_r_values": {
+    "MEK1": 0.1203,
+    "AKT1": -0.0336,
+    "mTOR": -0.1165,
+    "PI3K": -0.1511
+  },
+  "nodes_excluded": {
+    "MYC": "BET inhibitor potency gap -- confirmed cross-context (NSCLC D3_v1, D3_v2); pre-registered exclusion",
+    "KRAS": "No sotorasib in PRISM 20Q2 (approved 2021)",
+    "EGFR": "Context-gated: EGFR inhibitors require KRAS-WT in CRC; anti-EGFR therapy clinically ineffective in KRAS-mutant CRC",
+    "BRAF": "Context-gated: BRAF inhibitors require BRAF mutation (~8% CRC); testing KRAS-dependent lines",
+    "SMAD4": "No druggable inhibitor in PRISM 20Q2",
+    "MDM2": "Context-gated: requires TP53-WT (same exclusion as D3_v1/v2)",
+    "GSK3B": "GSK3B inhibitors (CHIR-99021) activate CTNNB1 -- activators not suppressors; not cancer drug candidates in this context",
+    "CTNNB1": "WNT inhibitors (IWR-1, ICG-001) only 8 entries each in PRISM -- insufficient coverage; delta_r=-0.015 (near-neutral)",
+    "APC": "Not druggable",
+    "TP53": "Near-neutral (delta_r=-0.001); MDM2 inhibitors are TP53-WT context-gated"
+  },
+  "cell_line_filter": {
+    "primary_tissue": "colorectal",
+    "source": "PRISM 20Q2 secondary-screen-cell-line-info.csv",
+    "kras_filter": "KRAS Chronos (CRISPRGeneEffect.csv column KRAS (3845)) < -0.5",
+    "n_expected": 27,
+    "rationale": "Same KRAS-dependency filter as D3_v2 (1e8b0ad). Restricts to lines where KRAS is an active driver. In CRC, KRAS-mutant lines have constitutively active MAPK and PI3K axes -- the structural context for which CRC network delta_r was computed."
+  },
+  "drug_lists": {
+    "MEK1": [
+      "selumetinib",
+      "trametinib",
+      "Ro-4987655",
+      "TAK-733",
+      "PD-0325901",
+      "MEK162",
+      "refametinib",
+      "PD-198306"
+    ],
+    "mTOR": [
+      "AZD2014",
+      "AZD8055",
+      "everolimus",
+      "temsirolimus",
+      "sirolimus",
+      "PP242",
+      "OSI-027",
+      "torin-1",
+      "torin-2",
+      "WYE-354",
+      "WYE-125132",
+      "WAY-600",
+      "PKI-179",
+      "XL388",
+      "deforolimus",
+      "LY3023414",
+      "palomid-529",
+      "ku-0063794"
+    ],
+    "PI3K": [
+      "alpelisib",
+      "idelalisib",
+      "copanlisib",
+      "GDC-0941",
+      "taselisib",
+      "ZSTK-474",
+      "AZD6482",
+      "TG100-115",
+      "buparlisib",
+      "GDC-0349"
+    ],
+    "AKT1": [
+      "MK-2206",
+      "uprosertib",
+      "GDC-0068",
+      "AZD5363",
+      "GSK2110183",
+      "triciribine"
+    ]
+  },
+  "pi3k_exclusion_maintained": "PIK-75 excluded from PI3K class (same as D3_v2: off-target cytotoxicity established)",
+  "prism_dataset": "PRISM Repurposing 20Q2 Secondary Screen (replicate-collapsed LFC)",
+  "committed_at": "2026-06-06T05:39:04.735668+00:00",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Spearman r(delta_r, mean PRISM LFC) < -0.40 across 4 node-drug class pairs (MEK1, AKT1, mTOR, PI3K) within colorectal lines filtered to KRAS Chronos < -0.5. With n=4 nodes, statistical power is acknowledged to be low. This test primarily establishes directional alignment, not statistical significance."
+    },
+    {
+      "id": "h2",
+      "label": "Topology Regime Flip Test (primary test)",
+      "statement": "MEK1 mean PRISM LFC < mTOR mean PRISM LFC within KRAS Chronos < -0.5 colorectal lines. Equivalently: MEK inhibitors kill KRAS-dependent CRC cells more effectively than mTOR inhibitors. This is the topology regime shift test: In D3_v2 NSCLC, mTOR (damper delta_r=+0.049) killed more than MEK1 (anchor delta_r=-0.011) -- CONFIRMED. In CRC, MEK1 is the damper (delta_r=+0.120) and mTOR is the anchor (delta_r=-0.117). If H2 confirmed: SAME drug classes swap relative efficacy exactly as ODS predicts from topology. If H2 denied: mTOR has topology-independent efficacy that overrides structural position -- mTOR essentiality (essential anchor) dominates over structural damper assignment."
+    }
+  ],
+  "nsclc_comparison": {
+    "h2_nsclc_result": "CONFIRMED -- mTOR mean LFC=-0.501 < MEK1 mean LFC=-0.323 in D3_v2 (1e8b0ad)",
+    "topology_flip": "MEK1: NSCLC anchor(-0.011) -> CRC damper(+0.120) | mTOR: NSCLC damper(+0.049) -> CRC anchor(-0.117)",
+    "prediction": "H2 CRC should be MIRROR of H2 NSCLC: MEK outperforms mTOR instead of mTOR outperforming MEK"
+  },
+  "_note": "Do not edit -- pre-registered before PRISM LFC loading for CRC lines.",
+  "prediction_hash": "ff555fcc80668be371332886bed95cff9d5824e3e808946b96bc997b81be58ba"
+}
