@@ -1,0 +1,28 @@
+{
+  "experiment": "DISC_CANCER_6_v1 -- ODS in Pancreatic Ductal Adenocarcinoma: Does the Oncogenic Decoupling Signature replicate in a WNT-absent, KRAS-dominant cancer network?",
+  "network_file": "examples/pdac_kras_signaling.json",
+  "cell_lines": {
+    "PANC1": "ACH-000164 (KRAS-G12D, TP53-R248W, SMAD4-WT, CDKN2A-del)",
+    "MiaPaCa2": "ACH-000601 (KRAS-G12C, TP53-R248W, SMAD4-del, CDKN2A-del)",
+    "AsPC1": "ACH-000222 (KRAS-G12D, TP53-R248W, SMAD4-del, CDKN2A-del)",
+    "CFPAC1": "ACH-000138 (KRAS-G12V, TP53-S241F, SMAD4-mut, CDKN2A-del)"
+  },
+  "crispr_source": "DepMap Public 26Q1 -- CRISPRGeneEffect.csv",
+  "committed_at": "2026-06-06T04:22:02.475539+00:00",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Spearman r(delta-r, mean_CRISPR_4lines) < -0.40 across all 16 PDAC network nodes (PANC1 ACH-000164, MiaPaCa-2 ACH-000601, AsPC-1 ACH-000222, CFPAC-1 ACH-000138). Threshold -0.40 is identical to DISC_CANCER_5 H1. Basis: ODS was r=-0.722 in NSCLC (CONFIRMED) and r=-0.015 in CRC (DENIED). Post-hoc analysis of CRC failure attributed ODS disruption to WNT pathway (CTNNB1/mTOR/MDM2 as essential anchors). PDAC network contains no WNT pathway nodes (no APC, CTNNB1, GSK3B). If CONFIRMED: ODS generalizes to WNT-absent kinase-cascade networks; WNT topology hypothesis is retroactively supported. If DENIED: ODS is NSCLC-specific regardless of WNT topology."
+    },
+    {
+      "id": "h2",
+      "statement": "MYC delta-r > 0 (structural damper) AND MYC mean CRISPR essentiality < -1.50 across the 4 PDAC lines. Basis: MYC was damper+essential in NSCLC (delta-r=+0.040, CRISPR=-2.14) and CRC (delta-r=+0.029, CRISPR=-2.74, H2 CONFIRMED in DISC_CANCER_5). MYC is downstream of both ERK1 (KRAS cascade) and mTOR (PI3K arm) in the PDAC network -- a structural convergence point. If CONFIRMED: MYC Cross-Cancer Structural Damper upgrades from PROVISIONAL to CONFIRMED (3 independent cancer networks). If DENIED: PDAC-specific MYC network topology disrupts the cross-cancer damper pattern."
+    },
+    {
+      "id": "h3",
+      "statement": "CDKN2A delta-r < 0 (structural anchor -- its removal DECREASES cross-layer coupling) AND CDKN2A mean CRISPR essentiality > -0.30 (anti-essential, consistent with structural void class). Basis: TP53 and PTEN were structural voids in NSCLC (anchor + anti-essential). CDKN2A is deleted in ~90% PDAC -- highest deletion rate of any gene in the 16-node network. Cancer has functionally removed CDKN2A, predicting near-zero CRISPR scores. The structural void pattern (anchor + anti-essential) should extend to CDKN2A in PDAC. CRISPR threshold -0.30 is conservative (TP53 was +1.34, PTEN was +0.61 in NSCLC). If CONFIRMED: Structural void extends to CDKN2A; general rule candidate: tumor suppressors deleted at >80% rate become structural voids. If DENIED: CDKN2A retains essentiality despite widespread deletion (residual p14ARF function or heterozygous cases)."
+    }
+  ],
+  "_note": "Do not edit -- this sidecar records pre-committed predictions before any run.",
+  "prediction_hash": "b711d4ce330d98b4225b64b82eaacf07b887e2dd2517c1a7c53c581bcbb52f4a"
+}
