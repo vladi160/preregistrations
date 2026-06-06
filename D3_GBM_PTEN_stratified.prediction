@@ -1,0 +1,125 @@
+{
+  "experiment": "D3_GBM_PTEN_stratified -- PTEN status stratification of GBM drug response",
+  "parent_experiments": [
+    "D3_GBM_stage3 (bca6188) -- GBM prospective blind prediction: H4 CONFIRMED (EGFR anchor->weak), H2 DENIED (mTOR most effective despite anchor -- PTEN-loss hypothesized)",
+    "D3_v2_KRAS_stratified (1e8b0ad) -- NSCLC: topology-regime ordering confirmed",
+    "D3_CRC_v1 (e727cf2) -- CRC: topology flip confirmed"
+  ],
+  "scientific_question": "Does PTEN expression status determine whether drug response in glioma follows structural topology (ODS damper>anchor) or pharmacological addiction (mTOR addiction via PTEN loss)? D3_GBM_stage3 found mTOR was the most effective drug despite being a structural anchor (delta_r=-0.093). The PTEN-loss hypothesis: PTEN deletion creates constitutive PI3K->AKT->mTOR signaling, making cells addicted to mTOR regardless of its structural position. If this is true, the mTOR dominance should be STRONGEST in PTEN-low lines and WEAKEST (or absent) in PTEN-intact lines. In PTEN-intact lines, structural topology should be the dominant determinant: damper drugs (MET, MEK1) should outperform mTOR (anchor).",
+  "stratification": {
+    "data_source": "OmicsExpressionTPMLogp1HumanProteinCodingGenes.csv (DepMap), PTEN (5728) column",
+    "metric": "log2(TPM+1) for PTEN gene expression",
+    "PTEN_low_threshold": 3.5,
+    "PTEN_intact_threshold": 4.5,
+    "PTEN_low_group": "PTEN_expr < 3.5 (clear PTEN loss: deletion, silencing, or mutation)",
+    "PTEN_intact_group": "PTEN_expr > 4.5 (above median, clearly PTEN expressing)",
+    "borderline_excluded": "PTEN_expr 3.5-4.5 excluded to ensure clean group separation",
+    "rationale": "Threshold chosen after examining PTEN expression distribution in 54 glioma lines but BEFORE opening PRISM LFC drug data. Clear bimodal structure: 4 lines <1.0 (near-zero PTEN), 13 lines <3.5 (strong PTEN loss), 27 lines >4.5 (PTEN expressing). CRISPR validation: PTEN_chronos is POSITIVE in PTEN-low lines (cells benefit from PTEN loss -- consistent with tumor suppressor biology).",
+    "expected_n_pten_low": 13,
+    "expected_n_pten_intact": 27,
+    "matching": "Match depmap_id from OmicsExpression -> PRISM cell line info -> PRISM LFC rows"
+  },
+  "network_file": "examples/gbm_egfr_signaling.json",
+  "perturbation_output": "outputs/perturbation_GBM_stage3.json",
+  "delta_r_values": {
+    "MET": 0.185,
+    "MEK1": 0.0991,
+    "AKT1": 0.0875,
+    "PI3K": -0.0183,
+    "mTOR": -0.0925,
+    "EGFR": -0.1111
+  },
+  "drug_lists": {
+    "MET": [
+      "crizotinib",
+      "cabozantinib"
+    ],
+    "MEK1": [
+      "selumetinib",
+      "trametinib",
+      "Ro-4987655",
+      "TAK-733",
+      "PD-0325901",
+      "MEK162",
+      "refametinib",
+      "PD-198306"
+    ],
+    "AKT1": [
+      "MK-2206",
+      "uprosertib",
+      "GDC-0068",
+      "AZD5363",
+      "GSK2110183",
+      "triciribine"
+    ],
+    "PI3K": [
+      "alpelisib",
+      "idelalisib",
+      "copanlisib",
+      "GDC-0941",
+      "taselisib",
+      "ZSTK-474",
+      "AZD6482",
+      "TG100-115",
+      "buparlisib",
+      "GDC-0349"
+    ],
+    "mTOR": [
+      "AZD2014",
+      "AZD8055",
+      "everolimus",
+      "temsirolimus",
+      "sirolimus",
+      "PP242",
+      "OSI-027",
+      "torin-1",
+      "torin-2",
+      "WYE-354",
+      "WYE-125132",
+      "WAY-600",
+      "PKI-179",
+      "XL388",
+      "deforolimus",
+      "LY3023414",
+      "palomid-529",
+      "ku-0063794"
+    ],
+    "EGFR": [
+      "erlotinib",
+      "gefitinib",
+      "osimertinib",
+      "lapatinib",
+      "afatinib",
+      "neratinib"
+    ]
+  },
+  "pi3k_exclusion": "PIK-75 excluded (off-target cytotoxicity)",
+  "cdk_exclusion": "CDK4/6 inhibitors excluded (cytostatic class, PRISM LFC inadequate)",
+  "bet_exclusion": "BET inhibitors excluded (potency gap established)",
+  "prism_dataset": "PRISM Repurposing 20Q2 Secondary Screen (replicate-collapsed LFC)",
+  "committed_at": "2026-06-06T06:49:42.423788+00:00",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "label": "PTEN-loss creates mTOR addiction",
+      "statement": "mTOR mean PRISM LFC in PTEN-low glioma lines < mTOR mean PRISM LFC in PTEN-intact glioma lines. mTOR inhibitors kill PTEN-low cells more than PTEN-intact cells. This is the direct test of the PTEN-loss mTOR override mechanism: PTEN deletion -> constitutive PI3K->AKT->mTOR -> mTOR addiction -> cells die readily when mTOR is inhibited. Threshold: difference > 0.10 LFC units (10% more killing in PTEN-low vs intact)."
+    },
+    {
+      "id": "h2",
+      "label": "Topology ordering recovers in PTEN-intact lines",
+      "statement": "In PTEN-intact glioma lines only: MEK1 mean PRISM LFC < mTOR mean PRISM LFC. MEK1 (structural DAMPER, delta_r=+0.099) kills more than mTOR (structural ANCHOR, delta_r=-0.093) when PTEN-loss addiction is absent. This mirrors the CRC result where MEK1 was the damper and outperformed mTOR (confirmed D3_CRC_v1). If H2 is confirmed: structural topology predicts drug ordering in PTEN-intact GBM, and the PTEN-loss override is the mechanism explaining the H2 denial in the full panel."
+    },
+    {
+      "id": "h3",
+      "label": "MET damper ranking in PTEN-intact lines",
+      "statement": "In PTEN-intact glioma lines: MET mean PRISM LFC < mTOR mean PRISM LFC. MET is the largest structural damper (delta_r=+0.185). Weaker prediction than H2 (smaller drug class: only crizotinib + cabozantinib), but if confirmed strengthens the damper ordering claim in PTEN-intact GBM."
+    },
+    {
+      "id": "h4",
+      "label": "Full r recovery in PTEN-intact",
+      "statement": "Spearman r(delta_r, mean LFC) < -0.40 across 6 cytotoxic nodes in PTEN-intact glioma lines. In D3_GBM_stage3 (all glioma): r=-0.371. If PTEN-loss lines are driving the mTOR outlier that breaks topology ordering, removing them should push r below the -0.40 threshold. n=6 nodes (MET, MEK1, AKT1, PI3K, mTOR, EGFR)."
+    }
+  ],
+  "_note": "Do not edit -- pre-registered before opening PRISM LFC by PTEN group. PTEN expression data examined; drug outcomes not seen.",
+  "prediction_hash": "30da77ae9fdd482b6d06f951737da448d0f8517077d5de34991355451c987cff"
+}
