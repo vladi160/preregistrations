@@ -1,0 +1,127 @@
+{
+  "experiment_id": "D4_ALMANAC_COMBINATION_v1",
+  "date": "2026-06-06",
+  "stage": "Stage 4 — Combination Therapy Design",
+  "prereg_script": "scripts/create_d4_almanac_prereg.py",
+  "prereg_script_sha256": "641b41f7a3c1f62cfebb1596833849181de92a018f347ac64c3fc5550842fc8d",
+  "parent_experiments": [
+    {
+      "id": "D3_EGFR_MUTANT_NSCLC_v1",
+      "preregistration_commit": "8dc23d5",
+      "provides": "EGFR-NSCLC network delta_r values"
+    },
+    {
+      "id": "D3_BRAF_MELANOMA_v1",
+      "preregistration_commit": "01322af",
+      "provides": "BRAF-melanoma network delta_r values (CLASS 6b regime)"
+    }
+  ],
+  "data_file": "ComboDrugGrowth_Nov2017.csv",
+  "compound_file": "ComboCompoundSet.sdf",
+
+  "drug_identification": {
+    "NSC-737754": "Pazopanib (Votrient) — C21H23N7O2S·HCl — MW 474 — VEGFR/PDGFR/FGFR/c-Kit inhibitor",
+    "NSC-756645": "Crizotinib (Xalkori, PF-2341066, S1068) — CAS 877399-52-5 — ALK/MET/ROS1 inhibitor",
+    "NSC-757441": "Axitinib (Inlyta, AG-013736, S1005) — CAS 319460-85-0 — VEGFR-1/2/3 inhibitor"
+  },
+
+  "structural_assignments": {
+    "note": "delta_r values from pre-registered experiments ONLY — no new perturbation",
+    "NSCLC_network_source": "D3_EGFR_MUTANT_NSCLC_v1 (commit 8dc23d5), examples/egfr_nsclc_signaling.json",
+    "MELANOMA_network_source": "D3_BRAF_MELANOMA_v1 (commit 01322af), examples/braf_melanoma_signaling.json",
+    "NSCLC_delta_r": {
+      "mTOR":  "+0.0047 (DAMPER)",
+      "MEK1":  "+0.0040 (DAMPER)",
+      "EGFR":  "-0.0009 (near-neutral anchor)",
+      "PI3K":  "-0.0151 (ANCHOR)",
+      "AKT1":  "-0.0211 (ANCHOR strongest testable)"
+    },
+    "MELANOMA_delta_r": {
+      "MEK1":  "-0.2253 (ANCHOR strongest)",
+      "mTOR":  "-0.1096 (ANCHOR)",
+      "BRAF":  "-0.0655 (ANCHOR — CLASS 6b driver)",
+      "AKT1":  "-0.0652 (ANCHOR)",
+      "PI3K":  "-0.0580 (ANCHOR)",
+      "EGFR":  "-0.0252 (ANCHOR)"
+    },
+    "KEY_FINDING": "mTOR is a DAMPER in NSCLC (+0.0047) but an ANCHOR in melanoma (-0.1096). Same drug (everolimus), opposite structural class, different cancer network."
+  },
+
+  "almanac_drug_mapping": {
+    "718781": {"name": "erlotinib",   "target": "EGFR",            "NSCLC_class": "near-neutral",     "MELANOMA_class": "not_in_network"},
+    "715055": {"name": "gefitinib",   "target": "EGFR",            "NSCLC_class": "near-neutral",     "MELANOMA_class": "not_in_network"},
+    "745750": {"name": "lapatinib",   "target": "EGFR/HER2",       "NSCLC_class": "near-neutral",     "MELANOMA_class": "not_in_network"},
+    "733504": {"name": "everolimus",  "target": "mTOR",            "NSCLC_class": "DAMPER +0.0047",   "MELANOMA_class": "ANCHOR -0.1096"},
+    "226080": {"name": "sirolimus",   "target": "mTOR",            "NSCLC_class": "DAMPER +0.0047",   "MELANOMA_class": "ANCHOR -0.1096"},
+    "761431": {"name": "vemurafenib", "target": "BRAF V600E",      "NSCLC_class": "not_applicable",   "MELANOMA_class": "ANCHOR -0.0655"},
+    "737754": {"name": "pazopanib",   "target": "VEGFR/PDGFR/FGFR","NSCLC_class": "not_in_network",  "MELANOMA_class": "not_in_network"},
+    "756645": {"name": "crizotinib",  "target": "ALK/MET/ROS1",    "NSCLC_class": "not_in_network",   "MELANOMA_class": "not_in_network"},
+    "757441": {"name": "axitinib",    "target": "VEGFR",           "NSCLC_class": "not_in_network",   "MELANOMA_class": "not_in_network"},
+    "747971": {"name": "sorafenib",   "target": "RAF/VEGFR",       "NSCLC_class": "not_in_network",   "MELANOMA_class": "partial_anchor"},
+    "732517": {"name": "dasatinib",   "target": "BCR-ABL/Src",     "NSCLC_class": "not_in_network",   "MELANOMA_class": "not_in_network"}
+  },
+
+  "hypotheses": {
+
+    "H1_NSCLC_COMPLEMENTARITY": {
+      "description": "In Non-Small Cell Lung Cancer panel, mTOR_drug + EGFR_drug pairs show higher mean SCORE than EGFR_drug + EGFR_drug pairs.",
+      "group_A": {
+        "label": "mTOR+EGFR (complementary: damper + near-neutral)",
+        "mTOR_drugs_NSC": ["733504", "226080"],
+        "EGFR_drugs_NSC": ["718781", "715055", "745750"],
+        "rule": "one drug in mTOR_drugs AND other drug in EGFR_drugs"
+      },
+      "group_B": {
+        "label": "EGFR+EGFR (redundant: near-neutral + near-neutral)",
+        "EGFR_drugs_NSC": ["718781", "715055", "745750"],
+        "rule": "both drugs in EGFR_drugs"
+      },
+      "prediction": "mean_SCORE(group_A) > mean_SCORE(group_B)",
+      "structural_basis": "Complementary structural positions disrupt the cancer network from two non-overlapping niches → greater Bliss synergy than redundant inhibition of the same structural class.",
+      "threshold": "directional — group_A > group_B"
+    },
+
+    "H2_NSCLC_DAMPER_PRIMACY": {
+      "description": "In Non-Small Cell Lung Cancer panel, mean SCORE across all combinations involving at least one mTOR drug > mean SCORE across combinations involving only EGFR drugs.",
+      "damper_drugs_NSC": ["733504", "226080"],
+      "egfr_drugs_NSC": ["718781", "715055", "745750"],
+      "group_C": "at least one of NSC1/NSC2 is a mTOR drug",
+      "group_D": "both NSC1 and NSC2 are EGFR drugs",
+      "prediction": "mean_SCORE(group_C) > mean_SCORE(group_D)",
+      "structural_basis": "mTOR (damper +0.0047) shows strongest PRISM LFC (-0.668) in EGFR-mutant NSCLC. Structural damper primacy should extend to combination context.",
+      "threshold": "directional"
+    },
+
+    "H3_MELANOMA_ANCHOR_ANCHOR": {
+      "description": "In Melanoma panel, vemurafenib + everolimus shows positive mean ALMANAC SCORE.",
+      "drug1_NSC": "761431",
+      "drug2_NSC": "733504",
+      "panel": "Melanoma",
+      "prediction": "mean_SCORE > 0",
+      "structural_basis": "CLASS 6b (BRAF-melanoma): both BRAF (delta_r=-0.0655) and mTOR (delta_r=-0.1096) are structural ANCHORS in the melanoma network. Anchor+anchor combination in driver-addicted cancer. Both drugs hit the structurally dominant class. Bliss synergy > 0 predicted because disrupting two anchor nodes simultaneously exceeds expected additivity.",
+      "note": "Critically, mTOR is an ANCHOR in melanoma but a DAMPER in NSCLC. This same-drug regime-flip is the key insight being tested.",
+      "threshold": "SCORE > 0 (Bliss synergy)"
+    },
+
+    "H4_REGIME_SPECIFICITY": {
+      "description": "vemurafenib + everolimus shows higher mean SCORE in Melanoma panel than in Non-Small Cell Lung Cancer panel.",
+      "drug1_NSC": "761431",
+      "drug2_NSC": "733504",
+      "prediction": "mean_SCORE(Melanoma) > mean_SCORE(NSCLC)",
+      "structural_basis": "In Melanoma: anchor+anchor combination in CLASS 6b → synergy. In NSCLC: vemurafenib targets BRAF (not the driving oncogene in EGFR-mutant context, structurally irrelevant); everolimus targets mTOR (damper). No CLASS 6b reinforcement → lower synergy.",
+      "threshold": "directional"
+    }
+  },
+
+  "analysis_script": "scripts/d4_almanac_combination.py",
+  "primary_readout": "mean ALMANAC SCORE per drug pair group",
+  "secondary_readout": "per-cell-line SCORE distribution for H3",
+
+  "exclusions": [
+    "Cytotoxic chemotherapy agents (taxanes, anthracyclines, vinca alkaloids) excluded from structural classification — non-specific mechanism bypasses structural topology",
+    "CDK4/6 inhibitors: cytostatic class, SCORE not interpretable",
+    "Combinations where VALID != Y excluded (all rows in this dataset are VALID=Y)"
+  ],
+
+  "exploratory_analysis_note": "Prior to this pre-registration, exploratory analysis (2026-06-06) inspected top-5 combo partners for erlotinib, everolimus, and vemurafenib. erlotinib+everolimus mean SCORE = +1.2 in NSCLC was observed. H1 tests mTOR+EGFR vs EGFR+EGFR (never compared). H2 tests full-panel means not top-5. H3 tests vemurafenib+everolimus in Melanoma specifically (never computed). H4 tests cross-panel comparison (never computed)."
+}
