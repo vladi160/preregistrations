@@ -1,0 +1,28 @@
+{
+  "experiment": "DISC_CANCER_5_v1 -- ODS Replication in Colorectal Cancer: Does the Oncogenic Decoupling Signature (structural dampers = cancer-essential) replicate in a second cancer network?",
+  "network_file": "examples/crc_kras_signaling.json",
+  "cell_lines": {
+    "HCT116": "ACH-000971 (KRAS-G13D, TP53-WT, MSI)",
+    "SW620":  "ACH-000651 (KRAS-G12V, TP53-R273H, MSS)",
+    "HT-29":  "ACH-000552 (BRAF-V600E, TP53-R273H, MSS)",
+    "RKO":    "ACH-000943 (BRAF-V600E, TP53-WT, MSI)"
+  },
+  "crispr_source": "DepMap Public 26Q1 -- CRISPRGeneEffect.csv",
+  "committed_at": "2026-06-06T03:31:17.282496+00:00",
+  "prediction_hash": "0c1590d606a5f748d4808b66a4f851ac7af31d79b382c702413d4ee8a2151baf",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Spearman r(delta-r, mean_CRISPR_4lines) < -0.40 across all 16 nodes of the CRC network (HCT116 ACH-000971, SW620 ACH-000651, HT-29 ACH-000552, RKO ACH-000943). Basis: NSCLC ODS was r=-0.722; -0.40 is the minimum threshold for cross-cancer replication. If CONFIRMED: ODS upgrades from PROVISIONAL to CONFIRMED. If DENIED (r >= -0.40): ODS may be NSCLC-specific or the CRC network design does not capture the relevant topology."
+    },
+    {
+      "id": "h2",
+      "statement": "MYC delta-r > 0 (structural damper in CRC network) AND MYC mean CRISPR essentiality < -1.50 across the 4 CRC lines. Basis: In NSCLC, MYC was the most essential node (CRISPR=-2.14) with positive delta-r (+0.040). MYC is downstream of both ERK1 (RAS-MAPK) and CTNNB1 (WNT) in CRC, making it a convergence damper. If CONFIRMED: MYC-as-damper is a cross-cancer structural law. If DENIED: MYC structural coupling in CRC differs from NSCLC -- WNT-driven MYC may behave as an anchor rather than damper."
+    },
+    {
+      "id": "h3",
+      "statement": "CTNNB1 delta-r > 0 (structural damper) AND CTNNB1 mean CRISPR essentiality < -1.00 across the 4 CRC lines. Basis: CTNNB1 is the core WNT oncogene in CRC -- not present in the NSCLC network. If CTNNB1 shows positive delta-r, ODS extends to WNT-pathway oncogenes, establishing that structural damper=cancer-essential applies beyond kinase cascades. The CRISPR threshold (-1.00) is informed by DepMap 26Q1 preview data (disclosed in DISC_CANCER_5.md). The structural prediction (delta-r direction) is the true pre-registered unknown. If CONFIRMED: WNT oncogene follows ODS. If DENIED: CTNNB1 is an anchor (delta-r < 0) or essentiality lower than expected."
+    }
+  ],
+  "_note": "Do not edit -- this sidecar records pre-committed predictions before any run."
+}
