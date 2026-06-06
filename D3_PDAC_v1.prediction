@@ -1,0 +1,120 @@
+{
+  "experiment": "D3_PDAC_v1 -- Topology Regime Shift Test: CDK4 as structural damper in PDAC",
+  "parent_experiments": [
+    "D3_v2_KRAS_stratified (1e8b0ad) -- NSCLC: mTOR(damper)>MEK1(anchor) H2 CONFIRMED",
+    "D3_CRC_v1 (e727cf2) -- CRC: MEK1(damper)>mTOR(anchor) H2 CONFIRMED [topology flip]"
+  ],
+  "scientific_question": "Third independent topology regime test. PDAC network has a distinct structural assignment from NSCLC and CRC: CDK4 is the largest druggable structural damper (delta_r=+0.295), AKT1 is a moderate damper (+0.131, vs anchor in NSCLC/CRC), PI3K and MEK1 are small dampers (~+0.073-0.075), and mTOR is the only anchor (-0.075). ODS predicts: CDK4/6 inhibitors should outperform mTOR inhibitors in KRAS-dep PDAC. Biological note: CDKN2A is deleted ~90% PDAC, making CDK4 constitutively active -- the structural damper position and the pharmacological vulnerability coincide. AKT1 flipping to damper (from anchor in NSCLC/CRC) tests whether AKT inhibitors are more effective in PDAC than in NSCLC/CRC, consistent with topology.",
+  "topology_comparison": {
+    "NSCLC_damper": "mTOR (+0.049) -- confirmed H2 D3_v2",
+    "CRC_damper": "MEK1 (+0.120) -- confirmed H2 D3_CRC_v1",
+    "PDAC_damper": "CDK4 (+0.295) -- this experiment"
+  },
+  "network_file": "examples/pdac_kras_signaling.json",
+  "delta_r_source": "outputs/perturbation_DISC_CANCER_6.json (prereg commit 118653e)",
+  "delta_r_values": {
+    "CDK4": 0.2952,
+    "AKT1": 0.1305,
+    "PI3K": 0.075,
+    "MEK1": 0.0734,
+    "mTOR": -0.0745
+  },
+  "nodes_excluded": {
+    "CDKN2A": "Dormant Damper (CRISPR=+0.148, deleted ~90% PDAC) -- no direct drug target; CDK4 inhibitors are the functional proxy",
+    "KRAS": "No sotorasib in PRISM 20Q2 (approved 2021)",
+    "MDM2": "Context-gated: TP53-WT required; PDAC is ~70% TP53-mutant (higher TP53-mut rate than NSCLC)",
+    "TP53": "Dormant Damper (CRISPR=+0.064) -- MDM2 inhibitors context-gated; Dormant Damper class not predictive for drugs",
+    "MYC": "BET inhibitor potency gap -- confirmed cross-context in NSCLC D3_v1 and D3_v2",
+    "BRAF": "BRAF mutations rare in PDAC (<1%); context-gated",
+    "RB1": "Not druggable (delta_r=+0.022)",
+    "ERK1": "No ERK inhibitors in PRISM 20Q2",
+    "EGFR": "Context-gated: EGFR inhibitors ineffective in KRAS-mutant PDAC",
+    "SMAD4": "Not druggable",
+    "PTEN": "No drug available; anchor (delta_r=-0.148)"
+  },
+  "cell_line_filter": {
+    "primary_tissue": "pancreas",
+    "source": "PRISM 20Q2 secondary-screen-cell-line-info.csv",
+    "kras_filter": "KRAS Chronos (CRISPRGeneEffect.csv column \"KRAS (3845)\") < -0.5",
+    "n_expected": 33,
+    "note": "PDAC is ~90% KRAS-mutant so nearly all lines pass the filter (33/34 matched lines)"
+  },
+  "drug_lists": {
+    "CDK4": [
+      "palbociclib",
+      "ribociclib",
+      "abemaciclib"
+    ],
+    "AKT1": [
+      "MK-2206",
+      "uprosertib",
+      "GDC-0068",
+      "AZD5363",
+      "GSK2110183",
+      "triciribine"
+    ],
+    "PI3K": [
+      "alpelisib",
+      "idelalisib",
+      "copanlisib",
+      "GDC-0941",
+      "taselisib",
+      "ZSTK-474",
+      "AZD6482",
+      "TG100-115",
+      "buparlisib",
+      "GDC-0349"
+    ],
+    "MEK1": [
+      "selumetinib",
+      "trametinib",
+      "Ro-4987655",
+      "TAK-733",
+      "PD-0325901",
+      "MEK162",
+      "refametinib",
+      "PD-198306"
+    ],
+    "mTOR": [
+      "AZD2014",
+      "AZD8055",
+      "everolimus",
+      "temsirolimus",
+      "sirolimus",
+      "PP242",
+      "OSI-027",
+      "torin-1",
+      "torin-2",
+      "WYE-354",
+      "WYE-125132",
+      "WAY-600",
+      "PKI-179",
+      "XL388",
+      "deforolimus",
+      "LY3023414",
+      "palomid-529",
+      "ku-0063794"
+    ]
+  },
+  "pi3k_exclusion": "PIK-75 excluded from PI3K class (off-target cytotoxicity, established exclusion)",
+  "prism_dataset": "PRISM Repurposing 20Q2 Secondary Screen (replicate-collapsed LFC)",
+  "committed_at": "2026-06-06T05:54:45.434604+00:00",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Spearman r(delta_r, mean PRISM LFC) < -0.40 across 5 node-drug class pairs (CDK4, AKT1, PI3K, MEK1, mTOR) within pancreas lines filtered to KRAS Chronos < -0.5. n=5 nodes. delta_r range is larger than prior tests (+0.295 to -0.075). Larger range should improve correlation if ODS holds."
+    },
+    {
+      "id": "h2",
+      "label": "Primary topology-regime test (3rd cancer type)",
+      "statement": "CDK4 mean PRISM LFC < mTOR mean PRISM LFC within KRAS Chronos < -0.5 pancreas lines. CDK4 is the largest structural damper (delta_r=+0.295); mTOR is the anchor (delta_r=-0.075). Prior confirmations: NSCLC mTOR(damper)>MEK1(anchor) CONFIRMED; CRC MEK1(damper)>mTOR(anchor) CONFIRMED. CDK4/6 inhibitors in PDAC: biologically plausible because CDKN2A deletion (~90% PDAC) makes CDK4 constitutively active -- the structural damper assignment and pharmacological vulnerability coincide."
+    },
+    {
+      "id": "h3",
+      "label": "AKT1 topology flip test",
+      "statement": "AKT1 mean PRISM LFC in PDAC < AKT1 mean PRISM LFC in NSCLC (from D3_v2: -0.081). AKT1 is a damper in PDAC (delta_r=+0.131) vs anchor in NSCLC (delta_r=-0.024). ODS predicts AKT inhibitors should be more effective in PDAC than in NSCLC. NSCLC reference value: -0.081 (from D3_v2 outputs/D3_v2_KRAS_stratified_results.json). This tests whether individual node topology changes predict drug efficacy changes independent of the cancer-level H2 comparison."
+    }
+  ],
+  "_note": "Do not edit -- pre-registered before PRISM LFC loading for pancreas lines.",
+  "prediction_hash": "e970358a44f8e869bfdbadd7d1b950718548f0fcf76dd0eecd473388e133ab4e"
+}
