@@ -1,0 +1,96 @@
+EXPERIMENT: D8_CROSS_CANCER_REPURPOSING_v1
+DATE: 2026-06-06
+STATUS: pre-registered
+DATASET: PRISM Repurposing 20Q2 Secondary Screen
+EXTENDS: D7_Z_DR_ATLAS_v1 (pre-reg 9dc1b1d)
+
+MOTIVATION:
+D7 established degree-corrected z_dr values for MEK1 across all 6 cancer networks.
+MEK1 is:
+  - robust DAMPER in CRC   (z_null1=+1.863, z_null2=+1.008 — both nulls agree)
+  - robust ANCHOR in BRAF-MEL (z_null1=−1.104, z_null2=−1.451 — both nulls agree)
+
+In the ODS/CLASS6b structural framework:
+  - BRAF-MEL (CLASS6b): MEK1 is the structural ANCHOR. Blocking it destabilizes
+    the anchor-dominant network → predicted STRONG cell killing.
+  - CRC (ODS): MEK1 is a structural DAMPER. Blocking it relieves over-damping
+    → predicted MODERATE cell killing.
+
+D8 tests whether this degree-corrected structural prediction is reflected in
+pharmacogenomic data: do MEK inhibitors kill melanoma lines more strongly
+(more negative LFC) than CRC lines in PRISM?
+
+This is the first pharmacological test of the z_dr-corrected structural framework.
+
+STRUCTURAL PREDICTION (from D7 z_dr values):
+  MEK inhibitor LFC in BRAF-MEL < MEK inhibitor LFC in CRC
+  (more negative = stronger killing; LFC in PRISM is log-fold change,
+  more negative = more growth inhibition)
+
+BIOLOGICAL CONFOUND (acknowledged):
+BRAF-V600E melanoma is directly on-pathway for MEK activation; MEK inhibitors
+are clinically approved for BRAF-V600E melanoma (trametinib + dabrafenib).
+KRAS-mutant CRC is resistant to MEK inhibitors as monotherapy (clinical failure).
+The structural prediction and the biological expectation happen to align.
+This alignment is itself evidence that structural position reflects
+driver-pathway biology — but it means D8 cannot uniquely attribute the result
+to structural position vs driver genetics.
+An ideal future test would find a cancer where structural and biological
+predictions DIVERGE (dissociation experiment).
+
+PRIMARY HYPOTHESIS (H1, CONFIRMATORY):
+Mean LFC of MEK1 inhibitors (trametinib, cobimetinib, selumetinib) is
+significantly more negative in BRAF-melanoma cell lines (primary_tissue='skin',
+secondary_tissue='melanoma') than in CRC cell lines (primary_tissue='colorectal')
+in PRISM 20Q2.
+
+Statistical test: Mann-Whitney U (two-sided), FDR < 0.05.
+Effect size: Cohen's d (expected large, d > 0.8).
+
+Direction: BRAF-MEL LFC < CRC LFC (more negative = stronger killing).
+H1 confirmed if p < 0.05 AND direction is BRAF-MEL < CRC.
+
+SECONDARY HYPOTHESIS (H2, CONFIRMATORY):
+The magnitude of the BRAF-MEL vs CRC LFC difference for MEK inhibitors
+exceeds the equivalent difference for EGFR inhibitors (erlotinib, gefitinib).
+Rationale: EGFR is near-neutral in z_dr space for both CRC and BRAF-MEL,
+so EGFR inhibitors should NOT show the same cancer-specific pattern.
+H2 tests regime specificity: the MEK1 LFC difference is driven by structural
+regime, not by generic cancer-line sensitivity differences.
+
+EXPLORATORY (H3): CDK4/6 inhibitors in PDAC vs other cancers
+CDK4 is the only SIGNIFICANT protein in the z_dr atlas (|z|>2.0 both nulls)
+in PDAC. CDK4/6 inhibitors (palbociclib, ribociclib, abemaciclib) in PRISM:
+Does PDAC show more negative LFC for CDK4/6 inhibitors than other cancers?
+(PDAC cell lines in PRISM: primary_tissue='pancreas', n≈40)
+
+CELL LINES:
+BRAF-MEL: all lines with secondary_tissue='melanoma' in PRISM cell line info
+  (n=47 as confirmed by pre-analysis of cell line metadata)
+CRC: all lines with primary_tissue='colorectal' in PRISM cell line info
+  (n=46 as confirmed)
+PDAC: all lines with primary_tissue='pancreas' in PRISM cell line info (n≈40)
+
+Note: Cell line counts confirmed from PRISM cell line info metadata file
+before any drug LFC data was accessed.
+
+MEK INHIBITORS TESTED:
+  trametinib (MEK1/MEK2)
+  cobimetinib (MEK1/MEK2)
+  selumetinib (MEK1/MEK2)
+  (+ any additional MEK-annotated drugs in PRISM treatment info)
+
+EGFR INHIBITORS (H2 control):
+  erlotinib, gefitinib, afatinib, osimertinib
+
+CDK4/6 INHIBITORS (H3 exploratory):
+  palbociclib, ribociclib, abemaciclib
+
+DECISION RULE:
+H1 confirmed → MEK inhibitors show regime-specific lethality consistent with
+               z_dr structural prediction (anchor killing > damper relief)
+H1 denied   → structural regime does not predict MEK inhibitor efficacy
+               (may indicate driver-pathway confound, or structural model wrong)
+H2 confirmed → MEK effect is specific to MEK1's structural role, not general
+               cancer-line sensitivity
+H2 denied   → the BRAF-MEL vs CRC difference may be non-specific
