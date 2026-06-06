@@ -1,0 +1,106 @@
+EXPERIMENT: D9_DISSOCIATION_STAT3_GBM_v1
+DATE: 2026-06-06
+STATUS: pre-registered
+DATASET: PRISM Repurposing 20Q2 Secondary Screen
+EXTENDS: D8_CROSS_CANCER_REPURPOSING_v1 (pre-reg 03b1d21)
+
+MOTIVATION:
+D8 established two cases for the structural pharmacology boundary condition:
+  - MEK1 in BRAF-MEL: structural anchor + driver-pathway → kills (D8 H1 ✓)
+  - CDK4 in PDAC: structural SIGNIFICANT + NOT driver-pathway → does NOT kill (D8 H3 ✗)
+
+These two cases are consistent with the boundary condition:
+  "Structural position predicts lethality only when target is
+   co-pathway with the DEPENDENCY-DRIVER of the cancer."
+
+D9 tests a THIRD case designed to discriminate between two refinements:
+
+REFINEMENT A (strict): Target must be the DEPENDENCY-DRIVER itself or
+  directly activated by it (CDK4 in PDAC = NOT dependency-driver → fails)
+REFINEMENT B (loose): Target must be on a signaling pathway the cancer
+  DEPENDS ON (indirect pathway activation is sufficient)
+
+TEST CASE: STAT3 in GBM
+  STAT3 z_dr in GBM: robust ANCHOR (z1=−1.12, z2=−1.20) [from D7]
+  STAT3 in GBM biology: activated DOWNSTREAM of EGFR (EGFR → JAK2 → STAT3)
+    STAT3 is NOT the primary GBM driver (EGFR/PTEN/IDH1 drive GBM)
+    But STAT3 IS activated in GBM via the EGFR pathway → indirect co-pathway
+  Under Refinement A: STAT3 should NOT predict lethality (not driver-pathway)
+  Under Refinement B: STAT3 SHOULD predict lethality (activated by EGFR pathway)
+  → D9 H1 outcome determines which refinement holds
+
+SECONDARY TEST CASE: PI3K inhibitors in CRC
+  PI3K z_dr in CRC: robust ANCHOR (z1=−1.31, z2=−1.15) [from D7]
+  PI3K in CRC biology: KRAS → PI3K (direct pathway, KRAS activates PI3K)
+    PI3K IS co-pathway with KRAS, but KRAS-mutant CRC is resistant to
+    PI3K inhibitors clinically (feedback reactivation through MEK)
+  → Tests if structural position predicts despite known clinical resistance
+
+CONTROL TEST: MEK inhibitors in GBM vs melanoma (replicate D8 in new context)
+  MEK1 z_dr in GBM:      z1=+1.49, z2=+0.91 (consistent DAMPER — not robust)
+  MEK1 z_dr in BRAF-MEL: z1=−1.10, z2=−1.45 (robust ANCHOR)
+  Prediction: MEK inhibitors kill BRAF-MEL more than GBM (D8 replicate)
+  If confirmed: consistent with D8 and structural model
+  If denied: regime classification of MEK1 in GBM needs revision
+
+PRIMARY HYPOTHESIS (H1, CONFIRMATORY):
+STAT3 inhibitors (napabucasin, niclosamide, WP1066, stattic) show
+significantly more negative mean LFC in GBM/glioma cell lines
+(primary_tissue='central_nervous_system', secondary_tissue='glioma', n=85)
+than in CRC cell lines (primary_tissue='colorectal', n=46).
+
+STAT3 z_dr in GBM = robust ANCHOR (structural prediction: kills GBM)
+STAT3 NOT in CRC network / near-neutral in most non-GBM contexts
+Statistical test: Mann-Whitney U (GBM < CRC), p < 0.05
+
+H1 confirmed → Refinement B holds: indirect co-pathway activation
+  sufficient for structural prediction; boundary condition is looser
+  than D8 H3 suggested
+H1 denied → Refinement A may hold: only dependency-driver co-pathway
+  proteins are predictable by structural position
+
+SECONDARY HYPOTHESIS (H2, CONFIRMATORY):
+PI3K inhibitors show significantly more negative LFC in CRC than
+in melanoma (secondary_tissue='melanoma', n=45).
+PI3K z_dr in CRC: robust ANCHOR (z1=−1.31, z2=−1.15)
+PI3K z_dr in BRAF-MEL: z1=+1.21, z2=+0.63 (consistent DAMPER — not robust)
+Structural prediction: PI3K inhibition kills CRC (anchor destabilization)
+  less so in BRAF-MEL (PI3K is a damper there)
+Note: PI3K inhibitors clinically resistant in KRAS-CRC — a negative result
+  here would align clinical resistance with structural model (damper relief
+  in ODS = mild effect; but PI3K is an ANCHOR in CRC so this should kill)
+  WAIT: PI3K is ANCHOR in CRC under z_dr correction → structural prediction
+  IS that PI3K inhibitors kill CRC. Clinical resistance may be a feedback
+  phenomenon not captured in short-term PRISM viability assay.
+
+EXPLORATORY (H3): MEK inhibitors in GBM vs BRAF-MEL
+  Replication of D8 pattern: MEK inhibitors should kill BRAF-MEL > GBM
+  MEK1 z_dr: robust ANCHOR in BRAF-MEL vs consistent DAMPER in GBM
+  If H3 confirmed: structural regime-switch replicates in second independent comparison
+
+CELL LINES (confirmed from PRISM metadata before LFC access):
+  GBM (glioma): n=85  (primary_tissue='central_nervous_system',
+                        secondary_tissue='glioma')
+  CRC: n=38 (from PRISM, as in D8)
+  Melanoma: n=45 (from PRISM, as in D8)
+  Lung NSC: n~191 (comparison for extended analysis)
+
+DRUGS:
+  STAT3 inhibitors: napabucasin (24 PRISM entries), niclosamide (8),
+                    WP1066 (8), stattic (8)
+  PI3K inhibitors: copanlisib, buparlisib, alpelisib, idelalisib, GDC-0941
+  MEK inhibitors (H3): trametinib, cobimetinib, selumetinib (as in D8)
+
+BOUNDARY CONDITION INTERPRETATION TABLE:
+  Case              | z_dr signal | Co-pathway? | Prediction | Prior result
+  ─────────────────────────────────────────────────────────────────────────
+  MEK1/BRAF-MEL     | robust ANCHOR | yes (direct) | kill      | D8 H1 ✓
+  CDK4/PDAC         | SIGNIFICANT   | no           | no kill   | D8 H3 ✓
+  STAT3/GBM         | robust ANCHOR | indirect     | ?         | D9 H1 TBD
+  PI3K/CRC          | robust ANCHOR | yes (direct) | kill      | D9 H2 TBD
+
+DECISION RULE:
+H1 confirmed + H2 confirmed → boundary: "any activated pathway member"
+H1 denied   + H2 confirmed → boundary: "direct driver co-pathway only"
+H1 confirmed + H2 denied   → anomaly; resistance mechanisms override structure
+Both denied → structural model limited to direct dependency-driver targets
