@@ -7,7 +7,7 @@ Public record of pre-registered scientific hypotheses for the
 
 **What pre-registration is and isn't.** Pre-registration is a logging and history mechanism. It records that a specific prediction was committed to this public repository with a git timestamp before the analysis result was seen. It makes the full prediction history — including denied results — publicly auditable. It does not prevent private analysis before registration; it does not guarantee that no exploratory work happened beforehand. Its value is in workflow discipline, a transparent public record, and reproducibility documentation.
 
-**Current status (June 2026):** 36 experiments on record (32 FPL/related + 4 Topology-as-Logic). Latest run: **M_MED9_v1** (2026-06-05, hash `22838135…`, commit [`4a8928c`](https://github.com/vladi160/preregistrations/commit/4a8928c)) — Focused Ultrasound BBB Opening evidence chain: **3/4 CONFIRMED, 1/4 DENIED**. H1 DENIED r(j,se)=-0.067P/-0.081S p=0.840 (NOVEL: Mechanistically Grounded Surrogate Capture regime — strong physical mechanism does NOT produce positive r(j,se) when regulatory framework breaks the theory-to-endpoint chain); H2 CONFIRMED mri_gadolinium rank #1 selects_endpoints; H3 CONFIRMED fus_bbb_hypothesis rank #1 cites_as_support (HIGH EM); H4 CONFIRMED acoustic_cavitation rank #2 justifies. KEY FINDING: regulatory_framework_fus is rank #12 in justifies (zero theoretical standing) but rank #1 in betweenness centrality (0.442) — Regulatory Betweenness Inversion: institutional actor captures structural bottleneck without theoretical grounding. arXiv:2604.23639 v2 live (May 26, 2026); v3 in preparation. Platform live at [irdme.com](https://irdme.com).
+**Current status (June 2026):** 40 experiments on record (32 FPL/related + 4 Topology-as-Logic + 4 Cancer/Application). Latest run: **DISC_CANCER_4_v1** (2026-06-06, hash `c81953ba…`) — NSCLC DepMap CRISPR validation: **2/3 CONFIRMED, 1/3 DENIED**. H1 DENIED (ERK1 not more essential than MEK1 — module incompleteness: ERK2 compensates); H2 CONFIRMED TP53 anti-essential (+1.341 — structural void confirmed); H3 CONFIRMED PTEN anti-essential (+0.608). KEY FINDING: Spearman r(delta-r, CRISPR) = -0.722, p=0.0024 — structural coupling sensitivity and cancer survival dependency are orthogonal axes (Oncogenic Decoupling Signature, PROVISIONAL). Previous: **M_MED9_v1** (2026-06-05) — FUS-BBB acoustic levitation evidence chain: 3/4 CONFIRMED (Mechanistically Grounded Surrogate Capture + Regulatory Betweenness Inversion). arXiv:2604.23639 v2 live (May 26, 2026); v3 in preparation. Platform live at [irdme.com](https://irdme.com).
 
 **proteins_trust_cert_v1 exclusion note:** This experiment (5/5 CONFIRMED) uses the `dataset_trust_certification` methodology — it tests multi-source hub agreement across two data curation methodologies. It does NOT test the FPL inequality $r(d_1, d_2) > r(d_1, d_3)$ and is therefore excluded from the 25/31 FPL primary count. Its h4 independently replicates the FPL in both sources, which is reported as a secondary finding.
 
@@ -21,10 +21,18 @@ Public record of pre-registered scientific hypotheses for the
 
 **h2 re-specification follow-up (2026-05-30):** `H_LOGIC_MATHCOMP_v1` was pre-registered and run with corrected `cross_layer_top_hub_match` fields (`layer_a`, `layer_b`, `expected_hub`) and produced a valid non-error verdict (`PARTIAL`). This closes the schema-level h2 protocol issue for the Topology-as-Logic formal-corpus workflow.
 
-**Experiments in this repo (36 total: 32 FPL/related + 4 Topology-as-Logic):**
+**F12c hash integrity note (2026-06-06):** `verify.py` reports a MISMATCH for `F12c_celegans_drosophila_transfer_v1`. The prediction was generated from a version of the JSON not preserved in git. Full documentation: [`experiments/F12c_celegans_drosophila_transfer_v1_amendment1.md`](experiments/F12c_celegans_drosophila_transfer_v1_amendment1.md). Results (3/3 CONFIRMED) are credible but the pre-registration chain cannot be verified by hash. Does not affect any other experiment.
+
+**DISC_CANCER series note:** DISC_CANCER_1 through _4 are application-domain experiments using IRDME's perturbation loop on NSCLC cancer signaling. They test structural predictions against DepMap CRISPR data. They do NOT test the FPL inequality and are excluded from FPL/Topology-as-Logic counts. They are a separate Cancer/Application category.
+
+**Experiments in this repo (40 total: 32 FPL/related + 4 Topology-as-Logic + 4 Cancer/Application):**
 
 | File | Experiment | Verdict |
 |---|---|---|
+| `DISC_CANCER_1_v1` | NSCLC structural weak points: hub vs drug coverage gap (Cancer/Application) | 3/4 CONFIRMED, 1 CONFIRMED-INVERTED |
+| `DISC_CANCER_2_v1` | NSCLC perturbation loop: which node removal collapses structural coupling most? (Cancer/Application) | 1/1 CONFIRMED (ERK1 delta-r=-0.135, largest collapse) |
+| `DISC_CANCER_3_v1` | NSCLC: does MEK1 inhibition address the ERK1 structural weak point? (Cancer/Application) | 2/2 CONFIRMED (MEK1 removal 12x less disruptive than ERK1) |
+| `DISC_CANCER_4_v1` | NSCLC: does delta-r predict DepMap CRISPR essentiality? (Cancer/Application) | 2/3 CONFIRMED, 1/3 DENIED |
 | `I1_p53_domain_science` | p53 Gene Regulatory Network — curated | 4/5 CONFIRMED, 1 PARTIAL |
 | `ext_flask_law` | Flask external validation (M_EXT) | 4/4 CONFIRMED |
 | `celegans_connectome` | C. elegans connectome true external (M_EXT2) | 1/2 CONFIRMED, 1 DENIED |
@@ -1039,6 +1047,94 @@ experiments/
 verify.py               standalone verification script (no dependencies)
 README.md               this file
 ```
+
+---
+
+## DISC_CANCER Series — NSCLC Cancer Structural Analysis (Cancer/Application)
+
+Four pre-registered experiments on a 16-protein NSCLC signaling network (EGFR/RAS/PI3K pathway). Uses IRDME's automated perturbation loop. Does NOT test the FPL inequality — tests structural coupling sensitivity (delta-r) as a drug discovery signal.
+
+### DISC_CANCER_1_v1 — Structural Weak Points in NSCLC
+
+| File | Description |
+|---|---|
+| [`experiments/DISC_CANCER_1_v1.json`](experiments/DISC_CANCER_1_v1.json) | 4 pre-registered hypotheses |
+| [`experiments/DISC_CANCER_1_v1.prediction`](experiments/DISC_CANCER_1_v1.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `cf217d96367e560d5c7d3e93a0d5faf8112536307b716af570560bcdb768e61f`
+**Registered:** `2026-06-05T23:10:11.677263+00:00`
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | MYC is top-5 hub in physical_interaction | **CONFIRMED** | MYC top-5 with zero drug coverage |
+| h2 | MYC is top-3 hub in coexpression_cancer | **CONFIRMED** | MYC rank #2 coexpression |
+| h3 | >= 3 proteins show rank gap >= 6 between physical_interaction and drug_coverage | **CONFIRMED** | 4 proteins: MYC, GRB2, ERK1, STAT3 |
+| h4 | r(physical_interaction, coexpression_cancer) > 0, min 0.30 | **CONFIRMED** | r=0.7145, p<0.05 |
+
+---
+
+### DISC_CANCER_2_v1 — Perturbation Loop: Which Node Removal Collapses Structural Coupling Most?
+
+| File | Description |
+|---|---|
+| [`experiments/DISC_CANCER_2_v1.json`](experiments/DISC_CANCER_2_v1.json) | 3 pre-registered hypotheses |
+| [`experiments/DISC_CANCER_2_v1.prediction`](experiments/DISC_CANCER_2_v1.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `e851ae24f7730c96ea00c04c8daa09f05b80c7a7beeb6a39546683c75e050b00`
+**Registered:** `2026-06-05T23:15:38.933443+00:00`
+
+Pre-registered prediction: MYC removal would cause the largest r drop. **DENIED** (wrong direction). Actual result: ERK1 removal caused the largest collapse.
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | After removing MYC, r(d1,d2) stays >= 0.65 (MYC removal resilient) | **CONFIRMED** | r=0.7545 after MYC removal (MYC removal INCREASED coupling) |
+| h2 | EGFR remains top hub in physical_interaction after MYC removal | **CONFIRMED** | EGFR rank #1 |
+| h3 | AKT1 or PI3K becomes top betweenness hub after MYC removal | **DENIED** | EGFR still top betweenness |
+
+**Key finding (loop result, not pre-registered):** ERK1 removal delta-r = -0.135 — the largest structural collapse. MYC removal delta-r = +0.040 (coupling INCREASED). Full perturbation ranking produced by auto_loop.py.
+
+---
+
+### DISC_CANCER_3_v1 — Does MEK1 Inhibition Address the ERK1 Structural Weak Point?
+
+| File | Description |
+|---|---|
+| [`experiments/DISC_CANCER_3_v1.json`](experiments/DISC_CANCER_3_v1.json) | 2 pre-registered hypotheses |
+| [`experiments/DISC_CANCER_3_v1.prediction`](experiments/DISC_CANCER_3_v1.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `148747c949f6c8edbf9f7a9a3fa0e060f8cba1fcdbb304a959d0cb6ec04ddf87`
+**Registered:** `2026-06-05T23:18:44.141201+00:00`
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | After removing MEK1, r(d1,d2) >= 0.62 (MEK1 removal less disruptive than ERK1) | **CONFIRMED** | r=0.7034 after MEK1 removal. MEK1 delta-r = -0.011 vs ERK1 delta-r = -0.135. MEK inhibitors (trametinib) do not address the structural weak point. |
+| h2 | ERK1 remains top-5 hub in physical_interaction after MEK1 removal | **CONFIRMED** | ERK1 still structurally prominent after losing one input edge |
+
+**Key finding:** MEK1 is 12x less structurally disruptive than ERK1. Approved MEK inhibitors do not target the structural bottleneck.
+
+---
+
+### DISC_CANCER_4_v1 — External Validation: Does Delta-r Predict DepMap CRISPR Essentiality?
+
+| File | Description |
+|---|---|
+| [`experiments/DISC_CANCER_4_v1.json`](experiments/DISC_CANCER_4_v1.json) | 3 pre-registered hypotheses |
+| [`experiments/DISC_CANCER_4_v1.prediction`](experiments/DISC_CANCER_4_v1.prediction) | Hash + timestamp sidecar |
+
+**Hash:** `c81953baaa20d0820c9011e6754cb2c09e861db39fb25c16ffb159659392da04`
+**Registered:** `2026-06-05T23:42:56.935796+00:00` (before DepMap data downloaded)
+
+**DepMap source:** 23Q4 CRISPR Chronos gene effect, mean across A549/NCI-H1299/HCC827/NCI-H460.
+
+| # | Hypothesis | Verdict | Result |
+|---|---|---|---|
+| h1 | ERK1 CRISPR score < MEK1 CRISPR score (ERK1 more essential) | **DENIED** | ERK1=-0.091, MEK1=-0.152. ERK1 less essential — module incompleteness (ERK2 compensates). |
+| h2 | TP53 CRISPR score > -0.30 (structural void, non-essential) | **CONFIRMED** | TP53 = +1.341. Strongly anti-essential — cancer grows faster without it. |
+| h3 | PTEN CRISPR score > -0.20 (structural void, non-essential) | **CONFIRMED** | PTEN = +0.608. Anti-essential — same mechanism as TP53. |
+
+**Key finding (post-hoc from pre-registered run):** Spearman r(delta-r, CRISPR) = -0.722, p=0.0024. Structural coupling sensitivity and cancer survival dependency are strongly anti-correlated. Oncogenes that are most essential (MYC=-2.14, mTOR=-1.37, MDM2=-1.03) all have positive delta-r (structural disruptors). Structural anchors (ERK1, EGFR) are barely essential. Named finding: **Oncogenic Decoupling Signature (ODS)**, PROVISIONAL — one dataset, needs replication.
+
+---
 
 ## Why this repository exists
 

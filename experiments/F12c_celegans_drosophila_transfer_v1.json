@@ -1,0 +1,52 @@
+{
+  "experiment": "F12c — Cross-Species Hub Transfer: C. elegans → Drosophila Larva (Role-Vector Cosine Pre-Registration)",
+  "description": "Formally pre-registered test of whether the C. elegans hub identity transfers to Drosophila's structural space. Uses the --seed-from feature (introduced in F12b) in a confirmatory setting. Procedure: extract top-15 hub seeds from F12 C. elegans output (degree_centrality.ranking, chemical_synapse layer); synthesize a 2952-node graph (Drosophila scale) using those hub seeds as base hub scores; compare the synthesized graph's degree distribution shape to Drosophila's actual axon_to_dendrite degree distribution via rank_vector_cosine (the distribution-shape agreement metric, not requiring shared node IDs). The biological prediction: neurons that are structural hubs in the nematode nervous system (AVAL, AVAR, PVCL, PVCR — command interneurons) occupy proportionally similar hub positions in the degree distribution of a scaled insect nervous system. This is not a claim that the same neurons exist in both organisms — it is a claim that the hub distribution SHAPE is conserved. The null is a random 2952-node synthetic graph (no seeding): if rank_vector_cosine(seeded) is not significantly higher than rank_vector_cosine(unseeded), the transfer is not supported. The threshold 0.70 for h1 is anchored by F12b (unseeded synth vs C. elegans gave rank_vector_cosine=0.888 — seeded vs a DIFFERENT species at 10x scale is a harder test, so we predict lower similarity). Layer mapping: C. elegans chemical_synapse → Drosophila axon_to_dendrite (both encode directed chemical synaptic transmission). C. elegans gap_junction → Drosophila axon_to_axon (partial analogy: both involve non-canonical synapse connectivity, though the physical mechanism differs — electrical in nematode, chemical at axonal compartment in insect). Threshold for gap_junction→axo_axon analogy is lower (0.60) due to weaker biological homology. Pre-registered 2026-05-26 before any IRDME analysis of the transfer is run.",
+  "method": "synth_transfer",
+  "seed_source": "outputs/output_F12_celegans_302.json",
+  "seed_n": 15,
+  "target_graph": "examples/drosophila_larval_connectome.json",
+  "layer_mapping": {
+    "chemical_synapse": "axon_to_dendrite",
+    "gap_junction": "axon_to_axon"
+  },
+  "synth_command": "dev.py synth --nodes 2952 --layers chemical_synapse,gap_junction --r 0.363 --density 0.007 --seed-from outputs/output_F12_celegans_302.json --seed-n 15 --compare-to examples/drosophila_larval_connectome.json --name F12c_transfer_output",
+  "note_on_density": "Drosophila axon_to_dendrite: ~63k edges / 2952 nodes = avg degree 21.3, density = 21.3/(2952-1) ≈ 0.0072. Gap junction in C. elegans used gap_junction layer loading. axon_to_axon in Drosophila: ~40k edges / 2952 nodes ≈ density 0.0046. Use combined density estimate 0.007.",
+  "note_on_r": "Target r for synthesis set to 0.363 (Pearson r from F13 — the actual Drosophila observed r). This ensures the synthetic graph's inter-layer correlation matches the species being compared.",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "The rank_vector_cosine similarity between the C. elegans-seeded synthetic graph (n=2952) and the actual Drosophila larval connectome is >= 0.70 in the axon_to_dendrite layer (mapped from chemical_synapse). This would show that the C. elegans hub degree distribution shape is preserved when scaled to Drosophila's nervous system size in the canonical chemical synapse layer. The threshold 0.70 is set conservatively below F12b's within-species result (0.888) to account for the harder cross-species comparison. Null (unseeded random synth) expected around 0.40-0.50.",
+      "test": {
+        "type": "role_vector_cosine",
+        "metric": "rank_vector_cosine",
+        "layer_a_in_seed": "chemical_synapse",
+        "layer_b_in_target": "axon_to_dendrite",
+        "threshold": 0.70,
+        "direction": "above"
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "The rank_vector_cosine similarity >= 0.60 in the axon_to_axon layer (mapped from gap_junction). The threshold is lower (0.60) than h1 because the layer homology is weaker: gap junctions (electrical coupling in nematode) do not directly correspond to axo-axonic chemical synapses in insects. A result >= 0.60 would show the distribution shape partially transfers even across different synapse mechanisms. A result < 0.60 would suggest the gap_junction→axo_axon mapping fails and that the layers do not share hub architecture, consistent with BC4 (semantic type mismatch at the layer level).",
+      "test": {
+        "type": "role_vector_cosine",
+        "metric": "rank_vector_cosine",
+        "layer_a_in_seed": "gap_junction",
+        "layer_b_in_target": "axon_to_axon",
+        "threshold": 0.60,
+        "direction": "above"
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "avg_rank_cosine across both layers >= 0.65. This is the primary confirmatory criterion: the average rank-vector cosine similarity across the two mapped layer pairs is above the threshold that would indicate non-trivial structural correspondence. A result above 0.65 means the C. elegans hub skeleton, scaled to Drosophila's size, approximates the Drosophila degree distribution shape better than chance, providing evidence that hub architecture is conserved across 600 million years of evolution at the distribution level — not just at the individual neuron level (which cannot be tested without shared node IDs).",
+      "test": {
+        "type": "role_vector_cosine",
+        "metric": "avg_rank_cosine",
+        "layers": ["chemical_synapse→axon_to_dendrite", "gap_junction→axon_to_axon"],
+        "threshold": 0.65,
+        "direction": "above"
+      }
+    }
+  ]
+}
