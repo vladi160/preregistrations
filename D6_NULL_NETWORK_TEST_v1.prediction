@@ -1,0 +1,90 @@
+EXPERIMENT: D6_NULL_NETWORK_TEST_v1
+DATE: 2026-06-06
+STATUS: pre-registered
+DATASETS: examples/nsclc_egfr_signaling.json, examples/crc_kras_signaling.json,
+          examples/pdac_kras_signaling.json, examples/gbm_egfr_signaling.json,
+          examples/braf_melanoma_signaling.json, examples/egfr_nsclc_signaling.json
+
+MOTIVATION:
+All prior experiments (D3, D4, D5, CANCER_STRUCTURAL_ATLAS_v1) compute delta_r
+values and interpret their sign/magnitude as structural damper/anchor positions.
+A critical missing validation: are these delta_r values more extreme than what
+any randomly connected network of the same size and degree would produce?
+
+If random networks with the same degree sequence produce equally extreme delta_r
+values, our structural positions may be artifacts of network size and degree
+distribution rather than genuine topological features of cancer signaling.
+
+This null model test is the foundational credibility check for the entire
+structural pharmacology framework.
+
+NULL MODEL:
+Degree-preserving random rewiring (Maslov-Sneppen algorithm).
+For each cancer network and each layer (physical_interaction, coexpression_cancer):
+  - Extract the real edge list for that layer
+  - Perform 10 × |edges| random edge swaps, each swap preserving node degrees:
+      Pick edges (a-b) and (c-d). Swap to (a-d) and (c-b) if:
+      (i)  no self-loops (a≠d, c≠b)
+      (ii) neither new edge already exists
+      (iii) the two new edges are distinct
+  - Result: a random graph with identical degree sequence per node per layer,
+    but different edge topology
+
+N = 1000 rewirings per cancer network.
+Perturbation kernel: same algorithm as CANCER_STRUCTURAL_ATLAS_v1.
+
+PRIMARY HYPOTHESIS (H1, CONFIRMATORY):
+For each cancer network, the maximum |delta_r| observed in the real network
+exceeds the 95th percentile of maximum |delta_r| values computed across N=1000
+degree-preserving random rewirings.
+
+Formally: empirical p-value = fraction of null rewirings where
+  max(|delta_r|)_null >= max(|delta_r|)_real  < 0.05
+
+H1 confirmed if at least 5/6 cancer networks individually satisfy p < 0.05.
+H1 denied if fewer than 5/6 networks satisfy p < 0.05.
+
+SECONDARY HYPOTHESIS (H2, CONFIRMATORY):
+The variance of delta_r across protein nodes is significantly greater in real
+cancer networks than in null rewirings.
+
+Formally: empirical p-value = fraction of null rewirings where
+  std(delta_r)_null >= std(delta_r)_real  < 0.05
+
+H2 tests whether the SPREAD of structural positions is real (not just the extremes).
+
+TERTIARY HYPOTHESIS (H3, EXPLORATORY):
+The sign of the most extreme damper and most extreme anchor is preserved
+across >80% of random rewirings in each cancer network.
+
+This tests structural robustness: even in random rewirings, do the same
+proteins remain dampers/anchors? If yes, structural positions are intrinsic
+to the degree sequence. If no, specific edge topology matters.
+
+DECISION RULE:
+H1 confirmed → delta_r extremes are real structural signals, not degree artifacts
+H1 denied   → structural positions are degree-sequence artifacts;
+               framework requires revision
+
+H2 confirmed → the full damper/anchor distribution is structurally meaningful
+H2 denied   → only the extreme values carry signal
+
+H3 result   → informs whether specific topology or degree distribution drives identity
+
+ANALYSIS:
+Script: scripts/d6_null_network_test.py
+N_rewirings = 1000
+n_swaps_per_layer = 10 × |layer_edges|
+Layers tested: physical_interaction, coexpression_cancer
+Proteins tested: same protein-only set as in CANCER_STRUCTURAL_ATLAS_v1
+
+EXPECTED RESULT:
+We expect H1 and H2 confirmed because:
+1. Cancer signaling networks are highly non-random — hub proteins (EGFR, mTOR,
+   AKT1) have much higher degree than peripheral nodes, creating real structural
+   asymmetry that random rewiring should not reproduce in delta_r space.
+2. The two-layer coupling (which nodes are connected in BOTH layers) is
+   biologically constrained and unlikely to arise by chance.
+
+If denied: the structural pharmacology framework would need to be reformulated
+using metrics that account for degree-sequence effects.
