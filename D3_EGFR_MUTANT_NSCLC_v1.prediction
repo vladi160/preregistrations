@@ -1,0 +1,120 @@
+PREREGISTRATION: D3_EGFR_MUTANT_NSCLC_v1
+=========================================
+Date: 2026-06-06
+Experiment: D3_EGFR_MUTANT_NSCLC
+Network: examples/egfr_nsclc_signaling.json
+Version: v1
+Cancer type: NSCLC (EGFR-mutant; L858R or exon-19 deletion)
+Driver: EGFR activating point mutation (constitutive kinase, no ligand needed)
+Structural regime tested: KRAS-like ODS vs CLASS 6b driver-addiction vs CLASS 7 decoupling
+
+FILTER
+------
+Cancer lineage: NSCLC
+CRISPR dependency: EGFR Chronos < -0.5 (column: "EGFR (1956)")
+Expected EGFR-dependent lines: HCC827, PC9, HCC4006, H3255 (all EGFR L858R or del19)
+Exclusions: CDK4/6 inhibitors (cytostatic class), BET/JQ1 (potency gap class)
+
+PERTURBATION RESULTS
+--------------------
+Baseline r(physical_interaction, coexpression_cancer) = 0.7472
+Method: irdme perturb examples/egfr_nsclc_signaling.json --layer-a physical_interaction --layer-b coexpression_cancer
+Layers: physical_interaction vs coexpression_cancer
+
+Protein nodes (biologically meaningful — 15 nodes):
+  EGFR:   delta_r = -0.0009  ANCHOR (near-neutral; 11 edges; key test node)
+  GRB2:   delta_r = +0.0351  DAMPER  (upstream adaptor)
+  SOS1:   delta_r = +0.0747  DAMPER  (strongest damper; upstream GEF)
+  RAS:    delta_r = +0.0537  DAMPER  (RAS relay; WT in EGFR-mut NSCLC)
+  BRAF:   delta_r = -0.0113  ANCHOR  (WT BRAF; structural relay)
+  MEK1:   delta_r = +0.0040  DAMPER  (testable: trametinib)
+  ERK1:   delta_r = -0.0822  ANCHOR  (strongest anchor; no direct PRISM inhibitor)
+  MYC:    delta_r = -0.0222  ANCHOR  (transcriptional output)
+  PI3K:   delta_r = -0.0151  ANCHOR  (testable: copanlisib)
+  PTEN:   delta_r = +0.0050  DAMPER  (tumor suppressor; no drug)
+  AKT1:   delta_r = -0.0211  ANCHOR  (testable: MK-2206)
+  mTOR:   delta_r = +0.0047  DAMPER  (testable: everolimus)
+  JAK2:   delta_r = -0.0294  ANCHOR  (EGFR-JAK2 transactivation arm)
+  STAT3:  delta_r = -0.0159  ANCHOR  (downstream of JAK2)
+  TP53:   delta_r = +0.0050  DAMPER  (tumor suppressor; no drug)
+
+Drug nodes (structural artifact — zero-degree in tested layers):
+  All 8 drug nodes show delta_r = -0.0102 (zero-degree node removal artifact)
+  Drug-node delta_r values are NOT used for ODS hypothesis testing.
+
+KEY STRUCTURAL OBSERVATION:
+  EGFR (primary driver, 11 edges) is the most structurally NEUTRAL testable node.
+  Despite having the highest edge count, removal barely changes cross-layer correlation.
+  SOS1/RAS/GRB2 (upstream adaptors) are the strongest dampers.
+  ERK1 (downstream effector) is the strongest anchor.
+  This is structurally distinct from BRAF V600E melanoma where the driver (BRAF)
+  was a clear anchor (-0.0655) and KRAS-cancers where key effectors are dampers.
+
+TESTABLE NODES (drug-covered, exclusions applied)
+-------------------------------------------------
+  AKT1:  delta_r = -0.0211  ANCHOR  drugs: MK-2206
+  PI3K:  delta_r = -0.0151  ANCHOR  drugs: copanlisib
+  EGFR:  delta_r = -0.0009  ANCHOR  drugs: erlotinib, gefitinib, afatinib, osimertinib*
+  MEK1:  delta_r = +0.0040  DAMPER  drugs: trametinib
+  mTOR:  delta_r = +0.0047  DAMPER  drugs: everolimus
+  (*osimertinib may not be in PRISM secondary screen; include if present)
+
+ODS REGIME PREDICTION (if H1 confirmed):
+  Most effective: MEK1(trametinib) ≈ mTOR(everolimus)
+  Least effective: AKT1(MK-2206) > PI3K(copanlisib) > EGFR(erlotinib/gefitinib)
+
+CLASS 6b PREDICTION (if H2 confirmed):
+  Most effective: AKT1(MK-2206) > PI3K(copanlisib) > EGFR TKIs
+  Least effective: MEK1(trametinib) ≈ mTOR(everolimus)
+
+CLASS 7 PREDICTION (if H3 confirmed):
+  EGFR TKIs are most effective (mean LFC <= -0.5) despite EGFR being near-neutral.
+  Spearman r between delta_r and LFC is non-significant.
+  Interpretation: oncogenic driver addiction completely decouples topology from efficacy.
+
+HYPOTHESES
+----------
+H1_ODS_REGIME:
+  Spearman r(target delta_r, mean LFC in EGFR-dep NSCLC lines) < -0.40 AND p < 0.05
+  Verdict rule: CONFIRMED if Spearman r < -0.40 AND p < 0.05; DENIED otherwise
+
+H2_DRIVER_ADDICTION_CLASS6b:
+  Spearman r(target delta_r, mean LFC) > +0.40 AND p < 0.05
+  Verdict rule: CONFIRMED if Spearman r > +0.40 AND p < 0.05; DENIED otherwise
+
+H3_ONCOGENIC_DECOUPLING:
+  EGFR TKIs (erlotinib, gefitinib, afatinib) achieve mean LFC <= -0.5 in EGFR-dep lines AND |Spearman r| < 0.40 (non-significant topology-efficacy correlation)
+  Verdict rule: CONFIRMED if mean(erlotinib/gefitinib/afatinib LFC) <= -0.5 AND -0.40 < Spearman r < +0.40; DENIED otherwise
+
+H4_EGFR_VS_AKT1:
+  mean(EGFR TKI LFC) < mean(AKT1 inhibitor LFC) — i.e., EGFR inhibitors more effective than AKT1 inhibitors
+  Verdict rule: CONFIRMED if mean(erlotinib LFC, gefitinib LFC, afatinib LFC) < MK-2206_LFC
+
+REGIME CLASSIFICATION MATRIX
+-----------------------------
+ODS (KRAS-like):          H1 CONFIRMED, H2 DENIED, H3 DENIED
+CLASS 6b (driver-addict): H1 DENIED, H2 CONFIRMED, H3 DENIED
+CLASS 7 (decoupled):      H1 DENIED, H2 DENIED, H3 CONFIRMED
+Mixed/unclear:             Any other combination
+
+ANALYSIS PLAN
+-------------
+1. Load PRISM secondary screen replicate-collapsed LFC data
+2. Filter NSCLC lines with EGFR Chronos < -0.5 in DepMap 26Q1 CRISPR data
+3. For each testable drug: compute mean LFC across EGFR-dependent NSCLC lines
+4. Map drug → target delta_r (protein target, not drug node delta_r)
+5. Compute Spearman r(target delta_r, mean drug LFC) across 5 testable targets
+6. Assess H1/H2/H3/H4 verdicts per rules above
+7. Classify regime using matrix above
+
+DATA SOURCES
+------------
+PRISM Secondary: primary-screen-replicate-collapsed-logfold-change.csv
+CRISPR: CRISPRGeneEffect.csv (DepMap 26Q1)
+Cell line metadata: Model.csv (DepMap 26Q1)
+
+NETWORK FILE
+------------
+examples/egfr_nsclc_signaling.json
+
+SHA-256: afe73076052a1d1b3f67c07ec4e98e7a9ef16e358e28b726cfb8fd7d86117e36
