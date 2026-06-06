@@ -1,0 +1,142 @@
+# D12_GDSC2_INVARIANCE_TEST_v1
+# Pre-registration: Measurement Geometry Invariance Test
+# Date: 2026-06-07
+# Status: PRE-REGISTERED — do not open GDSC2 dose-response data before this commit
+
+## Scientific Purpose
+
+This is NOT a validation experiment. It is a **measurement geometry invariance test**.
+
+PRISM measures log-fold-change (LFC) at a single fixed drug concentration.
+GDSC2 measures IC50 and AUC across a multi-point dose-response curve (typically
+8 concentrations). These are different cuts of the dose-response relationship.
+
+Invariance claim: if structural z_dr predictions reflect genuine network
+pharmacology, the cancer-type sensitivity ranking should persist regardless of
+whether drug response is measured as PRISM LFC (single concentration) or
+GDSC2 IC50 (dose-curve derived).
+
+Replication = structural signal is geometry-independent (evidence of real mechanism).
+No replication = PRISM-specific signal (also informative: signal may be at
+assay-concentration, not captured at IC50; or cell line panel differs systematically).
+
+## Structural Basis (from D7 z_dr atlas and D8-D11 results)
+
+All z_dr values from D7_Z_DR_ATLAS_v1 (pre-reg 9dc1b1d).
+
+MEK1 structural positions:
+- BRAF-MEL: robust ANCHOR (z1=-1.104, z2=-1.451)
+- CRC: robust DAMPER (z1=+1.863, z2=+1.008)
+- KRAS-NSCLC: near-zero
+- GBM: near-zero
+
+MDM2 structural positions:
+- PDAC: robust DAMPER (z1=+1.010, z2=+1.085) — but TP53 mutant ~70%
+- BRAF-MEL: DAMPER (delta_r=+0.134)
+- EGFR-NSCLC: near-zero
+
+PI3K structural positions:
+- CRC: robust ANCHOR (z1=-3.032, z2=-1.872) — direct KRAS->PI3K co-pathway
+- BRAF-MEL: robust ANCHOR (z1=-3.032, z2=-2.451) — yet PI3K inhibitors kill CRC more per D9 H2
+
+CDK4/6 (control):
+- PDAC: SIGNIFICANT DAMPER (z1=+1.010) but FM1 (no co-pathway confirmed D8 H3)
+- No structural basis for PDAC-specific CDK4/6 sensitivity
+
+## Hypotheses
+
+### H1 (MEK inhibitor regime-switch — geometry invariance of D8/D9 signal)
+
+Structural prediction: MEK inhibitors kill BRAF-MEL significantly more than CRC.
+PRISM result: d=-0.186 (D8), MEK regime-switch largest in dataset (D9 d=-0.620 vs GBM).
+
+GDSC2 prediction: BRAF-MEL has LOWER IC50 for MEK inhibitors than CRC.
+(Lower IC50 = more drug-sensitive = consistent with PRISM LFC signal)
+
+Drugs to test: trametinib, selumetinib, cobimetinib, binimetinib (MEK162)
+Cell line filter: melanoma lines with BRAF V600E annotation vs colorectal lines
+Pre-registered direction: BRAF-MEL IC50 < CRC IC50 (Mann-Whitney one-sided p<0.05)
+
+H1 CONFIRMED if: BRAF-MEL significantly lower IC50 for ≥1 MEK inhibitor (p<0.05)
+H1 DENIED if: no significant difference in IC50 across cancer types
+
+### H2 (MDM2 inhibitor in BRAF-MEL vs NSCLC — geometry invariance of D11 H2)
+
+PRISM result: idasanutlin d=-0.354, p<10^-10 (BRAF-MEL kills more than NSCLC, D11 H2).
+Mechanism: synthetic-lethality alignment (CDKN2A loss + MAPK hyperactivation +
+intact apoptotic execution machinery).
+
+GDSC2 prediction: BRAF-MEL has LOWER IC50 for nutlin-3 (or other MDM2i in GDSC2)
+than lung/NSCLC cancer lines.
+
+Drugs to test: nutlin-3, nutlin-3a, RG7112, idasanutlin (availability determined post-commit)
+Pre-registered direction: BRAF-MEL IC50 < NSCLC IC50 (p<0.05)
+Pre-registered confound: if MDM2i not in GDSC2 → H2 is UNTESTABLE (not denied)
+
+H2 CONFIRMED if: significant lower IC50 in BRAF-MEL
+H2 UNTESTABLE if: no MDM2 inhibitor found in GDSC2 drug list
+
+### H3 (PI3K inhibitor in CRC vs MEL — geometry invariance of D9 H2)
+
+PRISM result: PI3K inhibitors kill CRC significantly more than BRAF-MEL
+(D9 H2: p=0.00073, d=+0.390, CRC mean -0.389 vs BRAF-MEL mean -0.334 but CRC less variable).
+
+GDSC2 prediction: CRC has LOWER IC50 for PI3K inhibitors than BRAF-MEL.
+Drugs to test: buparlisib (BKM120), alpelisib (BYL719), copanlisib, pictilisib (GDC-0941)
+Pre-registered direction: CRC IC50 < BRAF-MEL IC50 (p<0.05)
+
+H3 CONFIRMED if: CRC significantly lower IC50 for ≥1 PI3K inhibitor
+H3 DENIED if: no significant difference
+
+### H4 (CDK4/6 inhibitors — null control, FM1)
+
+PRISM result: CDK4/6 inhibitors show no PDAC-specific sensitivity (D8 H3 NOT SUPPORTED,
+FM1 = no co-pathway). CDK4/6 is cytostatic — excluded from drug panels — but its
+null result is a pre-registered control.
+
+GDSC2 prediction: palbociclib, ribociclib, abemaciclib show NO significant difference
+between PDAC and CRC (structural basis absent per D8 pre-reg).
+
+H4 CONFIRMED (null) if: p≥0.05 for PDAC vs CRC CDK4/6 IC50
+H4 VIOLATED if: significant PDAC-CRC difference (would require explanation)
+
+## Decision Rule (pre-registered)
+
+| Outcome | Interpretation |
+|---------|----------------|
+| ≥3/4 H confirmed | Structural signal is measurement-geometry invariant |
+| 2/4 confirmed | Partial invariance — some predictions assay-specific |
+| ≤1/4 confirmed (H1 included) | PRISM-specific signal; GDSC2 captures different pharmacological geometry |
+| H1 denied + H2 denied | MEK and MDM2 signals are PRISM-specific (concentration-dependent) |
+| H4 violated | CDK4/6 null result failed — investigate FM1 boundary condition |
+
+## Key pre-registered methodological choices
+
+- IC50 used (not AUC) as primary metric — IC50 is more interpretable for cancer-type comparisons
+- GDSC2 v2 (Oct 2023 release: GDSC2_fitted_dose_response_27Oct23.xlsx) is the primary dataset
+- Cancer type annotation from GDSC2 TCGA classification column
+- Minimum n=5 cell lines per cancer type per drug (for statistical validity)
+- Mann-Whitney U (one-sided) as primary test, Cohen's d as effect size
+- Drug matching: match on DRUG_NAME column (case-insensitive), not drug ID
+- BRAF-mutant melanoma filter: GDSC2 TCGA label 'SKCM' + BRAF_status if available, else all melanoma
+- CDK4/6 exclusion from H1-H3 panels (cytostatic confound — pre-established exclusion from D8)
+- BET/JQ1 exclusion (potency gap confound — pre-established from D5)
+
+## PRISM-GDSC2 comparison framework (pre-registered analytic interpretation)
+
+PRISM measures: log(treated/untreated) at single fixed concentration (varying by drug)
+GDSC2 measures: fitted IC50 from sigmoid dose-response curve (8 concentrations)
+
+If signal persists: structural predictions operate at the pharmacological mechanism level,
+not at the specific concentration tested. This strengthens the causal claim.
+
+If signal does not persist: two interpretations (both informative):
+(A) The PRISM signal was concentration-dependent (detectable only above a threshold
+    that GDSC2 may not reach for all cancer types)
+(B) Cell line panel differences (GDSC2 is largely European lines, PRISM is US-based
+    Broad Institute lines) cause different clonal composition → different response
+
+Both interpretations reduce confidence differently. (A) = drug sensitivity is
+structurally-explained but context-dependent. (B) = cell-line-panel confound.
+
+## Pre-registration hash will be in commit immediately following this file creation
