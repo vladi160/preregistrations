@@ -1,0 +1,160 @@
+{
+  "experiment": "D3_BRAF_MELANOMA -- Driver Addiction vs ODS Topology Test in BRAF V600E Melanoma",
+  "parent_experiments": [
+    "D3_v2_KRAS_stratified (1e8b0ad) -- NSCLC: mTOR(damper+0.049)>MEK1(anchor-0.011) H2 CONFIRMED",
+    "D3_CRC_v1 (e727cf2) -- CRC: MEK1(damper+0.120)>mTOR(anchor-0.117) H2 CONFIRMED",
+    "D3_PDAC_v1 (201dfd2) -- PDAC: CDK4/6(damper+0.295)>mTOR(anchor-0.075) H2 DENIED [cytostatic]",
+    "D3_GBM_stage3 (bca6188) -- GBM: EGFR anchor H4 CONFIRMED (LFC=-0.031)",
+    "D3_GBM_PTEN_stratified (50421d6) -- PTEN-loss mTOR override H1 CONFIRMED"
+  ],
+  "scientific_question": "BRAF V600E melanoma is the ideal single-driver system to test whether ODS topology predicts drug efficacy OR whether driver mutation addiction overrides structural topology. SURPRISE: Perturbation loop shows BRAF is a structural ANCHOR (delta_r=-0.0655), not a damper as initially hypothesized. MEK1 and ERK1 are the strongest anchors (-0.2253, -0.2442 respectively). CDK4 (+0.2342) and TP53 (+0.2594) are the largest dampers. After applying standard exclusions (CDK4/6 cytostatic CLASS5, BET/JQ1 potency gap CLASS4, MDM2 TP53-WT gating required), the testable nodes are: AKT1(+0.1263), PI3K(+0.0900) as dampers vs MEK1(-0.2253), mTOR(-0.1096), BRAF(-0.0655) as anchors. ODS predicts damper drugs (AKT1, PI3K) should outperform anchor drugs (MEK1, mTOR, BRAF) in cell killing. But BRAF V600E is the driver mutation -- vemurafenib/dabrafenib target BRAF V600E directly. If BRAF inhibitors kill more than AKT1 inhibitors despite BRAF being a structural anchor, this establishes the \"driver addiction override\" as a new mechanism class (CLASS 6b: single-driver addiction overrides topology, analogous to CLASS 6 PTEN-loss mTOR override in GBM).",
+  "topology_comparison": {
+    "NSCLC_damper": "mTOR (+0.049) -- confirmed H2 D3_v2",
+    "CRC_damper": "MEK1 (+0.120) -- confirmed H2 D3_CRC_v1",
+    "PDAC_damper": "CDK4 (+0.295) -- denied H2 [cytostatic]",
+    "GBM_pattern": "mTOR dominates via RTK convergence + PTEN-loss override",
+    "MELANOMA_surprise": "BRAF is ANCHOR (-0.065); ERK1 (-0.244) and MEK1 (-0.225) are strongest anchors"
+  },
+  "network_file": "examples/braf_melanoma_signaling.json",
+  "perturbation_output": "outputs/perturbation_D3_BRAF_MELANOMA.json",
+  "delta_r_values": {
+    "TP53": 0.2594,
+    "CDK4": 0.2342,
+    "MDM2": 0.134,
+    "AKT1": 0.1263,
+    "PI3K": 0.09,
+    "CDKN2A": 0.0196,
+    "RAS": 0.0134,
+    "CRAF": -0.0248,
+    "CCND1": -0.0517,
+    "BRAF": -0.0655,
+    "PTEN": -0.101,
+    "MYC": -0.1032,
+    "mTOR": -0.1096,
+    "MEK1": -0.2253,
+    "ERK1": -0.2442
+  },
+  "nodes_excluded": {
+    "CDK4": "Cytostatic CLASS5 -- CDK4/6 inhibitors cause growth arrest not killing; confirmed cross-context PDAC",
+    "TP53": "No direct drug (structural damper +0.2594 -- largest; no TP53 activator in PRISM)",
+    "MDM2": "Requires TP53-WT gating; melanoma is ~85% TP53-WT but cell line filter complexity excluded",
+    "ERK1": "No ERK1 inhibitors in PRISM 20Q2 (strongest anchor -0.2442)",
+    "MYC": "BET/JQ1 potency gap CLASS4 -- confirmed cross-context (NSCLC, CRC, PDAC)",
+    "PTEN": "No drug available; anchor (-0.1010)",
+    "CCND1": "No selective CCND1 drug in PRISM",
+    "CDKN2A": "No direct drug; small damper (+0.0196)",
+    "RAS": "NRAS mutation in melanoma context; sotorasib is KRAS G12C specific; no suitable PRISM drug",
+    "CRAF": "No selective CRAF inhibitor in PRISM 20Q2; small anchor (-0.0248)"
+  },
+  "testable_nodes": {
+    "AKT1": {
+      "delta_r": 0.1263,
+      "class": "DAMPER"
+    },
+    "PI3K": {
+      "delta_r": 0.09,
+      "class": "DAMPER"
+    },
+    "MEK1": {
+      "delta_r": -0.2253,
+      "class": "anchor"
+    },
+    "mTOR": {
+      "delta_r": -0.1096,
+      "class": "anchor"
+    },
+    "BRAF": {
+      "delta_r": -0.0655,
+      "class": "anchor"
+    }
+  },
+  "cell_line_filter": {
+    "tissue_filter": "secondary_tissue contains 'melanoma' (case-insensitive) in PRISM cell info",
+    "braf_dep_filter": "BRAF Chronos (CRISPRGeneEffect.csv) < -0.5 to select BRAF-dependent (V600E likely) lines",
+    "note": "BRAF dependency filter ensures we test V600E-addicted lines; PRISM secondary screen has limited melanoma n"
+  },
+  "drug_lists": {
+    "BRAF": [
+      "vemurafenib",
+      "dabrafenib",
+      "PLX4720"
+    ],
+    "MEK1": [
+      "trametinib",
+      "cobimetinib",
+      "selumetinib",
+      "PD-0325901",
+      "MEK162",
+      "Ro-4987655",
+      "TAK-733",
+      "refametinib",
+      "PD-198306"
+    ],
+    "AKT1": [
+      "MK-2206",
+      "uprosertib",
+      "GDC-0068",
+      "AZD5363",
+      "GSK2110183",
+      "triciribine"
+    ],
+    "PI3K": [
+      "alpelisib",
+      "idelalisib",
+      "copanlisib",
+      "GDC-0941",
+      "taselisib",
+      "ZSTK-474",
+      "AZD6482",
+      "TG100-115",
+      "buparlisib",
+      "GDC-0349"
+    ],
+    "mTOR": [
+      "AZD2014",
+      "AZD8055",
+      "everolimus",
+      "temsirolimus",
+      "sirolimus",
+      "PP242",
+      "OSI-027",
+      "torin-1",
+      "torin-2",
+      "WYE-354",
+      "WYE-125132",
+      "WAY-600",
+      "PKI-179",
+      "XL388",
+      "deforolimus",
+      "LY3023414",
+      "palomid-529",
+      "ku-0063794"
+    ]
+  },
+  "standard_exclusions": {
+    "PIK-75": "Off-target cytotoxicity, established cross-context exclusion from PI3K class",
+    "CDK4_6_class": "Excluded as testable node (cytostatic)",
+    "BET_class": "Excluded (JQ1/OTX015 potency gap CLASS4)"
+  },
+  "prism_dataset": "PRISM Repurposing 20Q2 Secondary Screen (replicate-collapsed LFC)",
+  "committed_at": "2026-06-06T07:03:54.454627+00:00",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "label": "ODS Spearman correlation test",
+      "statement": "Spearman r(delta_r, mean PRISM LFC) < -0.40 across 5 testable node-drug class pairs (AKT1, PI3K, MEK1, mTOR, BRAF) within BRAF-dependent melanoma lines (BRAF Chronos < -0.5). delta_r range: +0.1263 (AKT1) to -0.2253 (MEK1). If ODS holds in this driver-addicted context, damper nodes (AKT1, PI3K) should have lower LFC (more killing) than anchor nodes (MEK1, mTOR, BRAF)."
+    },
+    {
+      "id": "h2",
+      "label": "ODS topology regime test -- AKT1 damper vs MEK1 anchor",
+      "statement": "AKT1 mean PRISM LFC < MEK1 mean PRISM LFC in BRAF-dependent melanoma lines. AKT1 is the largest druggable structural damper (delta_r=+0.1263); MEK1 is the largest druggable structural anchor (delta_r=-0.2253). ODS predicts AKT inhibitors should kill more than MEK inhibitors in melanoma. This is the direct ODS regime test for melanoma."
+    },
+    {
+      "id": "h3",
+      "label": "Driver addiction override test -- BRAF anchor vs AKT1 damper",
+      "statement": "BRAF inhibitor mean PRISM LFC < AKT1 inhibitor mean PRISM LFC in BRAF-dependent melanoma. BRAF is a structural anchor (delta_r=-0.0655) yet targets the V600E driver mutation directly. If BRAF inhibitors kill MORE than AKT1 inhibitors (more negative LFC), this establishes driver mutation addiction overriding topological position (analogous to PTEN-loss mTOR override in GBM). This would define CLASS 6b: single-driver addiction override. If AKT1 kills MORE (H2 confirmed, H3 denied), ODS holds even in driver-addicted context. Reference: vemurafenib clinical response rate ~50% in BRAF V600E melanoma vs mTOR inhibitor modest activity -- strong biological prior favoring H3 confirmation."
+    }
+  ],
+  "_note": "Do not edit -- pre-registered before PRISM LFC loading for melanoma lines.",
+  "prediction_hash": "f46006f808af4a689e47aab38ec9141818d6144bb47876eb6801068253e4cc91"
+}
