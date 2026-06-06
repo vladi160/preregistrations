@@ -1,0 +1,139 @@
+EXPERIMENT: D11_MDM2_STRUCTURAL_REPURPOSING_v1
+DATE: 2026-06-07
+STATUS: pre-registered
+DATASET: PRISM Repurposing 20Q2 Secondary Screen
+DERIVES_FROM: D10_STRUCTURAL_CANCER_ONTOLOGY_v1 (analytical, no pre-reg required)
+
+MOTIVATION:
+D10 computed pairwise structural cosine similarity across 6 cancer networks.
+Most structurally similar pair: PDAC ↔ BRAF-melanoma (cosine = +0.516),
+despite completely different drivers (KRAS vs BRAF), tissue (pancreas vs skin),
+and regime (ODS vs CLASS6b).
+
+Shared structural signature: CDK4, TP53, MDM2, and AKT1 all in DAMPER class
+in BOTH PDAC and BRAF-MEL. This is the p53-pathway structural convergence.
+
+From D7 z_dr atlas (pre-registered before this):
+  MDM2 in PDAC:     z1=+1.010, z2=+1.085 — robust DAMPER (structural target)
+  CDK4 in PDAC:     z1=+2.513, z2=+2.277 — SIGNIFICANT DAMPER (strongest in atlas)
+  TP53 in PDAC:     z1=+2.297, z2=+1.525 — robust DAMPER
+
+From D10 raw delta_r:
+  MDM2 PDAC:    +0.265 (highest MDM2 delta_r in atlas)
+  MDM2 BRAF-MEL: +0.134 (second highest)
+  MDM2 CRC:     −0.069 (ANCHOR — structural prediction: MDM2 inhibition ineffective)
+  MDM2 KRAS-NSCLC: +0.100 (damper but weaker than PDAC)
+
+STRUCTURAL PREDICTION:
+MDM2 is a structural DAMPER in PDAC and BRAF-MEL, and an ANCHOR in CRC.
+Per the boundary condition (D9): structural position predicts lethality when
+target is directly co-pathway with the dependency-driver.
+
+  PDAC: MDM2 is co-pathway with TP53, which is co-mutated with KRAS in PDAC
+    (~70% TP53 mutation rate in PDAC). MDM2 regulates TP53 directly.
+    HOWEVER: nutlin-class MDM2 inhibitors REQUIRE WILD-TYPE TP53 to kill cells.
+    MDM2 inhibition reactivates p53 signaling; if TP53 is mutant, no signal.
+
+  CRITICAL CONFOUND:
+  PDAC has ~70% TP53 mutation rate in tumors. PRISM PDAC cell lines likely
+  have a high TP53 mutation rate too. This means:
+    - Structural prediction (MDM2 damper → kills PDAC): may be DENIED not because
+      the framework is wrong, but because the drug mechanism requires TP53 WT.
+    - If H1 is denied due to TP53 mutation prevalence, this is a GENOTYPE
+      OVERRIDE of the structural prediction — same category as BRAF inhibitors
+      in EGFR-NSCLC (D5 boundary condition).
+    - If H1 is confirmed despite high TP53 mutation rate → structural position
+      predicts even beyond genotype-level expectations.
+
+  BRAF-MEL: MDM2 damper (+0.134). BRAF-melanoma has lower TP53 mutation rate
+    (~14-17% in TCGA). CDK4/MDM2 co-amplification is a known secondary event
+    alongside BRAF-V600E. Nutlin sensitivity in BRAF-MEL is less confounded by
+    TP53 mutations.
+
+  CRC: MDM2 ANCHOR (−0.069). Structural prediction: MDM2 inhibitors ineffective
+    in CRC. Note: CRC also has ~60% TP53 mutation rate. Both structural AND
+    genotype factors predict poor response.
+
+DECISION TABLE FOR INTERPRETING OUTCOMES:
+  H1 confirmed (PDAC kills more than CRC):
+    → Structural prediction holds; TP53-WT PDAC lines dominate the signal
+    → MDM2 is both a structural target AND pharmacologically relevant in PDAC
+  H1 denied:
+    → Two interpretations: (A) TP53 mutation prevalence overrides structural
+      signal (genotype override of structural prediction — new boundary condition case);
+      OR (B) structural position of MDM2 does not predict lethality even with
+      direct co-pathway (TP53 MDM2 co-pathway exists in PDAC)
+    → Cannot distinguish (A) vs (B) without TP53 stratification
+  H2 confirmed (BRAF-MEL kills more than EGFR-NSCLC):
+    → Cleaner structural test (lower TP53 mutation rate in BRAF-MEL)
+    → Confirms cross-regime structural repurposing via shared structural motif
+  H2 denied:
+    → MDM2 structural position does not predict cross-cancer lethality
+      even when structural signal is present
+
+PRIMARY HYPOTHESIS (H1, CONFIRMATORY):
+MDM2 inhibitors show significantly more negative mean LFC in PDAC cell lines
+(primary_tissue='pancreas', n~36) than in CRC cell lines
+(primary_tissue='colorectal', n=38).
+
+MDM2 structural basis: robust DAMPER in PDAC (z1=+1.010, z2=+1.085);
+ANCHOR in CRC (delta_r=−0.069). Direct MDM2→TP53 pathway exists in PDAC.
+Statistical test: Mann-Whitney U (PDAC < CRC), p < 0.05
+
+SECONDARY HYPOTHESIS (H2, CONFIRMATORY):
+MDM2 inhibitors show significantly more negative mean LFC in BRAF-melanoma
+(secondary_tissue='melanoma', n=44) than in EGFR-NSCLC
+(primary_tissue='lung', secondary_tissue='lung_NSC', EGFR filter, n subset).
+
+MDM2 structural basis: damper in BRAF-MEL (delta_r=+0.134);
+near-neutral in EGFR-NSCLC (not in robust atlas).
+TP53 confound: BRAF-MEL has lower TP53 mutation rate (~15%) vs EGFR-NSCLC (~50%).
+Combined structural + genotype prediction: BRAF-MEL kills more.
+Statistical test: Mann-Whitney U (MEL < EGFR-NSCLC), p < 0.05
+
+EXPLORATORY (H3):
+MDM2 inhibitors more negative in PDAC than KRAS-NSCLC.
+PDAC MDM2 delta_r=+0.265 > KRAS-NSCLC delta_r=+0.100 (both dampers, PDAC stronger).
+If confirmed: within-damper magnitude predicts relative lethality.
+
+EXPLORATORY (H4):
+Structural double dissociation: MDM2 inhibitors prefer PDAC/BRAF-MEL over CRC;
+CDK4/6 inhibitors (D8 H3: no PDAC preference) are used as negative structural control.
+If MDM2 shows PDAC preference where CDK4/6 did not (D8 H3 not supported),
+it distinguishes MDM2-specific structural prediction from CDK4-specific failure.
+
+MDM2 DRUGS IN PRISM (confirmed before LFC access from treatment info only):
+Primary: nutlin-3a (MDM2 inhibitor, ~24-48 entries in PRISM)
+Extended: RG7112 (first clinical MDM2i), AMG-232, idasanutlin (RG7388),
+          MI-773 (SAR405838), HDM201
+
+CELL LINES:
+  PDAC: primary_tissue='pancreas' (n~36 from PRISM)
+  CRC: primary_tissue='colorectal' (n=38)
+  BRAF-MEL: secondary_tissue='melanoma' (n=44)
+  EGFR-NSCLC: primary_tissue='lung', secondary_tissue='lung_NSC' (subset)
+  KRAS-NSCLC: same lung NSC lines (comparison control, H3)
+
+STRUCTURAL CHAIN OF EVIDENCE (pre-registered lineage):
+  D7 (9dc1b1d) → MDM2 in PDAC: robust DAMPER (z1=+1.010, z2=+1.085)
+  D10 (no pre-reg, analytical) → PDAC-BRAF-MEL structural partnership
+  D11 (this pre-reg) → MDM2 pharmacogenomics: structural prediction to lethality
+
+BOUNDARY CONDITION CONTEXT:
+This test falls in the "direct co-pathway" category (strict boundary from D9):
+  MDM2 → TP53 is a direct interaction (MDM2 is the primary TP53 ubiquitin ligase)
+  TP53 is co-mutated with KRAS in PDAC (KRAS activates → KRAS-driven proliferation
+  requires bypassing TP53-mediated apoptosis → TP53 loss or MDM2 amplification)
+  MDM2 is co-pathway with the PDAC network's key structural axis.
+
+However: the GENOTYPE confound (TP53 mutation required for nutlin to work) means
+this is a boundary condition TEST of genotype-override vs structural-override.
+The outcome clarifies whether structural position or genotypic context dominates.
+
+FALSIFICATION CRITERIA:
+H1 DENIED + H2 DENIED → MDM2 structural prediction fails; p53-pathway structural
+  dampers do not predict pharmacological lethality (framework scope: more limited)
+H1 DENIED + H2 CONFIRMED → Genotype override in PDAC (TP53-mutant prevalence);
+  structural prediction works where genotype aligns (BRAF-MEL)
+H1 CONFIRMED + H2 CONFIRMED → Structural cross-regime repurposing prediction
+  confirmed; MDM2 inhibitors as PDAC+BRAF-MEL dual-cancer candidates
