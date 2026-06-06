@@ -1,0 +1,93 @@
+EXPERIMENT: D5_SOS1_EXTENDED_EGFR_NSCLC_v1
+DATE: 2026-06-06
+STATUS: pre-registered
+EXTENDS: D3_EGFR_MUTANT_NSCLC (pre-reg 8dc23d5)
+DATASET: PRISM Repurposing 20Q2 Secondary Screen (same as D3)
+CELL LINES: same 10 EGFR-dep lines as D3_EGFR_MUTANT_NSCLC
+
+MOTIVATION:
+SOS1 (delta_r = +0.0954) is the strongest structural DAMPER in the EGFR-NSCLC
+signaling network (examples/egfr_nsclc_signaling.json, 23 items). In the
+context-dependence framework, DAMPER = structural target in ODS-regime cancers.
+BI-3406 (Boehringer Ingelheim SOS1 inhibitor, clinical trials NCT04973163) is
+NOT in PRISM 20Q2. This creates a structural drug discovery gap: our best
+structural target has no pharmacological probe in the available screen.
+
+EXTENSION FROM D3:
+D3_EGFR_MUTANT_NSCLC tested 5 curated drugs (trametinib, erlotinib, everolimus,
+copanlisib, MK-2206) targeting MEK1, EGFR, mTOR, PI3K, AKT1.
+D5 extends to ALL available PRISM drugs targeting EGFR-NSCLC network proteins,
+including drug classes not tested in D3:
+- JAK2 inhibitors (ruxolitinib, baricitinib, AZD1480, TG-101348, pacritinib)
+  JAK2 delta_r = -0.032 in EGFR-NSCLC (ANCHOR)
+- ERK1 inhibitor (SCH772984/ulixertinib/LY3214996)
+  ERK1 delta_r = -0.070 in EGFR-NSCLC (strongest ANCHOR)
+- BRAF inhibitors (vemurafenib, dabrafenib, PLX-4720)
+  BRAF delta_r = -0.024 (ANCHOR)
+- Additional EGFR/mTOR/PI3K/AKT/MEK1 drugs beyond D3's single representative
+
+PRIMARY HYPOTHESIS (H1, CONFIRMATORY):
+The Spearman rank correlation r(delta_r, mean_LFC) observed in D3 (r=-1.000, n=5)
+remains statistically significant (p < 0.05) when extended to the full PRISM
+drug set mapped to EGFR-NSCLC network proteins (estimated n=8-12 target proteins
+with available drugs).
+
+Direction: negative (more negative delta_r = stronger anchor = less growth =
+more negative LFC = stronger killing). Confirmed negative in D3 (anchor proteins
+are more killable when targeted in this ODS-like cancer).
+
+SECONDARY HYPOTHESIS (H2, EXPLORATORY):
+ERK1 inhibitors (delta_r = -0.070, strongest anchor) show more negative mean LFC
+than AKT1 inhibitors (delta_r = -0.025) in EGFR-dep NSCLC lines.
+If H2 confirmed: anchors are better targets in ODS-regime cancers, contra the
+classical ODS model. If denied: ODS model holds (dampers are the targets).
+
+STRUCTURAL DRUG GAP DOCUMENTATION:
+SOS1 (delta_r = +0.0954) — NO DRUG in PRISM 20Q2
+GRB2 (delta_r = +0.0438) — NO DRUG in PRISM 20Q2
+PTEN (delta_r = +0.0116) — tumor suppressor, no pharmacological activator
+RAS  (delta_r = +0.0725) — only farnesyltransferase proxy (lonafarnib);
+                            no direct RAS inhibitor in PRISM 20Q2
+SOS1 is the #1 structural druggability gap in EGFR-NSCLC.
+
+PROSPECTIVE PREDICTION:
+BI-3406 (or any clinical SOS1 inhibitor) tested in EGFR-dep NSCLC lines should
+show mean LFC between 0 and +0.20 (positive: growth restoration, not killing).
+Reason: SOS1 is a DAMPER — removing it disrupts structural balance. Drugs that
+restore SOS1 function (if SOS1-gain-of-function were possible) would be
+therapeutic. SOS1 INHIBITORS would be counterproductive by ODS logic.
+This is the SOS1 paradox: strongest structural target predicts drug FAILURE.
+Alternative framing: SOS1 inhibitors may work by a non-structural mechanism
+(blocking RAS-GEF exchange), and this may conflict with structural prediction.
+RESOLUTION: empirical test when BI-3406 enters a future screen.
+
+ANALYSIS:
+Script: scripts/d5_sos1_extended_egfr_nsclc.py
+delta_r values: from D3_EGFR_MUTANT_NSCLC (pre-reg 8dc23d5), drug-node-artifact-free
+Cell lines: PR500_ACH-000925 (NCIH1975), PR500_ACH-000534 (PC14),
+            PR500_ACH-000681 (LOUNH91), PR500_ACH-000038 (SKMES1),
+            PR500_ACH-001005 (CORL105), PR500_ACH-000019 (EKVX),
+            PR500_ACH-000173 (LUDLU1), PR500_ACH-000822 (NCIH322),
+            PR500_ACH-000647 (NCIH1648), PR500_ACH-000289 (NCIH1792)
+
+NETWORK: examples/egfr_nsclc_signaling.json
+DELTA_R VALUES (from D3, pre-reg 8dc23d5):
+  SOS1  = +0.0954  DAMPER  (NO DRUG)
+  RAS   = +0.0725  DAMPER  (lonafarnib proxy)
+  GRB2  = +0.0438  DAMPER  (NO DRUG)
+  PTEN  = +0.0116  DAMPER  (NO DRUG)
+  EGFR  = +0.0061  neutral
+  mTOR  = -0.0040  neutral
+  TP53  = -0.0038  neutral
+  MEK1  = -0.0064  neutral
+  PI3K  = -0.0052  neutral
+  STAT3 = -0.0011  neutral
+  BRAF  = -0.0240  ANCHOR
+  AKT1  = -0.0246  ANCHOR
+  MYC   = -0.0264  ANCHOR
+  JAK2  = -0.0320  ANCHOR
+  ERK1  = -0.0701  ANCHOR  (strongest)
+
+DECISION RULE:
+H1 confirmed if p(Spearman) < 0.05 across extended drug set (n≥6 target proteins).
+H1 denied if p >= 0.05 or direction reverses.
