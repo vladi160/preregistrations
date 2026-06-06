@@ -1,0 +1,106 @@
+EXPERIMENT: D7_Z_DR_ATLAS_v1
+DATE: 2026-06-06
+STATUS: pre-registered
+EXTENDS: D6_NULL_NETWORK_TEST_v1 (pre-reg 0f6e33c)
+DATASETS: same 6 cancer network JSON files as D6
+
+MOTIVATION:
+D6 established that raw delta_r values are not more extreme than degree-matched
+random rewirings (H1/H2 denied, 0/6 networks). The null 95th percentile is
+2-4x larger than real network values, indicating that the degree-dependent
+component dominates raw delta_r variance.
+
+The correct response is NOT to discard delta_r, but to project it onto the
+biological residual subspace orthogonal to degree structure:
+
+  z_dr(v) = [delta_r(v) - mean_null(v)] / std_null(v)
+
+where mean_null and std_null are computed per-protein across N=1000 degree-
+preserving random rewirings. This is a projection, not a normalization step.
+It defines a NEW signal space: degree-conditioned residual control topology.
+
+CRITICAL REQUIREMENT (reviewer-proofing):
+D7 must demonstrate robustness across at least TWO structurally different null
+model classes. Results that depend on a single null definition cannot survive
+peer review ("results depend on null choice" objection).
+
+NULL MODEL TYPE 1 — Maslov-Sneppen edge-swap (same as D6):
+  Within each layer, perform 10x|edges| random edge swaps preserving node degree.
+  Tests: is delta_r more extreme than degree-matched topology?
+
+NULL MODEL TYPE 2 — Layer-permutation null (NEW):
+  Keep Layer A (physical_interaction) topology exactly as-is.
+  Keep Layer B (coexpression_cancer) topology exactly as-is.
+  Randomly permute the node-to-node mapping in Layer B only.
+  (Equivalently: relabel which protein occupies which position in Layer B.)
+  This destroys the cross-layer protein identity correspondence (co-hub structure)
+  while preserving within-layer topology AND within-layer degree sequence.
+  Tests: is z_dr driven by the specific biological pairing of proteins across
+  layers, not just by within-layer topology?
+
+These two nulls are structurally distinct:
+  Null 1 randomizes TOPOLOGY within each layer (degree preserved)
+  Null 2 randomizes LAYER CORRESPONDENCE (within-layer topology preserved)
+A protein significant under BOTH nulls is doubly robust.
+
+PRIMARY HYPOTHESIS (H1, CONFIRMATORY):
+At least 3/6 cancer networks contain at least one protein with
+|z_dr| > 2.0 under BOTH null model types.
+
+This tests whether any biological residual signal survives both degree
+correction and layer-correspondence correction.
+
+SECONDARY HYPOTHESIS (H2, CONFIRMATORY):
+The sign of z_dr for topology-robust proteins identified in D6
+(PTEN >95%, ERK1 >76%, CDKN2A >93%) is the same under both null models.
+
+H2 tests whether sign-stable proteins from D6 remain sign-stable when
+using the stronger (layer-permutation) null.
+
+TERTIARY HYPOTHESIS (H3, CONFIRMATORY — MEK1 regime-switch retest):
+MEK1 z_dr is significantly positive (z > 0) in ODS-regime cancers
+(KRAS-NSCLC, CRC, PDAC, GBM) and significantly negative (z < 0) in
+CLASS 6b cancer (BRAF-MEL), under BOTH null model types.
+
+H3 directly re-evaluates the MEK1 regime-switch claim (previously based
+on raw delta_r) using the degree-conditioned residual metric.
+D6 showed MEK1 sign stability is only 23-30% in ODS networks under Null 1,
+flagging it as a "high-variance structural node." H3 tests whether z_dr
+resolves this or confirms topology-sensitivity.
+
+EXPLORATORY (H4): mTOR selectivity rule retest
+mTOR z_dr is positive (structural damper signal) in KRAS-NSCLC and
+negative or near-zero in all other 5 cancer types, under BOTH null models.
+(This replicates the mTOR selectivity rule in the corrected signal space.)
+
+EXPLORATORY (H5): SOS1 structural target validity
+SOS1 z_dr in EGFR-NSCLC is the most positive z_dr among measured proteins
+under at least one null model type.
+
+ANALYSIS:
+Script: scripts/d7_z_dr_atlas.py
+N = 1000 rewirings per null type per cancer network (2000 total per network)
+Per-protein null distributions stored: mean_null1(p), std_null1(p),
+  mean_null2(p), std_null2(p) for each protein p in each network
+z_dr1(p) = (real_dr(p) - mean_null1(p)) / std_null1(p)
+z_dr2(p) = (real_dr(p) - mean_null2(p)) / std_null2(p)
+Robustness: protein marked "robust" if same sign and |z| > 1.0 under both
+Significance threshold: |z_dr| > 2.0 for "beyond-degree signal"
+
+DECISION RULE:
+H1 confirmed → degree-conditioned residual signal exists in cancer networks
+H1 denied   → delta_r framework requires fundamental revision beyond z-scoring
+H2 confirmed → sign-stable D6 proteins retain their class under layer-permutation
+H3 confirmed → MEK1 regime-switch survives degree correction (key atlas claim)
+H3 denied   → MEK1 regime-switch is a degree artifact; must be removed from atlas
+
+EXPECTED OUTCOMES:
+- PTEN, ERK1, CDKN2A: expected to show |z_dr| > 2.0 under both nulls
+  (high sign stability in D6 suggests their structural class is not degree-driven)
+- MEK1 in ODS: uncertain (23-30% sign stability in D6); z_dr outcome is the test
+- MEK1 in BRAF-MEL: expected z_dr < 0 (71.5% sign stability in D6)
+- SOS1: uncertain (54.5% sign stability); z_dr outcome determines its validity
+  as top structural target in EGFR-NSCLC
+
+N_REWIRINGS = 1000 (each null type)
+RANDOM_SEED = 123 (different from D6's seed=42, ensures independence)
