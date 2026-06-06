@@ -1,0 +1,143 @@
+{
+  "experiment": "D3_NSCLC_v1 -- Can IRDME structural position (delta-r) predict cancer drug sensitivity (PRISM)?",
+  "description": "First direct test of IRDME as a drug discovery tool. The Oncogenic Decoupling Signature (ODS) predicts structural dampers are cancer-essential. This experiment tests whether that structural position also predicts drug sensitivity: drugs targeting structural dampers should show stronger cancer cell killing than drugs targeting structural anchors. If confirmed, IRDME can rank drug targets from network structure alone, without any wet-lab screening.",
+  "network_file": "examples/nsclc_egfr_signaling.json",
+  "perturbation_layer_a": "physical_interaction",
+  "perturbation_layer_b": "coexpression_cancer",
+  "prism_dataset": "PRISM Repurposing 20Q2 Secondary Screen (replicate-collapsed LFC)",
+  "prism_cell_lines": "All lung_NSC (NSCLC) lines with valid depmap_id in PRISM cell line info",
+  "committed_at": "2026-06-06T04:59:28.318939+00:00",
+  "drug_node_mapping": {
+    "MDM2": {
+      "delta_r": 0.1001,
+      "structural_class": "ODS_Damper",
+      "prism_drugs": [
+        "AMG-232",
+        "RITA",
+        "nutlin-3",
+        "CGM097",
+        "serdemetan"
+      ],
+      "rationale": "MDM2-primary inhibitors; idasanutlin and JNJ-26481585 excluded (dual targets)"
+    },
+    "mTOR": {
+      "delta_r": 0.0486,
+      "structural_class": "ODS_Damper",
+      "prism_drugs": [
+        "AZD2014",
+        "AZD8055",
+        "everolimus",
+        "temsirolimus",
+        "sirolimus",
+        "PP242",
+        "OSI-027",
+        "torin-1",
+        "torin-2",
+        "WYE-354",
+        "WYE-125132",
+        "WAY-600",
+        "PKI-179",
+        "XL388",
+        "deforolimus",
+        "LY3023414",
+        "palomid-529",
+        "ku-0063794"
+      ],
+      "rationale": "mTOR-specific inhibitors only; dual PI3K/mTOR inhibitors excluded"
+    },
+    "MYC": {
+      "delta_r": 0.0396,
+      "structural_class": "ODS_Damper",
+      "prism_drugs": [
+        "JQ1-(+)",
+        "I-BET-762",
+        "I-BET151",
+        "OTX015",
+        "PFI-1"
+      ],
+      "rationale": "BET bromodomain inhibitors (BRD4 primary) as MYC downstream proxy; TG-101348 and BI-2536 excluded (dual JAK/PLK targets)"
+    },
+    "EGFR": {
+      "delta_r": -0.0961,
+      "structural_class": "Structural_Anchor",
+      "prism_drugs": [
+        "erlotinib",
+        "gefitinib",
+        "rociletinib",
+        "osimertinib",
+        "icotinib",
+        "pelitinib",
+        "EGF816",
+        "WZ-4002",
+        "WZ8040",
+        "CGP-52411",
+        "OSI-420",
+        "CNX-2006",
+        "BIBU-1361",
+        "PD-153035",
+        "tyrphostin-AG-1478",
+        "tyrphostin-AG-494",
+        "tyrphostin-AG-99"
+      ],
+      "rationale": "EGFR-primary inhibitors; vandetanib, dovitinib, XL-647 excluded (broad multi-kinase)"
+    },
+    "AKT1": {
+      "delta_r": -0.0235,
+      "structural_class": "Structural_Anchor",
+      "prism_drugs": [
+        "MK-2206",
+        "uprosertib",
+        "GDC-0068",
+        "AZD5363",
+        "GSK2110183",
+        "triciribine"
+      ],
+      "rationale": "AKT-primary inhibitors; BMS-754807 (AKT+IGF1R), canertinib (AKT+EGFR), PD-98059 (many), U-0126 (many) excluded"
+    },
+    "PI3K": {
+      "delta_r": -0.0137,
+      "structural_class": "Structural_Anchor",
+      "prism_drugs": [
+        "alpelisib",
+        "idelalisib",
+        "copanlisib",
+        "GDC-0941",
+        "taselisib",
+        "ZSTK-474",
+        "AZD6482",
+        "TG100-115",
+        "buparlisib",
+        "GDC-0349",
+        "PIK-75"
+      ],
+      "rationale": "PI3K-primary inhibitors; dual mTOR/PI3K drugs (NVP-BEZ235, GDC-0980, MLN0128, etc.) excluded"
+    },
+    "MEK1": {
+      "delta_r": -0.0113,
+      "structural_class": "Structural_Anchor",
+      "prism_drugs": [
+        "selumetinib",
+        "trametinib",
+        "Ro-4987655",
+        "TAK-733",
+        "PD-0325901",
+        "MEK162",
+        "refametinib",
+        "PD-198306"
+      ],
+      "rationale": "MEK1-primary inhibitors; PD-98059, U-0126 (many off-targets), bosutinib, nobiletin, arctigenin excluded"
+    }
+  },
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Spearman r(delta-r of target node, mean PRISM LFC for drugs targeting that node) < -0.40 across the 7 pre-specified node-drug class pairs (MDM2, mTOR, MYC, EGFR, AKT1, PI3K, MEK1). Cell lines: all lung_NSC lines in PRISM with valid depmap_id. Drug lists: exactly as specified in drug_node_mapping. delta-r values: from NSCLC perturbation loop on examples/nsclc_egfr_signaling.json (layers: physical_interaction vs coexpression_cancer), run 2026-06-06, baseline r=0.7145. Structural prediction: higher delta-r (ODS Damper) -> stronger cancer cell killing (more negative LFC) -> Spearman r is negative. n=7 pairs; at n=7 the minimum r for p<0.05 two-tailed is ~0.755. The -0.40 threshold is an effect size threshold, not a significance threshold. Known limitation: KRAS (the largest ODS Damper, delta-r=+0.061) has no specific KRAS inhibitor in PRISM 20Q2; KRAS is excluded from the analysis. ERK1 (largest anchor, delta-r=-0.135) has only 1 PRISM entry (CID-5458317) and is also excluded."
+    },
+    {
+      "id": "h2",
+      "statement": "ODS Damper drug classes (MDM2, mTOR, MYC) will show more negative mean PRISM LFC (averaged across all lung_NSC lines) than Structural Anchor drug classes (EGFR, AKT1, PI3K, MEK1). Measured as: mean(LFC for damper drugs) < mean(LFC for anchor drugs). This is a categorical test of ODS drug prediction without assuming linearity."
+    }
+  ],
+  "_note": "Do not edit -- this sidecar records pre-committed predictions before any run. PRISM LFC file will not be loaded until after this file is committed to preregistrations repo.",
+  "prediction_hash": "143107586f1bb7d1c2a2e26d63f85b65a879585cb89d8c61faaa90ca00be44c2"
+}
