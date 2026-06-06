@@ -1,0 +1,98 @@
+{
+  "experiment": "D3_v2_KRAS_stratified -- Does structural position predict drug sensitivity within KRAS-dependent NSCLC lines?",
+  "parent": "D3_NSCLC_v1 (5b60be0) -- DENIED across unselected NSCLC panel",
+  "rationale": "D3_NSCLC_v1 failed (r=+0.036) due to three identified confounds: (1) MDM2 inhibitors require TP53-WT context (inactive in ~50-60% TP53-mut lines), (2) BET/MYC inhibitors have potency gap (partial transcriptional suppression insufficient), (3) MEK1 is pharmacologically effective in KRAS-mutant lines despite being a near-zero anchor. This experiment tests whether removing the context-gated nodes (MDM2, EGFR) and restricting to KRAS-dependent lines produces the ODS-consistent prediction. In KRAS-addicted cells, the PI3K/AKT/mTOR axis and MAPK axis are both constitutively active, providing a homogeneous signaling context for the test.",
+  "network_file": "examples/nsclc_egfr_signaling.json",
+  "perturbation_source": "D3_NSCLC_v1 pre-reg (5b60be0) -- same delta-r values, same network",
+  "delta_r_values": {
+    "mTOR": 0.0486,
+    "MYC": 0.0396,
+    "MEK1": -0.0113,
+    "PI3K": -0.0137,
+    "AKT1": -0.0235
+  },
+  "nodes_excluded_vs_D3v1": {
+    "MDM2": "TP53-WT context requirement -- MDM2 inhibitors inactive in TP53-mut lines (~50-60% NSCLC)",
+    "EGFR": "EGFR-mutation context -- EGFR and KRAS mutations are mutually exclusive; in KRAS-dependent lines EGFR inhibitors should not work"
+  },
+  "cell_line_filter": {
+    "base_set": "All lung_NSC lines in PRISM cell line info with valid depmap_id",
+    "filter": "KRAS Chronos score (DepMap Public 26Q1 CRISPRGeneEffect.csv, column KRAS (3845)) < -0.5",
+    "filter_rationale": "KRAS Chronos < -0.5 identifies KRAS-dependent lines; threshold -0.5 is >2x the most KRAS-independent lung_NSC line (-0.163) and captures lines where KRAS essentiality is clearly elevated above background. Known KRAS-mutant lines (A549=-1.44, H460=-1.42, CALU6=-3.50, H358=-2.48) all score well below threshold.",
+    "n_expected": 42
+  },
+  "drug_lists": {
+    "mTOR": [
+      "AZD2014",
+      "AZD8055",
+      "everolimus",
+      "temsirolimus",
+      "sirolimus",
+      "PP242",
+      "OSI-027",
+      "torin-1",
+      "torin-2",
+      "WYE-354",
+      "WYE-125132",
+      "WAY-600",
+      "PKI-179",
+      "XL388",
+      "deforolimus",
+      "LY3023414",
+      "palomid-529",
+      "ku-0063794"
+    ],
+    "MYC": [
+      "JQ1-(+)",
+      "I-BET-762",
+      "I-BET151",
+      "OTX015",
+      "PFI-1"
+    ],
+    "MEK1": [
+      "selumetinib",
+      "trametinib",
+      "Ro-4987655",
+      "TAK-733",
+      "PD-0325901",
+      "MEK162",
+      "refametinib",
+      "PD-198306"
+    ],
+    "PI3K": [
+      "alpelisib",
+      "idelalisib",
+      "copanlisib",
+      "GDC-0941",
+      "taselisib",
+      "ZSTK-474",
+      "AZD6482",
+      "TG100-115",
+      "buparlisib",
+      "GDC-0349"
+    ],
+    "AKT1": [
+      "MK-2206",
+      "uprosertib",
+      "GDC-0068",
+      "AZD5363",
+      "GSK2110183",
+      "triciribine"
+    ]
+  },
+  "pi3k_exclusion": "PIK-75 excluded from PI3K class (mean LFC=-2.016 in D3_v1, 3-4x stronger than all other PI3K inhibitors; documented off-target activity against DNA-PK/PRKDC suggests cytotoxic mechanism independent of PI3K)",
+  "prism_dataset": "PRISM Repurposing 20Q2 Secondary Screen (replicate-collapsed LFC)",
+  "committed_at": "2026-06-06T05:13:32.052133+00:00",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "Spearman r(delta-r, mean PRISM LFC) < -0.40 across 5 node-drug class pairs (mTOR, MYC, MEK1, PI3K, AKT1) within lung_NSC lines filtered to KRAS Chronos < -0.5. delta-r values as in D3_NSCLC_v1 pre-registration. Same -0.40 effect size threshold. n=5 pairs. If confirmed: ODS structural position predicts drug sensitivity within KRAS-dependent context, and D3_v1 failure was due to context-gating (MDM2) and cross-subtype averaging. If denied: structural position does not predict drug sensitivity even within a homogeneous oncogenic driver context."
+    },
+    {
+      "id": "h2",
+      "statement": "mTOR inhibitors (structural damper, delta-r=+0.049) will show more negative mean LFC than MEK1 inhibitors (structural anchor, delta-r=-0.011) within KRAS Chronos < -0.5 lines. This is the single most important pair-wise prediction: mTOR is the only confirmed damper with context-independent drug efficacy. MEK1 is the anchor with the best D3_v1 drug efficacy. If mTOR > MEK1 (more killing), ODS is correct for the two most informative nodes. If MEK1 > mTOR, the pharmacological bottleneck argument overrides structural position even in KRAS context."
+    }
+  ],
+  "_note": "Do not edit -- pre-registered before PRISM LFC filtering on KRAS-stratified lines.",
+  "prediction_hash": "01f3b81c526af4c561f668823aeebf03b1bd414c6774f35daf3b117b106ce572"
+}
