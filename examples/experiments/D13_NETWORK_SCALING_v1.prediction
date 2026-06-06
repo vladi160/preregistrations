@@ -1,0 +1,124 @@
+# D13_NETWORK_SCALING_v1
+# Pre-registration: Network Scaling Test — CRC from 16 to 100+ nodes (STRING v12)
+# Date: 2026-06-07
+# Status: PRE-REGISTERED — do not compute delta_r/z_dr before this commit
+
+## Scientific Purpose
+
+All D1-D12 experiments used manually curated 16-node signaling networks.
+The critic's core concern: at 16 nodes, hub proteins have "structural room" and
+z_dr ranks may be artifact of network construction rather than genuine topology.
+
+**The truth test:** Does the MEK1 (MAP2K1) structural DAMPER position in CRC
+survive expansion from 16 to 100+ nodes using STRING v12 human interactome?
+
+If yes: the structural signal is scale-invariant, confirming the small-network result.
+If no: the 16-node results may be artifacts of the curated network boundary conditions.
+
+## Network Construction (pre-registered protocol)
+
+**Source:** STRING v12 human PPI (9606.protein.links.detailed.v12.0.txt)
+  13.7M interaction lines; scores: neighborhood, fusion, cooccurence, coexpression,
+  experimental, database, textmining, combined_score (all 0-1000)
+
+**Seed proteins (CRC-relevant, 21 genes, ENSP IDs confirmed in STRING v12):**
+  MAP2K1 (MEK1) = 9606.ENSP00000302486
+  MAPK3  (ERK1) = 9606.ENSP00000263025
+  MAP2K2 (MEK2) = 9606.ENSP00000262948
+  KRAS         = 9606.ENSP00000256078
+  BRAF         = 9606.ENSP00000419060
+  TP53         = 9606.ENSP00000269305
+  MDM2         = 9606.ENSP00000258149
+  CDK4         = 9606.ENSP00000257904
+  CDK6         = 9606.ENSP00000265734
+  PIK3CA (PI3K)= 9606.ENSP00000263967
+  AKT1         = 9606.ENSP00000451828
+  MTOR         = 9606.ENSP00000354558
+  PTEN         = 9606.ENSP00000361021
+  CTNNB1       = 9606.ENSP00000261769
+  EGFR         = 9606.ENSP00000275493
+  APC          = 9606.ENSP00000257430
+  SMAD4        = 9606.ENSP00000261681
+  RB1          = 9606.ENSP00000267163
+  SOS1         = 9606.ENSP00000356015
+  GRB2         = 9606.ENSP00000264033
+  MYC          = 9606.ENSP00000478887
+
+**Expansion:** Find all proteins with combined_score >= 700 (high confidence)
+  with ANY of the 21 seeds. Sort by seed_connection_count DESC, then combined_score DESC.
+  Take top neighbors until total node count >= 100.
+  Final node set: 21 seeds + top neighbors (target: ~100 total).
+
+**Layer A (physical interactions):**
+  STRING score field: experimental + database
+  Edge threshold: experimental + database >= 400
+  (Captures high-confidence experimental PPI evidence: co-immunoprecipitation,
+   yeast-2-hybrid, affinity capture, etc.)
+
+**Layer B (co-expression / functional coupling):**
+  STRING score field: coexpression
+  Edge threshold: coexpression >= 150
+  (Captures moderate-to-high co-expression correlation across human tissues.
+   Note: STRING coexpression is general human, not cancer-specific. This is a
+   known deviation from the 16-node protocol which used cancer-specific coexpression.)
+
+**Acknowledged limitation:** STRING coexpression is pan-tissue, not cancer-specific.
+  This may reduce the signal compared to the 16-node cancer-specific coexpression layer.
+  If H3 (rank correlation) is negative, this is the primary confounding explanation.
+
+## Hypotheses
+
+### H1: MAP2K1 (MEK1) remains a structural DAMPER in the 100-node CRC network
+  16-node result: z1 = +1.863 (robust DAMPER, strongest in CRC)
+  100-node prediction: delta_r(MAP2K1) > 0 (positive = DAMPER)
+
+  H1 CONFIRMED if: delta_r(MAP2K1) > 0 in the 100-node network
+  H1 DENIED if: delta_r(MAP2K1) <= 0 (position flipped to anchor at scale)
+
+### H2: CDK4 remains a structural DAMPER
+  16-node result: delta_r(CDK4) = +0.295 (DAMPER in PDAC network; CRC context may differ)
+  NOTE: CDK4 was a DAMPER in PDAC and BRAF-MEL, but its CRC-specific z_dr was not
+  the primary signal (MEK1 was). Prediction is weaker.
+  100-node prediction: delta_r(CDK4) > 0
+
+  H2 CONFIRMED if: delta_r(CDK4) > 0
+
+### H3: Structural rank correlation (16-node vs 100-node)
+  Prediction: Spearman r(delta_r_16node, delta_r_100node) > 0 for the overlapping proteins.
+
+  The 16-node values (delta_r) for CRC network proteins:
+  MEK1   = +0.120 (DAMPER)
+  PI3K   = -0.151 (anchor)
+  mTOR   = -0.117 (anchor)
+  AKT1   = -0.034 (anchor)
+  [Other proteins from KRAS-NSCLC/BRAF-MEL networks used for cross-cancer comparison]
+
+  H3 CONFIRMED if: Spearman r > 0.3 (positive, moderate correlation)
+  H3 DENIED if: r <= 0 (no positive correlation between scales)
+
+### H4: Hub dominance test
+  Prediction: TP53 and EGFR (high-degree hubs) should show LARGER |delta_r| at 100 nodes
+  than at 16 nodes due to hub concentration effect at scale.
+  If H4 CONFIRMED: validates the critic's warning about hub dominance at scale.
+  If H4 DENIED: hub dominance does not inflate z_dr at 100 nodes.
+
+## Decision Rule (pre-registered)
+
+| Outcome | Interpretation |
+|---------|----------------|
+| H1 ✓, H3 r>0.5 | Scale-invariant signal: 16-node MEK1 result is robust |
+| H1 ✓, H3 0<r<0.5 | MAP2K1 position preserved but rank shuffles at scale (partial) |
+| H1 ✓, H3 r<0 | Position preserved but ranks invert: network-scale dependent |
+| H1 ✗ | MAP2K1 DAMPER is scale-specific artifact: major caveat for all prior results |
+| H4 ✓ (hubs dominate) | Degree normalization needed for 100-node network interpretation |
+
+## Pre-registered caveats
+
+1. STRING coexpression ≠ cancer-specific coexpression → may reduce correlation with 16-node
+2. Null model at 100 nodes: only Maslov-Sneppen (1000 rewirings) due to computational cost
+3. Node expansion is pre-registered as "combined_score >= 700" — this determines which
+   proteins enter the network; results may differ at other thresholds (sensitivity analysis optional)
+4. The 100-node network is NOT a direct test of the pharmacological predictions; it is a
+   test of structural position stability across scale
+
+## Pre-registration hash will be in commit immediately following this file
