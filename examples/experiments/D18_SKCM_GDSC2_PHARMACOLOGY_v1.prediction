@@ -1,0 +1,179 @@
+# D18_SKCM_GDSC2_PHARMACOLOGY_v1
+# Pre-registration: GDSC2 pharmacological validation of D17 SKCM structural predictions
+# Date: 2026-06-08
+# Status: PRE-REGISTERED — do not open GDSC2 SKCM data before this commit
+
+## Scientific background
+
+D17 (pre-reg f61b837) produced two structural pharmacology predictions for TCGA SKCM:
+(1) EGFR is a strong structural ANCHOR in BRAF-WT melanoma (z_dr = -3.204), the largest
+    cross-cancer structural contrast in the dataset (CRC reference: z = +2.411 DAMPER).
+    ANCHOR prediction: EGFR removal INCREASES r(A,B) → EGFR inhibitors should be
+    structurally DETRIMENTAL to inter-layer coherence → predicted INEFFECTIVE in melanoma.
+(2) SOS1 is the top structural DAMPER in both SKCM groups (z ≈ +3.2), predicting efficacy
+    of SOS1 inhibitors (not yet available in GDSC2; a drug discovery gap).
+
+D18 tests these predictions using GDSC2 melanoma (TCGA_DESC = "SKCM", n=54 cell lines):
+- Does the EGFR ANCHOR prediction match pharmacology? (H1, H3)
+- Does BRAF inhibitor dominance appear (driver addiction override)?
+- Is the between-cancer EGFR differential confirmed at pharmacological level? (H4)
+
+This is the melanoma parallel of D15 (CRC GDSC2 pharmacology).
+The critical test: D17 found EGFR ANCHOR (z=-3.204) → D18 tests if EGFR inhibitors
+rank last in melanoma while BRAF inhibitors rank first.
+
+## D17 z_dr reference values (pre-registered, from f61b837)
+
+SKCM BRAF-WT (primary reference, n=264 samples):
+  EGFR:    -3.204  ANCHOR (strongest)
+  SRC:     -2.369  ANCHOR
+  ERBB3:   -2.303  ANCHOR
+  RAF1:    -1.871  ANCHOR
+  ERBB2:   -1.712  ANCHOR
+  PIK3CA:  -1.265  ANCHOR
+  MTOR:    -0.767  near-zero
+  AKT1:    -0.907  near-zero
+  TP53:    -0.580  near-zero
+  MDM2:    -0.602  near-zero
+  MAP2K1:  -0.476  near-zero
+  BRAF:    -0.481  near-zero
+  CDK4:    -0.382  near-zero
+  KRAS:    +0.632  near-zero
+  HBEGF:   +1.996  DAMPER
+  SOS1:    +3.165  DAMPER (strongest)
+
+SKCM BRAF-V600 (secondary reference, n=206 samples):
+  SOS1:    +3.231  DAMPER (strongest)
+  EGFR:    -0.348  near-zero (V600 shifts EGFR toward neutral)
+  BRAF:    +0.175  near-zero (structural BRAF self-reorganization)
+  MAP2K1:  -0.645  near-zero
+
+## Drug-target mapping (pre-registered)
+
+| Drug         | Target  | z_dr_SKCM-WT | Class     |
+|--------------|---------|-------------|-----------|
+| Erlotinib    | EGFR    | -3.204      | ANCHOR    |
+| Gefitinib    | EGFR    | -3.204      | ANCHOR    |
+| Lapatinib    | EGFR    | -3.204      | ANCHOR    |
+| Afatinib     | EGFR    | -3.204      | ANCHOR    |
+| Osimertinib  | EGFR    | -3.204      | ANCHOR    |
+| Trametinib   | MAP2K1  | -0.476      | near-zero |
+| PD0325901    | MAP2K1  | -0.476      | near-zero |
+| Selumetinib  | MAP2K1  | -0.476      | near-zero |
+| Dabrafenib   | BRAF    | -0.481      | near-zero |
+| PLX-4720     | BRAF    | -0.481      | near-zero |
+| Palbociclib  | CDK4    | -0.382      | near-zero |
+| Ribociclib   | CDK4    | -0.382      | near-zero |
+| Temsirolimus | MTOR    | -0.767      | near-zero |
+| Alpelisib    | PIK3CA  | -1.265      | ANCHOR    |
+
+Note: z_dr values are from SKCM-WT group in D17. BRAF-V600 z_dr for BRAF = +0.175
+(near-zero/DAMPER direction) vs WT = -0.481. Mixed SKCM cell line population
+will average across both.
+
+## Hypotheses
+
+### H1: EGFR inhibitors rank in BOTTOM 25% by median LN_IC50 in SKCM cell lines
+
+Structural basis: EGFR is the strongest structural ANCHOR in BRAF-WT melanoma (z=-3.204).
+ANCHOR position predicts that EGFR inhibitors are structurally ineffective: removing EGFR
+from the network increases inter-layer coherence, meaning the cell "does not depend on EGFR
+for its signaling architecture." Clinical confirmation: EGFR inhibitors are inactive in
+metastatic melanoma; not included in any melanoma treatment guidelines.
+
+Operationalization: across all mapped drugs (≥12 unique targets), EGFR inhibitors'
+median of median LN_IC50 ranks in the bottom 25% (highest LN_IC50 = least sensitive).
+With ~14 drug classes mapped, bottom 25% = rank ≥ 11/14.
+
+H1 CONFIRMED if: mean EGFR inhibitor rank ≥ 11/14 (bottom 25%)
+H1 DENIED if: mean EGFR inhibitor rank < 11/14
+
+### H2: BRAF inhibitors rank in TOP 25% by median LN_IC50 in SKCM cell lines
+
+Structural basis: BRAF-V600E driver addiction. ~50% of GDSC2 SKCM lines carry BRAF-V600E
+(consistent with TCGA SKCM frequency). BRAF inhibitors (Dabrafenib, PLX-4720) should be
+highly effective due to oncogene addiction.
+
+Note: BRAF structural z_dr = -0.481 (WT) / +0.175 (V600) — near-zero in both groups.
+This is a Driver Addiction Override case: pharmacological efficacy is NOT predicted by
+structural position but by driver mutation addiction. The z_dr framework predicts BRAF
+inhibitors should be MODERATE (near-zero BRAF z_dr), but driver addiction overrides this.
+Testing H2 directly examines whether the Driver Addiction Override is pharmacologically
+visible in GDSC2.
+
+H2 CONFIRMED if: BRAF inhibitor mean rank ≤ 4/14 (top 25%)
+H2 DENIED if: BRAF inhibitor mean rank > 4/14
+
+H1 and H2 together test the structure-to-pharmacology mapping in melanoma:
+- EGFR: z=-3.204 ANCHOR → predicted rank last → if confirmed: ANCHOR predicts rank last
+- BRAF: z=-0.481/+0.175 near-zero → predicted middle rank → if H2 confirmed, Driver Addiction
+  Override (not structural position) explains BRAF inhibitor efficacy
+
+### H3: MEK inhibitors rank in TOP 3 in SKCM (Driver Addiction Override)
+
+D12 (GDSC2) confirmed: selumetinib d=-0.822 (SKCM vs COREAD), BRAF-MEL is the most
+MEK-sensitive cancer. MAP2K1 near-zero in SKCM (z=-0.476, same as CRC CRC near-zero).
+Driver addiction override: BRAF-V600E activates MEK → MEK inhibitors effective regardless
+of MAP2K1 structural position.
+
+H3 CONFIRMED if: any MEK inhibitor ranks ≤ 3/14
+H3 DENIED if: all MEK inhibitors rank > 3/14
+
+### H4: EGFR inhibitors less sensitive in SKCM than COREAD (Cohen's d > +0.3)
+
+Primary cross-cancer prediction from D17: EGFR ANCHOR in SKCM vs DAMPER in CRC.
+This is the pharmacological validation of the structural reversal.
+COREAD: EGFR DAMPER (+2.411) → high EGFR sensitivity (low LN_IC50)
+SKCM: EGFR ANCHOR (-3.204) → low EGFR sensitivity (high LN_IC50)
+
+Test: Mann-Whitney U test of EGFR inhibitor LN_IC50 in SKCM vs COREAD lines.
+Prediction: LN_IC50_SKCM > LN_IC50_COREAD for EGFR inhibitors.
+
+H4 CONFIRMED if: Cohen's d > +0.3 (SKCM LN_IC50 > COREAD) AND p < 0.05
+H4 DENIED if: Cohen's d ≤ 0 or p ≥ 0.05
+
+This is the direct cross-cancer pharmacological test of the EGFR structural reversal.
+D15 H4 was CONFIRMED for EGFR COREAD > PAAD (d=-0.808). D18 H4 tests the same logic
+in the opposite direction: EGFR ANCHOR in SKCM should produce SKCM > COREAD LN_IC50.
+
+## Drug availability check (pre-registered expected set)
+
+Expected from GDSC2 SKCM (to verify before analysis, not after):
+CONFIRMED present: Selumetinib (83 rows), Gefitinib, Afatinib, PD0325901, Palbociclib,
+  Dabrafenib, PLX-4720, Temsirolimus, Trametinib, Ribociclib, Alpelisib
+Absent in GDSC2: Vemurafenib (not in SKCM subset), Everolimus, Abemaciclib
+
+PLX-4720 is included as BRAF target drug (vemurafenib analog, BRAF-V600E selective inhibitor).
+
+## Processing protocol (pre-registered)
+
+1. Load GDSC2 (GDSC2_fitted_dose_response_27Oct23.xlsx), filter to TCGA_DESC = "SKCM"
+2. Apply same drug-target map as D15/D16, extended with PLX-4720 → BRAF
+3. Use D17 SKCM-WT z_dr values for Spearman correlation test
+4. Compute median LN_IC50 per drug across all SKCM cell lines (same as D15)
+5. Rank drugs by median LN_IC50 (low = most sensitive)
+6. Test H1: EGFR drug mean rank
+7. Test H2: BRAF drug mean rank
+8. Test H3: MEK drug rank
+9. Test H4: Mann-Whitney EGFR LN_IC50 SKCM vs COREAD; Cohen's d
+
+Post-hoc (not primary hypotheses, but pre-specified):
+- Cross-cancer z_dr vs pharmacology: cosine similarity between z_dr vectors and LN_IC50 rank vectors for CRC vs SKCM
+- PI3K/AKT: PIK3CA ANCHOR (-1.265) in SKCM; does alpelisib rank low?
+- ERK inhibitors: Ulixertinib available in SKCM (83 rows); target MAPK3 (ERK1/2);
+  can compare to MEK inhibitor ranks (upstream vs downstream MAPK pathway)
+
+## Pre-registration caveats
+
+1. GDSC2 SKCM cell lines are a mix of BRAF-V600 (~50%) and BRAF-WT lines. The z_dr
+   values used are from BRAF-WT TCGA SKCM (D17). BRAF-V600 cell lines will dominate
+   BRAF inhibitor sensitivity; EGFR-related predictions are expected to hold across
+   both subtypes (EGFR near-zero in V600, ANCHOR in WT — both predict low sensitivity).
+2. PLX-4720 is not in the D15/D16 drug-target map. Added for D18 only (BRAF target).
+   Ulixertinib targets ERK1/2 (MAPK3/MAPK1), not MAP2K1. Included as post-hoc only.
+3. The z_dr values used are from D17 SKCM-WT, not a freshly computed pharmacology-
+   aligned z_dr. This is methodologically consistent with D15/D16 (using D14b CRC z_dr
+   for CRC pharmacology).
+4. Sample size: 54 SKCM cell lines. This is comparable to D15 (46 COREAD lines).
+
+## Pre-registration hash will be in commit immediately following this file
