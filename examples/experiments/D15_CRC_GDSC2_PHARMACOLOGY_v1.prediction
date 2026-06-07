@@ -1,0 +1,155 @@
+# D15_CRC_GDSC2_PHARMACOLOGY_v1
+# Pre-registration: 100-node CRC structural z_dr × GDSC2 pharmacology correlation
+# Date: 2026-06-07
+# Status: PRE-REGISTERED — do not load GDSC2 COREAD data or compute correlations before this commit
+
+## Scientific background
+
+D14b produced a validated 100-node TCGA COAD multi-layer network with cancer-specific
+coexpression (Layer B: 945 edges, 524 tumor samples). The z_dr values identify:
+  - EGFR:   +2.411  (top structural DAMPER)
+  - MDM2:   +1.267  (DAMPER, 3x confirmed)
+  - CDK4:   +1.172  (DAMPER, 7x confirmed across cancers)
+  - MAP2K1: -0.187  (near-zero — 16-node boundary condition)
+  - PIK3CA: -0.256  (near-zero)
+  - AKT1:   -1.833  (ANCHOR)
+  - KRAS:   -1.329  (ANCHOR)
+  - BRAF:   -1.591  (ANCHOR)
+  - MTOR:   -2.257  (strongest ANCHOR)
+  - TP53:   -2.380  (strong ANCHOR)
+
+These structural positions were computed from TCGA COAD tumor tissue (state-conditioned
+Layer B). The pharmacological question is: does this 100-node structural ranking predict
+drug sensitivity in CRC cell lines?
+
+D3_CRC_v1 answered this for the 16-node network (Spearman r = -0.715 in PRISM). D15
+answers it for the 100-node network using GDSC2, a different pharmacological assay
+(multi-point IC50 dose-curve), at larger scale. This is the direct pharmacological
+validation of the D14b structural findings.
+
+## Data
+
+GDSC2: GDSC2_fitted_dose_response_27Oct23.xlsx
+  - Column TCGA_DESC: cancer type filter = "COREAD"
+  - Column DRUG_NAME: drug identity
+  - Column LN_IC50: natural log IC50 (uM); lower = more sensitive
+  - Column CELL_LINE_NAME: cell line identity
+
+D14b z_dr source: research/D14b_TCGA_COAD_FULL_results.md
+  (100-node TCGA COAD, KRAS-WT+MT combined, 524 samples)
+
+## Drug-target mapping (pre-registered, fixed before analysis)
+
+Only drugs whose primary target has a D14b z_dr value are included.
+Multi-target drugs included only if one target clearly dominates (noted below).
+Antibody drugs excluded (not in GDSC2).
+
+| Drug (GDSC2 name)  | Primary target | z_dr (D14b) |
+|--------------------|---------------|-------------|
+| Erlotinib          | EGFR          | +2.411      |
+| Gefitinib          | EGFR          | +2.411      |
+| Lapatinib          | EGFR          | +2.411      |
+| Afatinib           | EGFR          | +2.411      |
+| Osimertinib        | EGFR          | +2.411      |
+| Palbociclib        | CDK4          | +1.172      |
+| Abemaciclib        | CDK4          | +1.172      |
+| Ribociclib         | CDK4          | +1.172      |
+| Selumetinib        | MAP2K1        | -0.187      |
+| Trametinib         | MAP2K1        | -0.187      |
+| PD0325901          | MAP2K1        | -0.187      |
+| Everolimus         | MTOR          | -2.257      |
+| Temsirolimus       | MTOR          | -2.257      |
+| Ipatasertib        | AKT1          | -1.833      |
+| Capivasertib       | AKT1          | -1.833      |
+| Copanlisib         | PIK3CA        | -0.256      |
+| Alpelisib          | PIK3CA        | -0.256      |
+| GDC-0941           | PIK3CA        | -0.256      |
+| Vemurafenib        | BRAF          | -1.591      |
+| Dabrafenib         | BRAF          | -1.591      |
+
+Note: If a drug name in GDSC2 differs slightly (e.g. case, hyphen), the closest
+unambiguous match is used and noted in results. Drugs not found in GDSC2 are excluded
+from correlation and their absence reported. Minimum n = 10 drug-data-points required
+for Spearman correlation; if fewer drugs found, H1 is flagged as underpowered.
+
+## Analysis protocol (pre-registered)
+
+1. Load GDSC2_fitted_dose_response_27Oct23.xlsx
+2. Filter to TCGA_DESC == "COREAD"
+3. For each drug in the mapping table above:
+   a. Extract all COREAD LN_IC50 values for that drug
+   b. Compute median LN_IC50 (one value per drug)
+   c. Record n (number of cell lines with data)
+   d. Flag drugs with n < 3 as insufficient
+4. Build correlation dataset: (z_dr_target, median_LN_IC50) pairs across all drugs
+   with n >= 3 cell lines
+5. Compute Spearman r and two-sided p-value across all drug pairs
+6. Compute Spearman r restricted to DAMPER drugs (z_dr > 0) only
+7. Compute Spearman r restricted to ANCHOR drugs (z_dr < 0) only
+
+Additionally: targeted group tests
+- DAMPER_drugs = drugs with z_dr > 1.0 (EGFR, CDK4, MDM2 targets — if present)
+- ANCHOR_drugs = drugs with z_dr < -1.0 (MTOR, AKT1, BRAF targets)
+- Near-zero_drugs = drugs with |z_dr| < 0.5 (MAP2K1, PIK3CA targets)
+  Test: median_LN_IC50(ANCHOR_drugs) vs median_LN_IC50(DAMPER_drugs) in COREAD
+  — ANCHOR-targeting drugs should be less effective (higher LN_IC50) than DAMPER-targeting drugs
+
+## Hypotheses
+
+### H1: Spearman r(z_dr, median_LN_IC50_COREAD) < -0.3 across all mapped drugs
+  Structural prediction: higher z_dr (structural DAMPER) → lower LN_IC50 (more sensitive)
+  Threshold -0.3 chosen as minimum meaningful correlation (D3_CRC_v1 was -0.715 at 16 nodes;
+  100-node network may show attenuated correlation due to multi-target effects)
+
+  H1 CONFIRMED if: Spearman r < -0.3 AND p < 0.10 (directional, modest alpha given n)
+  H1 DENIED if: r >= -0.3 OR p >= 0.10
+
+### H2: MAP2K1 (MEK1) near-zero — MEK inhibitors show no predictive signal
+  MAP2K1 z_dr = -0.187 at 100 nodes (near-zero). MEK inhibitors (selumetinib, trametinib,
+  PD0325901) target MAP2K1. Prediction: median LN_IC50 of MEK inhibitors is NOT lower
+  than the median of all tested drugs in COREAD.
+  The D3_CRC_v1 result (MEK1 DAMPER at 16 nodes predicting MEK sensitivity) should
+  NOT replicate at 100 nodes, because the 16-node signal is a boundary condition.
+
+  H2 CONFIRMED if: MEK inhibitor median LN_IC50 is not lower than overall median
+  (i.e., no MEK sensitivity predicted from near-zero structural position)
+  H2 DENIED if: MEK inhibitors are among the most effective drugs in COREAD (would
+  contradict the near-zero structural prediction)
+
+### H3: MTOR ANCHOR predicts mTOR inhibitor inefficacy in COREAD
+  MTOR z_dr = -2.257 (strongest ANCHOR). Structural prediction: mTOR inhibitors
+  (everolimus, temsirolimus) should NOT show strong sensitivity in COREAD — the ANCHOR
+  position predicts network normalization (not disruption) upon mTOR inhibition.
+  Prediction: median LN_IC50 of mTOR inhibitors is HIGHER than median of EGFR/CDK4
+  inhibitors in COREAD.
+
+  H3 CONFIRMED if: mTOR inhibitors less effective (higher LN_IC50) than DAMPER-targeting
+  drugs (EGFR, CDK4) in COREAD (one-sided Mann-Whitney p < 0.10)
+  H3 DENIED if: mTOR inhibitors equally or more effective than DAMPER-targeting drugs
+
+### H4: EGFR inhibitors sensitive in COREAD (z_dr = +2.411, top DAMPER)
+  Direct pharmacological validation of EGFR's structural DAMPER position.
+  Prediction: EGFR inhibitors have lower median LN_IC50 in COREAD than in PAAD
+  (where EGFR z_dr is NOT the top structural node).
+  Secondary: EGFR inhibitors rank in top 30% of drugs by sensitivity in COREAD.
+
+  H4 CONFIRMED if: EGFR inhibitors median LN_IC50 < PAAD median for same drugs
+  (direction of effect), AND EGFR inhibitors are in top 50% of drugs by sensitivity
+  H4 DENIED if: EGFR inhibitors are not more effective than in PAAD
+
+## Pre-registration caveats
+
+1. MDM2 inhibitors are absent from GDSC2 (confirmed in D12) — MDM2 structural predictions
+   are untestable in this dataset. This does not affect H1/H2/H3/H4.
+2. BRAF inhibitors (vemurafenib, dabrafenib) target BRAF which is an ANCHOR in CRC
+   (z_dr = -1.591). BRAF inhibitors are known to be ineffective in CRC (unlike BRAF-MEL)
+   — this is an internally consistent prediction from the structural ANCHOR position.
+3. The correlation (H1) is across drugs, not across cell lines. The statistical unit is
+   drug (n ≈ 15-20). This is low n; Spearman r = -0.3 requires confirmation with D16+.
+4. Some drugs may target multiple proteins. The primary target mapping is fixed above;
+   no post-hoc reassignment of drug-target pairs is permitted.
+5. LN_IC50 values in GDSC2 are fitted from dose-response curves; very sensitive or
+   very resistant cell lines may have LN_IC50 values outside the tested range
+   (capped at assay boundary). This is not corrected for in the median.
+
+## Pre-registration hash will be in commit immediately following this file
