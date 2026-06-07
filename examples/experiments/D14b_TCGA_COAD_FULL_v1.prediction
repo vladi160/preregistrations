@@ -1,0 +1,112 @@
+# D14b_TCGA_COAD_FULL_v1
+# Pre-registration: Full 100-node TCGA COAD Layer B (all nodes mapped via STRING protein info)
+# Date: 2026-06-07
+# Status: PRE-REGISTERED — do not run before this commit
+
+## What D14b fixes relative to D14
+
+D14 (pre-reg 94ac839) computed TCGA COAD Layer B across only the 21 seed proteins
+(21 nodes, 210 pairs) because the Ensembl REST API returned 0 mappings for the 79
+neighbor ENSP IDs at runtime. Layer B had 93 edges, all within the seed subgraph.
+
+D14b uses 9606.protein.info.v12.0.txt (STRING v12 protein info file) to map ALL 100
+ENSP IDs to gene symbols, enabling a full 100-node Layer B (up to 4950 pairs tested).
+
+## D14 results that this experiment tests further
+
+From D14 (seed-only Layer B):
+- H1 DENIED: MAP2K1 z_dr = -0.237 (negative, near-zero)
+- H2 DENIED: Spearman r = 0.030 (no rank correlation)
+- H3 CONFIRMED: MDM2 z_dr = +2.354 (DAMPER — state-conditioning causal proof)
+- H4 DENIED: CDK4 z_dr = +0.564 (not > 1.0)
+- NEW: TP53 z_dr = +1.364 (DAMPER, unexpected)
+- NEW: AKT1 z_dr = -1.395 (anchor), KRAS z_dr = -1.071 (anchor)
+
+## Scientific question
+
+Does expanding from seed-only Layer B (21 nodes, 210 pairs) to full 100-node Layer B
+(4950 pairs) change the structural positions of key proteins?
+
+Specifically:
+- D14 Layer B was dominated by the KRAS/PI3K cluster (KRAS, PIK3CA, BRAF, SOS1, APC, PTEN
+  all highly correlated r=0.60-0.84). This cluster is entirely within the 21 seeds.
+- The 79 neighbor proteins introduce additional coexpression relationships with both the
+  seeds AND each other. If neighbors are in distinct coexpression modules, the structural
+  balance of the network shifts.
+
+## Data (identical to D14)
+
+TCGA COAD RNA-Seq: 524 tumor samples
+File: gdc_manifest/ (same 524 augmented STAR counts TSVs)
+New: 9606.protein.info.v12.0.txt — maps 9606.ENSP... -> gene symbol
+
+## Processing protocol (pre-registered)
+
+1. Build 100-node network from STRING (identical to D13/D14: combined_score>=700 expansion)
+2. Map ALL 100 ENSP IDs to gene symbols using protein.info preferred_name column
+3. Load TCGA COAD TPM for all mapped proteins (may not cover all 100 if some are non-coding
+   or absent from TCGA gene set — report coverage)
+4. Compute pairwise Pearson correlation across 524 samples for all mapped proteins
+5. Layer B threshold: r >= 0.3 (same pre-registration as D14)
+   Adjust if: <50 edges -> r >= 0.25; >500 edges -> r >= 0.4
+6. Run delta_r + 500-rewiring Maslov-Sneppen null (same as D13/D14)
+
+## Hypotheses (updated from D14 results)
+
+### H1: MAP2K1 z_dr direction in full network
+D14 result: z_dr = -0.237 (near-zero, negative after null)
+Prediction: MAP2K1 z_dr remains near-zero (|z| < 1.0) with full Layer B
+
+The 21-seed Layer B already captured most of MAP2K1's relevant coexpression partners
+(GRB2, KRAS, SMAD4, MTOR, MDM2 all in seeds). Adding neighbor proteins to Layer B is
+unlikely to restore MAP2K1 as a DAMPER.
+
+H1b CONFIRMED if: |z_dr(MAP2K1)| < 1.0 (consistent with D14)
+H1b DENIED if: z_dr(MAP2K1) > 1.0 (full network restores the DAMPER signal)
+
+### H2: MDM2 DAMPER status maintained
+D14 result: z_dr(MDM2) = +2.354 (DAMPER)
+Prediction: MDM2 z_dr > 1.0 with full 100-node Layer B
+
+MDM2 was strongly correlated with KRAS/SMAD4/PIK3CA in seed-only Layer B (r=0.50-0.60).
+If MDM2 also coexpresses with its neighbor proteins in COAD, its DAMPER position should
+be maintained or strengthened.
+
+H2b CONFIRMED if: z_dr(MDM2) > 1.0 (DAMPER maintained)
+H2b DENIED if: z_dr(MDM2) <= 1.0 (DAMPER position was seed-subgraph artifact)
+
+### H3: TP53 DAMPER status maintained or changes
+D14 result: z_dr(TP53) = +1.364 (DAMPER — unexpected in D14)
+Prediction uncertain — could go either way depending on neighbor coexpression structure
+
+H3b CONFIRMED if: z_dr(TP53) > 1.0 (TP53 DAMPER robust to full network)
+H3b DENIED if: z_dr(TP53) < 1.0 (TP53 DAMPER was seed-subgraph artifact)
+
+### H4: Layer B edge count > 93 (more dense with full 100 nodes)
+D14 Layer B: 93 edges (within 21 seeds only)
+Prediction: full 100-node Layer B has > 93 edges total
+
+H4b CONFIRMED if: Layer B edges > 93
+H4b DENIED if: Layer B edges <= 93 (neighbors add no coexpression structure)
+
+## Decision table
+
+| Outcome | Interpretation |
+|---------|----------------|
+| H1b conf, H2b conf | D14 results are robust; seed-only was sufficient; MDM2 is canonical DAMPER at scale |
+| H1b conf, H2b denied | MDM2 DAMPER was artifact of seed cluster; full network normalizes it |
+| H1b denied (MAP2K1 DAMPER restored) | Full network recovers MAP2K1 signal — seed-only Layer B was insufficient for H1 |
+| H3b confirmed | TP53 DAMPER is a genuine 100-node structural finding |
+| H3b denied | TP53 DAMPER was specific to seed-subgraph topology |
+
+## Pre-registration caveats
+
+1. Some of the 79 neighbor proteins may not have TCGA expression data
+   (non-expressed in colon cancer, or not in GENCODE v36 protein-coding set)
+   Report coverage; exclude unmapped proteins from Layer B
+2. Neighbor proteins not in TCGA may be replaced by near-zero rows (not done —
+   only include proteins with actual expression data)
+3. Null model: 500 rewirings, same as D14. May need to increase if Layer B is much
+   denser (>300 edges) for stability
+
+## Pre-registration hash will be in commit immediately following this file
