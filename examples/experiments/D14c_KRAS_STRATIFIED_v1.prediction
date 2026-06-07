@@ -1,0 +1,131 @@
+# D14c_KRAS_STRATIFIED_v1
+# Pre-registration: KRAS-stratified TCGA COAD coexpression — EGFR structural position test
+# Date: 2026-06-07
+# Status: PRE-REGISTERED — do not parse MAF files or compute stratified coexpression before this commit
+
+## Scientific background
+
+D14b result: EGFR is the strongest structural DAMPER in the 100-node TCGA COAD network
+(z_dr = +2.411). This is remarkable because EGFR inhibitors (cetuximab, panitumumab)
+are FDA-approved for CRC — but ONLY in KRAS wild-type tumors.
+
+KRAS mutations (codons 12/13) constitutively activate RAS signaling downstream of EGFR,
+bypassing EGFR entirely. In KRAS-mutant CRC:
+  - EGFR inhibition has no clinical effect (RAS drives signaling independently)
+  - EGFR is structurally "bypassed" — it is no longer the gateway to the RAS/MAPK/PI3K axis
+
+If the structural pharmacology framework is capturing pharmacologically real signal, then:
+  - In KRAS-WT: EGFR should be a structural DAMPER (its removal disrupts the network;
+    EGFR inhibition is clinically effective)
+  - In KRAS-MT: EGFR should be near-zero or an ANCHOR (its removal does not disrupt
+    the KRAS-driven network; EGFR inhibition is clinically ineffective)
+
+This is a pre-registered falsification test of the framework's pharmacological specificity.
+
+## Data
+
+MAF files: 458 WXS somatic mutation files (TCGA-COAD, GDC manifest 2026-06-07.203630)
+  Location: downloads/D14c/ (one MAF.gz per UUID folder)
+  Format: GDC aliquot_ensemble_masked MAF v1.0
+
+RNA-Seq files: 524 augmented STAR counts (same as D14/D14b)
+  Location: downloads/D14a_b/ (same 524 TSV files)
+
+Linking: TCGA patient barcode (first 12 chars of Tumor_Sample_Barcode: TCGA-XX-XXXX)
+  is the join key between MAF and RNA-Seq samples.
+  RNA-Seq UUID → patient barcode: query GDC API (no authentication required)
+  OR: extract from augmented STAR TSV metadata if available
+
+## KRAS mutation definition (pre-registered)
+
+KRAS-mutant (KRAS-MT): sample has any somatic mutation in Hugo_Symbol == "KRAS"
+  with Variant_Classification NOT in ["Silent", "3'UTR", "5'UTR", "Intron", "RNA"]
+  (i.e., any protein-altering KRAS mutation)
+
+KRAS wild-type (KRAS-WT): sample has a MAF file AND has NO qualifying KRAS mutation
+
+Samples without a MAF file: excluded from stratified analysis, included only in the
+"all samples" (D14b) comparison.
+
+## Processing protocol (pre-registered)
+
+1. Parse all 458 MAF files → KRAS mutation status per patient barcode
+2. Map RNA-Seq UUIDs → patient barcodes via GDC API
+3. Assign KRAS status to each RNA-Seq sample; exclude samples without MAF
+4. Build separate log2(TPM+1) expression matrices:
+   - KRAS-WT group
+   - KRAS-MT group
+5. For each group: compute pairwise Pearson correlation for all 97 mapped proteins
+6. Threshold Layer B at r >= 0.3 (same as D14b, adjusted if <50 or >500 edges)
+7. Run delta_r + 500-rewiring null for each group independently
+8. Compare z_dr(EGFR) between groups
+
+## Hypotheses
+
+### H1: EGFR z_dr > 1.5 in KRAS-WT (structural DAMPER in EGFR-sensitive context)
+  D14b all-sample result: z_dr(EGFR) = +2.411
+  Prediction: z_dr(EGFR) > 1.5 in KRAS-WT samples specifically
+
+  H1 CONFIRMED if: z_dr(EGFR) > 1.5 in KRAS-WT
+  H1 DENIED if: z_dr(EGFR) <= 1.5 in KRAS-WT
+
+### H2: EGFR z_dr < 1.0 in KRAS-MT (EGFR structurally bypassed)
+  Prediction: |z_dr(EGFR)| < 1.0 OR z_dr(EGFR) negative in KRAS-MT samples
+
+  H2 CONFIRMED if: z_dr(EGFR) < 1.0 in KRAS-MT (not a structural DAMPER)
+  H2 DENIED if: z_dr(EGFR) >= 1.0 in KRAS-MT (EGFR is DAMPER regardless of KRAS)
+
+  If both H1 and H2 confirmed: the framework correctly identifies EGFR as context-specific
+  DAMPER — it captures the KRAS bypass mechanism at the structural level.
+
+### H3: MDM2 DAMPER status maintained in both KRAS-WT and KRAS-MT
+  D14b result: z_dr(MDM2) = +1.267 (all samples)
+  MDM2's oncogenic DAMPER role is not KRAS-dependent — MDM2 amplification/overexpression
+  occurs in CRC independently of KRAS mutation status.
+  Prediction: z_dr(MDM2) > 1.0 in BOTH KRAS-WT and KRAS-MT subgroups.
+
+  H3 CONFIRMED if: z_dr(MDM2) > 1.0 in both groups
+  H3 DENIED if: z_dr(MDM2) < 1.0 in either group
+
+### H4: MAP2K1 remains near-zero in both subgroups (boundary condition holds)
+  D14b result: z_dr(MAP2K1) = -0.187 (all samples)
+  Prediction: |z_dr(MAP2K1)| < 1.0 in both KRAS-WT and KRAS-MT
+
+  H4 CONFIRMED if: |z_dr(MAP2K1)| < 1.0 in both groups
+  H4 DENIED if: z_dr(MAP2K1) > 1.0 in either group (MAP2K1 DAMPER in a subtype)
+
+  H4 denial would be interesting: KRAS status might rescue MAP2K1 structural signal
+  (e.g., in KRAS-WT, MEK1 may be a more prominent pathway node than in KRAS-MT
+  where KRAS drives ERK/MEK independently)
+
+## Decision table
+
+| H1 | H2 | Interpretation |
+|----|----|----------------|
+| CONF | CONF | Framework captures KRAS bypass; EGFR structural position is clinically predictive |
+| CONF | DENIED | EGFR is DAMPER in both subtypes; structural signal does not track clinical selectivity |
+| DENIED | CONF | EGFR not structural DAMPER even in KRAS-WT; D14b all-sample result was subtype-averaged artifact |
+| DENIED | DENIED | EGFR structural position is insensitive to KRAS status |
+
+## Sample size expectation (pre-registered)
+
+TCGA COAD KRAS mutation frequency: ~40-45% KRAS-MT
+Expected KRAS-MT RNA-Seq samples with matched MAF: ~120-160
+Expected KRAS-WT RNA-Seq samples with matched MAF: ~160-220
+Total stratifiable: ~300-380 of 524 RNA-Seq samples
+
+Minimum n requirement: >= 50 samples per group for stable correlation estimates.
+If either group has < 50 samples, report but flag as underpowered.
+
+## Pre-registration caveats
+
+1. GDC API may be needed to link RNA-Seq UUIDs to patient barcodes; if API unavailable,
+   will attempt to extract barcode from augmented STAR counts file metadata
+2. Some RNA-Seq samples may not have matched WXS (no MAF file) — excluded from
+   stratified analysis but the n_excluded will be reported
+3. KRAS codon specificity: not pre-registering codon-level analysis (G12/G13/Q61);
+   any protein-altering KRAS mutation = KRAS-MT. Codon analysis is post-hoc.
+4. Null model: 500 rewirings per group (same as all prior experiments)
+5. Threshold adjustment applies independently per group
+
+## Pre-registration hash will be in commit immediately following this file
