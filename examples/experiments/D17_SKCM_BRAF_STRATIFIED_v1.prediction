@@ -1,0 +1,138 @@
+# D17_SKCM_BRAF_STRATIFIED_v1
+# Pre-registration: BRAF-stratified TCGA SKCM 100-node structural pharmacology
+# Date: 2026-06-08
+# Status: PRE-REGISTERED — do not parse RNA-Seq or MAF files before this commit
+
+## Scientific background
+
+D14/D14b/D14c applied the 100-node structural pharmacology framework to TCGA COAD
+(colorectal adenocarcinoma) and produced validated results: EGFR top DAMPER (+2.411),
+MDM2 DAMPER (3x confirmed), MTOR strongest ANCHOR (-2.257), MAP2K1 near-zero (boundary
+condition confirmed), L1/L2 separation confirmed via KRAS stratification.
+
+D17 extends this to TCGA SKCM (cutaneous melanoma) using the SAME 100-node network
+(Layer A unchanged), replacing only Layer B with melanoma-specific coexpression.
+This directly tests whether structural DAMPER/ANCHOR positions generalise across
+cancer types when only the state-conditioning Layer B changes.
+
+BRAF-V600E is present in ~50% of cutaneous melanoma. Vemurafenib/dabrafenib target
+BRAF-V600E and are FDA-approved for BRAF-V600E melanoma. This is the canonical
+Driver Addiction Override case (D3_BRAF_MEL at 16 nodes showed MAP2K1 as ANCHOR in
+BRAF-MEL — D17 tests whether this survives at 100 nodes with cancer-specific Layer B).
+
+Key questions:
+1. Is MAP2K1 a structural ANCHOR in BRAF-V600E melanoma at 100 nodes? (16-node result: yes)
+2. Does BRAF z_dr differ between BRAF-V600E and BRAF-WT? (BRAF is an ANCHOR in CRC;
+   in BRAF-V600E melanoma, constitutive BRAF activation may change its structural role)
+3. Is EGFR a structural DAMPER in melanoma? (top DAMPER in CRC — cancer-type specific?)
+4. Does CDK4 remain a DAMPER? (CDK4 amplification is common in melanoma — may strengthen)
+
+## Data
+
+RNA-Seq: downloads/D17/004756/ (474 augmented STAR count TSV files, TCGA-SKCM)
+MAF files: downloads/D17/004128/ (473 masked somatic MAF.gz files, TCGA-SKCM WXS)
+Network: same 100-node STRING network as D14b (Layer A unchanged)
+  Seeds: KRAS, MAP2K1, TP53, MDM2, CDK4, PIK3CA, EGFR, PTEN, APC, BRAF, ATM,
+         MYC, CDKN1A, RB1, MTOR, CDK2, AKT1, CTNNB1, BRCA1, FBXW7, NRAS
+  Expansion: STRING combined_score >= 700, exp+db >= 400 for Layer A
+  Protein.info: 9606.protein.info.v12.0.txt (ENSP → gene symbol mapping)
+
+## BRAF mutation definition (pre-registered)
+
+BRAF-V600 (primary stratification):
+  Any somatic mutation in Hugo_Symbol == "BRAF" at amino acid position 600
+  (ProteinChange contains "p.V600" — covers V600E, V600K, V600D, V600R)
+  AND Variant_Classification NOT in [Silent, 3'UTR, 5'UTR, Intron, RNA]
+
+BRAF-WT: sample has a MAF file AND no qualifying BRAF-V600 mutation
+
+Secondary (post-hoc only, NOT a primary hypothesis):
+  BRAF-MT-all: any protein-altering BRAF mutation (not just V600)
+
+Excluded: samples without a matched MAF file
+
+## Processing protocol (pre-registered)
+
+1. Parse 473 MAF files -> BRAF-V600 status per patient barcode (TCGA-XX-XXXX)
+2. Map 474 RNA-Seq UUIDs -> patient barcodes via GDC public API (batch POST)
+   Endpoint: https://api.gdc.cancer.gov/files (same as D14c)
+   Cache: scripts/d17_uuid_barcode_cache.json
+3. Assign BRAF status to each RNA-Seq sample; exclude samples without MAF
+4. Build log2(TPM+1) expression matrices for BRAF-V600E and BRAF-WT groups
+5. For each group: build Layer B at r >= 0.3 (adjust if <50 or >500 edges,
+   same rule as D14b/D14c)
+6. Run delta_r + 500-rewiring Maslov-Sneppen null for each group independently
+7. Report z_dr for all 97 mapped proteins in each group
+
+## Hypotheses
+
+### H1: MAP2K1 structural ANCHOR in BRAF-V600E melanoma (z_dr < -1.0)
+  D3_BRAF_MEL (16-node): MAP2K1 z_dr < 0 (ANCHOR in BRAF-MEL)
+  D14b CRC (100-node): MAP2K1 = -0.187 (near-zero, boundary condition)
+  Prediction: In BRAF-V600E melanoma, the constitutively active BRAF→MEK pathway
+  creates coherent Layer B connections along the RAS/MAPK axis. MAP2K1 acts as a
+  structural BRIDGE that increases inter-layer correlation. Its removal should
+  INCREASE r(A,B) — making it an ANCHOR (z_dr < -1.0).
+
+  H1 CONFIRMED if: z_dr(MAP2K1) < -1.0 in BRAF-V600E group
+  H1 DENIED if: z_dr(MAP2K1) >= -1.0 in BRAF-V600E group
+  H1 PARTIAL if: -1.0 <= z_dr(MAP2K1) < 0 (negative but not strongly ANCHOR)
+
+### H2: MAP2K1 near-zero or positive in BRAF-WT melanoma (z_dr > -1.0)
+  In BRAF-WT melanoma, the BRAF-driven pathway coherence is absent. MAP2K1's
+  structural role reverts to near-zero (as in CRC at 100 nodes) or positive.
+  Prediction: z_dr(MAP2K1) > -1.0 in BRAF-WT group.
+
+  H2 CONFIRMED if: z_dr(MAP2K1) > -1.0 in BRAF-WT group
+  H2 DENIED if: z_dr(MAP2K1) < -1.0 in BRAF-WT (MAP2K1 ANCHOR regardless of BRAF)
+
+  H1+H2 together test Driver Addiction Override at structural level:
+  BRAF-V600E ANCHOR + BRAF-WT near-zero = structural position tracks oncogenic driver
+
+### H3: CDK4 structural DAMPER in both BRAF-V600E and BRAF-WT melanoma (z_dr > 1.0)
+  CDK4 is confirmed DAMPER across 7 independent CRC/PDAC/NSCLC experiments.
+  Melanoma frequently has CDK4 amplification and CDKN2A (p16) deletion.
+  Prediction: CDK4 remains a structural DAMPER in both melanoma subtypes.
+
+  H3 CONFIRMED if: z_dr(CDK4) > 1.0 in BOTH BRAF-V600E and BRAF-WT
+  H3 DENIED if: z_dr(CDK4) <= 1.0 in either group
+
+### H4: BRAF z_dr > 0 in BRAF-V600E but <= 0 in BRAF-WT
+  In BRAF-V600E melanoma, constitutively active BRAF creates strong coexpression
+  with downstream targets (MEK, ERK) and upstream activators (RAS, receptor TKs).
+  Prediction: BRAF's structural position changes between groups.
+
+  H4 CONFIRMED if: z_dr(BRAF) > 0 in BRAF-V600E AND z_dr(BRAF) <= 0 in BRAF-WT
+  H4 DENIED if: BRAF structural position does not differ between subtypes
+
+  Note: BRAF was a structural ANCHOR in TCGA COAD (z_dr = -1.591). If BRAF becomes
+  a DAMPER in BRAF-V600E melanoma, this would confirm that the oncogenic driver's
+  structural role is cancer-type-specific, not universal.
+
+## Expected sample sizes (pre-registered)
+
+BRAF-V600 frequency in TCGA SKCM: ~45-50%
+Expected BRAF-V600E RNA-Seq with matched MAF: ~170-220 samples
+Expected BRAF-WT RNA-Seq with matched MAF: ~150-200 samples
+Minimum n = 50 per group (same as D14c)
+
+## Cross-cancer comparison (post-hoc, not primary hypotheses)
+
+After results: compare SKCM z_dr vector vs COAD z_dr vector (D14b).
+Cosine similarity between cancer structural fingerprints.
+Identifies which proteins change structural role between CRC and melanoma.
+
+## Pre-registration caveats
+
+1. Same 100-node network as D14b. The network was built for CRC pathway seeds.
+   In melanoma, some seed proteins (APC, CTNNB1) are less biologically central.
+   This may produce different Layer B structure than CRC, which is expected and informative.
+2. BRAF-V600K is included with V600E in the BRAF-V600 group (same clinical
+   actionability with dabrafenib; same structural mechanism).
+3. GDC API UUID->barcode mapping: same approach as D14c, cached in
+   scripts/d17_uuid_barcode_cache.json
+4. Layer B threshold adjustment: same rule as D14b (target 50-500 edges).
+   The rule applies independently to each group.
+5. 500 Maslov-Sneppen rewirings per group (same as all prior experiments).
+
+## Pre-registration hash will be in commit immediately following this file
