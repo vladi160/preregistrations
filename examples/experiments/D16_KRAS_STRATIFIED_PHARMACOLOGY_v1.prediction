@@ -1,0 +1,130 @@
+# D16_KRAS_STRATIFIED_PHARMACOLOGY_v1
+# Pre-registration: KRAS-stratified COREAD cell line pharmacology
+# Date: 2026-06-08
+# Status: PRE-REGISTERED — do not compute stratified drug sensitivities before this commit
+
+## Scientific background
+
+D15 result: Spearman r(z_dr, median_LN_IC50_COREAD) = -0.095 — correlation DENIED.
+Primary cause: MEK inhibitors rank #1-2 in COREAD despite MAP2K1 z_dr = -0.187 (near-zero).
+
+Identified failure mode FM4: Cell-line KRAS addiction override. GDSC2 COREAD cell lines
+are enriched for KRAS-mutant lines (26/46 = 56.5% vs ~42% in TCGA COAD tumors). KRAS-mutant
+CRC cell lines are pharmacologically addicted to MEK signaling (constitutive RAS/MEK/ERK
+activation). This creates strong MEK inhibitor sensitivity in vitro independent of structural
+topology — Driver Addiction Override at the cell-line level.
+
+Pre-registered prediction: if FM4 is the correct explanation, then:
+- In KRAS-WT COREAD (n=20): MEK addiction removed → structural topology should predict
+  drug ranking; MEK inhibitors should NOT rank as most sensitive
+- In KRAS-MT COREAD (n=26): MEK addiction active → MEK inhibitors remain most sensitive
+  despite MAP2K1 near-zero structural position
+
+This is the pharmacological analogue of D14c (KRAS-stratified TCGA COAD coexpression),
+but at the cell-line drug response level rather than the structural topology level.
+
+## Data
+
+GDSC2: GDSC2_fitted_dose_response_27Oct23.xlsx (same as D15)
+DepMap mutations: downloads/D16/OmicsSomaticMutations.csv
+DepMap model map: downloads/D16/Model.csv
+
+## KRAS stratification (pre-registered, fixed before analysis)
+
+KRAS mutation definition: same as D14c
+  KRAS-MT: any protein-altering KRAS mutation (VepImpact MODERATE or HIGH,
+           excluding synonymous/UTR/intronic variants)
+  KRAS-WT: has DepMap genomic data AND no qualifying KRAS mutation
+  Excluded: cell lines with no DepMap data
+
+COREAD cell lines (46 total, pre-verified):
+  KRAS-MT (n=26): HCT-116 (G13D), HCT-15 (G13D), SW620 (G12V), LoVo (G13D),
+    SK-CO-1 (G12V), LS-180 (G12D), LS-513 (G12D), SW1116 (G12A), SW1463 (G12C),
+    SW837 (G12C), SW948 (Q61L), CW-2 (P140H), LS-1034 (A146T), HCC2998 (A146T),
+    NCI-H747 (G13D), RCM-1 (G12V), T84 (G13D), CL-11 (Q61H), SNU-175 (A59T),
+    SNU-407 (G12D), SNU-61 (G12D), SNU-81 (A146T), SNU-C2B (G12D),
+    COLO-678 (G12D), GP5d (G12D), LS-123 (G12S)
+
+  KRAS-WT (n=20): HT-29, COLO-205, RKO, HT55, KM12, LS-411N, HT-115,
+    NCI-H508, NCI-H716, SW48, SW1417, CaR-1, SNU-C1, CW-2*, C2BBe1,
+    COLO-320-HSR, CCK-81, MDST8, SNU-1040, SNU-C5, DiFi
+
+  Note: HT-29, COLO-205, RKO are BRAF-V600E (KRAS-WT but Driver Addiction for BRAF).
+  These are included in KRAS-WT group (they ARE KRAS-WT). A secondary analysis
+  excluding BRAF-V600E lines will be run post-hoc but is NOT the primary hypothesis test.
+
+## Drug-target mapping
+
+Identical to D15 pre-registration (fixed). Same 20 drugs, same z_dr values from D14b.
+Drugs found in GDSC2 in D15 (14 drugs): Erlotinib, Gefitinib, Lapatinib, Afatinib,
+Osimertinib, Palbociclib, Ribociclib, Selumetinib, Trametinib, PD0325901,
+Temsirolimus, Ipatasertib, Alpelisib, Dabrafenib.
+
+## Analysis protocol
+
+For each group (KRAS-WT, KRAS-MT):
+1. Filter GDSC2 COREAD to the cell lines in that group
+2. For each of the 14 mapped drugs: compute median LN_IC50 across group cell lines (n>=2)
+3. Build drug ranking by median LN_IC50
+4. Compute Spearman r(z_dr, median_LN_IC50) across all drugs
+5. Record rank of MEK inhibitors (Trametinib, PD0325901, Selumetinib)
+6. Record rank of EGFR inhibitors (Erlotinib, Gefitinib, Lapatinib, Afatinib, Osimertinib)
+
+## Hypotheses
+
+### H1: Spearman r < -0.3 in KRAS-WT COREAD (correlation recovers vs D15)
+  D15: r = -0.095 across all 46 COREAD lines (DENIED).
+  Prediction: restricting to KRAS-WT (n=20 lines) removes the KRAS-addiction confound;
+  structural z_dr should recover predictive power.
+  H1 CONFIRMED if: r < -0.3 in KRAS-WT (directional recovery vs D15)
+  H1 DENIED if: r >= -0.3 in KRAS-WT (correlation does not recover)
+
+### H2: In KRAS-WT COREAD, MEK inhibitors do NOT rank in top-3 (FM4 confirmed)
+  D15: Trametinib rank 1/14, PD0325901 rank 2/14 across all COREAD.
+  Prediction: KRAS-WT COREAD removes KRAS addiction. MEK inhibitors should drop
+  out of top-3 because MAP2K1 is structurally near-zero (no structural basis for
+  MEK sensitivity in KRAS-WT cells).
+  H2 CONFIRMED if: Trametinib rank > 3 AND PD0325901 rank > 3 in KRAS-WT
+  H2 DENIED if: either Trametinib or PD0325901 ranks in top-3 in KRAS-WT
+
+### H3: In KRAS-MT COREAD, MEK inhibitors remain in top-3 (Driver Addiction active)
+  Prediction: KRAS-MT cell lines are addicted to MEK signaling. Trametinib and/or
+  PD0325901 should remain among the most sensitive drugs in KRAS-MT COREAD.
+  H3 CONFIRMED if: Trametinib rank <= 3 in KRAS-MT
+  H3 DENIED if: Trametinib rank > 3 in KRAS-MT (MEK sensitivity disappears in KRAS-MT)
+
+### H4: EGFR inhibitor sensitivity persists in both KRAS-WT and KRAS-MT COREAD
+  D14c result: EGFR structural DAMPER is KRAS-independent (z_WT = +2.168, z_MT = +2.250).
+  D15 H4: EGFR inhibitors sensitive in COREAD vs PAAD (d=-0.808, confirmed).
+  Prediction: EGFR inhibitors are sensitive in both KRAS-WT and KRAS-MT COREAD
+  (structural position is KRAS-independent, pharmacological signal should be too).
+  H4 CONFIRMED if: EGFR inhibitor median LN_IC50 is in top 50% of drugs in BOTH groups
+  H4 DENIED if: EGFR inhibitors are insensitive (bottom 50%) in either group
+
+## FM4 validation logic
+
+| H2 | H3 | Interpretation |
+|----|----|----|
+| CONF | CONF | FM4 confirmed: KRAS-MT addiction drives MEK sensitivity; KRAS-WT topology-driven |
+| CONF | DENIED | MEK insensitivity is general CRC property, not KRAS-specific |
+| DENIED | CONF | Both groups MEK-sensitive; BRAF-V600E in KRAS-WT group confounds H2 |
+| DENIED | DENIED | FM4 does not explain D15 H2 denial; alternative explanation needed |
+
+If H2 DENIED but BRAF-V600E exclusion reverses it → BRAF override confound confirmed,
+not KRAS addiction confound (same FM4 mechanism, different genotype driver).
+
+## Pre-registration caveats
+
+1. KRAS-WT group (n=20) is small; per-drug medians are computed from ~15-20 cell lines
+   (not all drugs tested in all lines). Minimum n=2 per drug per group required.
+2. Three KRAS-WT lines are BRAF-V600E (HT-29, COLO-205, RKO). These may show MEK
+   sensitivity via BRAF pathway addiction. If H2 is denied in KRAS-WT but confirmed
+   after BRAF-V600E exclusion, this is noted as a BRAF override (same FM4 family).
+3. Selumetinib had n=90 in D15 (multiple GDSC2 runs). This may reflect different
+   experimental batches. The per-group median is computed from unique cell line values;
+   if a cell line appears multiple times, the mean of its replicates is used.
+4. The D14b z_dr values are from TCGA COAD all-samples (KRAS-WT+MT combined).
+   Using D14c KRAS-WT-specific z_dr (e.g. MAP2K1 z_WT = -1.533) for the KRAS-WT
+   correlation is a post-hoc analysis; the primary H1 uses D14b z_dr for consistency.
+
+## Pre-registration hash will be in commit immediately following this file
