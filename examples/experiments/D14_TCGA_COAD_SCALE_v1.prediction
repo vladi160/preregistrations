@@ -1,0 +1,144 @@
+# D14_TCGA_COAD_SCALE_v1
+# Pre-registration: State-Conditioned Layer B at 100 Nodes — TCGA COAD RNA-Seq
+# Date: 2026-06-07
+# Status: PRE-REGISTERED — do not compute coexpression or z_dr before this commit
+
+## Scientific Purpose
+
+D13 result: STRING pan-tissue coexpression (Layer B) produced only 3 edges at threshold
+>=150 in the 100-node CRC network. z_dr values were near-zero for most proteins (MAP2K1
+z_dr=+0.695) because Layer B was nearly empty. The formal diagnosis: STRING coexpression
+is G_e^marginal (pan-tissue average), not G_e (cancer-state conditional).
+
+**D14 is the causal test of this diagnosis.**
+
+If the empty Layer B (not the network size) was the confounding variable in D13, then
+replacing STRING coexpression with TCGA COAD cancer-specific coexpression should restore
+the full structural signal at 100 nodes.
+
+**Causal prediction:** D14 Layer B will be dense (>100 edges at r>=0.3 threshold) because
+KRAS-pathway proteins co-activate together in colorectal cancer tumors — this is the cancer
+state that G_e must be conditioned on. MAP2K1 z_dr should recover from +0.695 (D13) to
+>1.0, and rank correlation with the 16-node network should substantially exceed D13's 0.188.
+
+## Data Source (pre-registered)
+
+**TCGA COAD RNA-Seq:** HTSeq/STAR augmented gene counts
+  Downloaded via GDC client from GDC portal (TCGA-COAD project)
+  Manifest: gdc_manifest/gdc_manifest.2026-06-07.183130.txt
+  Sample count: 524 tumor samples
+  File format: rna_seq.augmented_star_gene_counts.tsv (per-sample, GDC UUID folders)
+
+**Processing protocol (pre-registered):**
+1. Load all 524 TSV files; extract unstranded counts column
+2. Filter to protein-coding genes (remove lncRNA, pseudogene, etc.)
+3. Normalize: log2(TPM + 1) using gene lengths from augmented STAR counts format
+4. Extract expression matrix for all 100 proteins in the D13 network (ENSP → gene symbol)
+5. Compute pairwise Pearson correlation across all 524 samples for these 100 proteins
+6. Threshold at r >= 0.3 to define Layer B edges (calibrated for ~100-400 edges)
+   If fewer than 50 edges: lower threshold to r >= 0.25 (report threshold used)
+   If more than 500 edges: raise threshold to r >= 0.4 (report threshold used)
+
+**Layer A (unchanged from D13):**
+  STRING experimental + database >= 400
+  Same 100-node network topology (same seed proteins, same expansion)
+
+**Network node set (identical to D13 — same 100 proteins, pre-registered in D13):**
+  Same 21 seeds + STRING neighbors; full node list recorded in D13 output file.
+
+## Hypotheses
+
+### H1: MAP2K1 (MEK1) z_dr > 1.0 at 100 nodes with cancer-specific Layer B
+  D13 result (STRING Layer B): z_dr = +0.695 (near-zero due to degenerate Layer B)
+  D7/D8/D10/D11 result (16-node cancer Layer B): z_dr range +1.2 to +1.9
+  Prediction: z_dr(MAP2K1) > 1.0 at 100 nodes with TCGA COAD Layer B
+
+  H1 CONFIRMED if: z_dr(MAP2K1) > 1.0
+  H1 DENIED if: z_dr(MAP2K1) <= 1.0 (signal does not recover even with correct Layer B)
+
+  If H1 DENIED: the 16-node z_dr > 1.0 results may be artifacts of network size, not Layer B.
+  This would be the strongest possible challenge to the cancer structural pharmacology claims.
+
+### H2: Rank correlation (16-node vs 100-node z_dr) > 0.5 (Spearman)
+  D13 rank correlation with STRING Layer B: r = +0.188 (n=10 proteins)
+  Prediction: Spearman r(z_dr_16node, z_dr_100node) > 0.5 (n=10 proteins)
+
+  Reference values (16-node z_dr, from D7/D10/D11 experiments):
+  MAP2K1 (MEK1): +1.863 (CRC), +1.847 (NSCLC)
+  CDK4:          +0.818 (CRC), +1.019 (PDAC)
+  MDM2:          +0.722 (NSCLC), +1.010 (PDAC)
+  PIK3CA (PI3K): -0.891 (CRC) — predicted ANCHOR
+  AKT1:          -0.341 (CRC) — predicted ANCHOR
+  MTOR:          -0.299 (CRC) — predicted ANCHOR
+  KRAS:          +0.184 (CRC)
+  BRAF:          +0.112 (CRC)
+  EGFR:          -0.520 (CRC) — predicted ANCHOR
+  TP53:          -0.187 (CRC)
+
+  H2 CONFIRMED if: Spearman r > 0.5
+  H2 DENIED if: r <= 0.5
+
+### H3: MDM2 z_dr > 0 at 100 nodes (DAMPER identity restored)
+  D13 result (STRING Layer B): z_dr(MDM2) = -2.177 (ANCHOR — cancer-specificity lost)
+  16-node result: z_dr(MDM2) = +1.010 (PDAC), +0.722 (NSCLC) — DAMPER in cancer networks
+  Prediction: MDM2 z_dr > 0 (DAMPER) when cancer-specific coexpression is used
+
+  This is the key state-conditioning test: MDM2 is an oncogenic DAMPER in cancer topology
+  (it amplifies mdm2/p53 via feedback circuits that are active only in cancer).
+  In the general interactome (G_e^marginal), MDM2 is a bridge hub → structural ANCHOR.
+
+  H3 CONFIRMED if: z_dr(MDM2) > 0 (cancer DAMPER position restored)
+  H3 DENIED if: z_dr(MDM2) <= 0 (remains ANCHOR even with cancer-specific Layer B)
+
+  If H3 DENIED: the MDM2 flip is structural (size-dependent, not layer-dependent).
+  This would require a different explanation for the MDM2 Layer A position at scale.
+
+### H4: CDK4 remains the most robust DAMPER (z_dr > 1.0 and highest z_dr in network)
+  CDK4 confirmed across D3/D7/D8/D10/D11/D13 — even D13 with degenerate Layer B gave
+  z_dr = +1.450, the only protein crossing |z| > 1.0 in D13.
+  Prediction: z_dr(CDK4) > 1.0 AND z_dr(CDK4) is the highest in the 100-node network
+
+  H4 CONFIRMED if: z_dr(CDK4) > 1.0 AND CDK4 is top-ranked DAMPER
+  H4 PARTIALLY CONFIRMED if: z_dr(CDK4) > 1.0 but not top-ranked (MAP2K1 or MDM2 higher)
+  H4 DENIED if: z_dr(CDK4) <= 1.0
+
+  Note: H4 PARTIALLY CONFIRMED is still a positive result for CDK4 robustness.
+  MAP2K1 recovering to z_dr > 1.0 (H1) would not contradict H4 partial confirmation.
+
+## Decision Table (pre-registered)
+
+| Outcome | Interpretation |
+|---------|----------------|
+| H1+H2+H3 all confirmed | State-conditioning is the causal variable; scale invariance holds with correct Layer B |
+| H1+H2 confirmed, H3 denied | MAP2K1/rank-correlation restored but MDM2 flip is structural (size effect) |
+| H1 confirmed, H2 denied | MAP2K1 direction robust but rank order is scale-dependent |
+| H1 denied | 16-node MAP2K1 signal is scale-specific; major caveat required |
+| H4 confirmed | CDK4 is the most scale-invariant structural DAMPER — consistent across 6+ experiments |
+| H4 partially confirmed | CDK4 is robust but MAP2K1 is the stronger signal at 100 nodes |
+
+## Expected paper impact
+
+If H1+H2+H3 confirmed (D14 score: +5 → 42/100):
+- First full-scale structural pharmacology network validated with cancer-specific coexpression
+- State-conditioning validity condition confirmed as causal (not correlational)
+- Paper v12 can claim "scale-invariant" with evidence: same DAMPER/ANCHOR assignments
+  survive from 16-node to 100-node when G_e is correctly conditioned on cancer state
+
+If H1 denied (D14 score: +1 → 38/100):
+- Must add epistemic limitation #5: structural DAMPER ranks are scale-specific below N=50
+- All 16-node results require explicit size-boundary caveat in the paper
+
+## Pre-registration caveats
+
+1. STAR augmented counts format includes both stranded and unstranded columns; will use
+   unstranded_count as specified in GDC documentation for TCGA RNA-Seq
+2. TPM normalization requires gene lengths; augmented STAR format includes fragment_count
+   and tpm_unstranded columns — will use tpm_unstranded directly to avoid manual normalization
+3. Some TCGA samples may be duplicated (technical replicates) — will keep one per patient
+   using the TCGA barcode (TCGA-XX-XXXX); if barcode column absent, use file UUID as sample ID
+4. 100-node protein list uses ENSP IDs (STRING v12); mapping to gene symbols for TCGA
+   may miss some proteins if HGNC symbols differ — will report any unmapped proteins
+5. Null model: 500 permutations (Maslov-Sneppen edge-swaps on Layer B) for z_dr computation,
+   consistent with all prior D-series experiments
+
+## Pre-registration hash will be in commit immediately following this file
