@@ -1,0 +1,211 @@
+# D22_DEPMAP_CRISPR_SOS1_KRAS_v1
+# Pre-registration: DepMap CRISPR essentiality — SOS1/RAF1/SHP2 in KRAS-stratified LUAD + BRAF-V600E SKCM
+# Date: 2026-06-08
+# Status: PRE-REGISTERED — do not load CRISPRGeneEffect.csv by KRAS status before this commit
+
+## Scientific background
+
+D21 revealed that SOS1 is the top structural DAMPER in KRAS-MT LUAD (z_dr=+4.184 vs
+z_dr=−0.193 in KRAS-WT LUAD). SOS1 (Son of Sevenless 1) is a guanine nucleotide
+exchange factor (GEF) that catalyzes GDP→GTP exchange on RAS proteins. In KRAS-MT
+tumors, constitutive KRAS-GTP abolishes the need for SOS1 in steady-state signaling,
+but SOS1 remains required for:
+  (1) Amplitude amplification — SOS1 creates positive feedback through the
+      RAS/SOS1/GRB2 scaffold that sustains KRAS-GTP levels above the threshold
+      for ERK/PI3K activation at the magnitude required for tumor maintenance.
+  (2) Allosteric positive cooperativity — the second (allosteric) site on SOS1
+      is specifically activated by KRAS-GTP (not HRAS/NRAS), creating a
+      KRAS-specific feedforward loop absent in KRAS-WT cells.
+  (3) BI-3406 validation — clinical-stage SOS1-KRAS inhibitor selectively
+      active in KRAS-MT cancers (Phase 1, Boehringer Ingelheim 2022).
+
+The structural DAMPER prediction (SOS1 becomes MORE coexpression-central in KRAS-MT)
+is paradoxical by classic network logic: if KRAS is constitutively active, why does
+its GEF become more structurally central? The IRDME framework predicts that SOS1's
+structural elevation reflects its role in the positive feedback amplitude circuit,
+not simple upstream activation.
+
+D22 tests whether the structural prediction (SOS1 elevated DAMPER in KRAS-MT) is
+validated by functional genetic evidence (SOS1 CRISPR essentiality in KRAS-MT cells).
+
+CRITICAL CONTROL — pathway-load confound:
+If KRAS-MT tumors simply require MORE of ALL RAS-pathway components (RAF1, MEK1, etc.),
+then SOS1 essentiality would increase in KRAS-MT as a non-specific pathway load effect.
+D22 pre-registers simultaneous comparison of SOS1 vs RAF1 (direct KRAS effector) and
+SHP2/PTPN11 (upstream RAS activator, different mechanism). If SOS1 differential is
+larger than RAF1 differential AND larger than SHP2 differential, the SOS1 finding is
+specific to GEF function, not generic pathway load.
+
+BRAF-V600E SKCM cross-cancer control (H3):
+BRAF-V600E bypasses RAS entirely (directly activates MEK). In BRAF-V600E SKCM,
+SOS1 should NOT become more essential because KRAS is not the activated driver.
+This tests whether the SOS1 signal is specific to KRAS activation or generalizes
+to any hyperactivated MAPK pathway.
+
+## Data
+
+CRISPRGeneEffect.csv (DepMap 23Q4 or latest available)
+  -- Index: ACH-XXXXXX cell line IDs
+  -- Columns: "GENE (EntrezID)" format
+  -- Genes of interest: SOS1 (6654), RAF1 (5894), PTPN11 (5781), KRAS (3845), BRAF (673)
+  -- CERES score convention: more negative = more essential
+
+Cell line annotation:
+  Lineage: PRISM meta file (prism-repurposing-20q2-secondary-screen-cell-line-info.csv)
+    LUAD: primary_tissue == "lung", secondary_tissue == "lung_NSC" (non-small cell)
+    SKCM: primary_tissue == "skin", secondary_tissue == "melanoma"
+  Mutation status: curated from CCLE/DepMap literature annotations
+    KRAS-MT LUAD: cell lines with documented KRAS G12X/G13D/Q61X mutations
+    KRAS-WT LUAD: cell lines documented as KRAS wild-type (may have other drivers)
+    BRAF-V600E SKCM: cell lines with documented BRAF V600E mutation
+    BRAF-WT SKCM: cell lines documented as BRAF wild-type (may have NRAS mutations)
+
+Pre-registered curated mutation annotation (from CCLE literature, COSMIC, published reports):
+
+KRAS-MT LUAD cell lines:
+  A549 (KRAS G12S), NCI-H358 (KRAS G12C), NCI-H441 (KRAS G12V),
+  NCI-H2009 (KRAS G12A), NCI-H1792 (KRAS G12C), NCI-H23 (KRAS G12C),
+  NCI-H1373 (KRAS G12C), HCC44 (KRAS G12C), NCI-H2122 (KRAS G12C),
+  NCI-H1734 (KRAS G12D), NCI-H2087 (KRAS G12V), NCI-H460 (KRAS Q61H),
+  NCI-H2291 (KRAS G12D), SW1573 (KRAS G12C), NCI-H1395 (KRAS G12C),
+  LU65 (KRAS G12C), NCI-H2030 (KRAS G12C), CALU1 (KRAS G12C),
+  NCI-H2347 (KRAS G12D), HCC2814 (KRAS G12V)
+
+KRAS-WT LUAD cell lines (excluding EGFR-MT to match D21 design):
+  NCI-H1299 (KRAS-WT, NRAS Q61K), NCI-H1437 (KRAS-WT), NCI-H322 (KRAS-WT),
+  NCI-H596 (KRAS-WT), NCI-H2172 (KRAS-WT), NCI-H2228 (KRAS-WT, EML4-ALK),
+  NCI-H3122 (KRAS-WT, EML4-ALK), CALU3 (KRAS-WT, ERBB2-amp),
+  NCI-H1703 (KRAS-WT), NCI-H1395_WT_check (confirm KRAS status before inclusion)
+
+BRAF-V600E SKCM cell lines:
+  A375 (BRAF V600E), SK-MEL-28 (BRAF V600E), SK-MEL-5 (BRAF V600E),
+  COLO800 (BRAF V600E), UACC257 (BRAF V600E), LOXIMVI (BRAF V600E),
+  COLO679 (BRAF V600E), IGR37 (BRAF V600E), A2058 (BRAF V600E),
+  MELHO (BRAF V600E), CHL1 (check — may be BRAF V600E)
+
+BRAF-WT SKCM cell lines:
+  SK-MEL-2 (NRAS Q61R, BRAF-WT), MALME3M (BRAF-WT check), SKMEL30 (BRAF-WT),
+  WM793 (check BRAF status), IGR1 (check)
+
+NOTE: Cell lines not found in CRISPRGeneEffect or PRISM meta are excluded from analysis.
+Minimum n=5 per group for CERES comparison (Mann-Whitney). If n<5, report descriptive
+statistics only and note as underpowered.
+
+## Processing protocol (pre-registered)
+
+Step 1: Load CRISPRGeneEffect.csv, extract columns:
+  SOS1 (6654), RAF1 (5894), PTPN11 (5781), KRAS (3845), BRAF (673)
+
+Step 2: Load PRISM meta, get depmap_id → ccle_name mapping.
+  LUAD: secondary_tissue == "lung_NSC"
+  SKCM: primary_tissue == "skin" AND secondary_tissue == "melanoma"
+
+Step 3: Map CCLE names to mutation status using pre-registered curated annotation above.
+  Accept partial matches: "A549" matches "A549_LUNG" etc. (strip tissue suffix for lookup)
+  If a cell line is in CRISPR but not in PRISM meta: include only if CCLE name is
+  unambiguously identifiable in the pre-registered list.
+
+Step 4: Compute group means and Mann-Whitney U test for each pairwise comparison.
+  LUAD KRAS-MT vs KRAS-WT: for SOS1, RAF1, PTPN11, KRAS
+  SKCM BRAF-V600E vs BRAF-WT: for SOS1, RAF1, PTPN11, KRAS, BRAF
+
+Step 5: Compute Cohen's d for each comparison.
+  Effect size convention: d < −0.2 = negligible; −0.5 = small; −0.8 = medium; −1.2 = large
+
+Step 6: For H2, compute delta_CERES = mean(MT) − mean(WT) for SOS1, RAF1, SHP2.
+  H2 tests whether |delta_SOS1| > |delta_RAF1| AND |delta_SOS1| > |delta_SHP2|.
+
+## Hypotheses
+
+### H1: SOS1 CERES score lower (more essential) in KRAS-MT vs KRAS-WT LUAD
+
+Structural prediction: SOS1 is the top DAMPER in KRAS-MT LUAD (z_dr=+4.184) and
+elevated DAMPER in EGFR-MT LUAD (z=+3.620), but near-zero in KRAS-WT/EGFR-WT LUAD
+(z=−0.193). The structural elevation is specific to RAS-activated contexts.
+
+CERES interpretation: If SOS1 is genuinely more functionally essential in KRAS-MT LUAD
+(as the positive feedback GEF), its CERES score should be more negative in KRAS-MT
+cell lines.
+
+H1 CONFIRMED if:
+  mean_CERES(SOS1, KRAS-MT) < mean_CERES(SOS1, KRAS-WT)
+  AND Mann-Whitney p < 0.10 (one-tailed: KRAS-MT more essential)
+  AND Cohen's d < −0.3 (at least small effect size)
+
+H1 DENIED if:
+  mean_CERES(SOS1, KRAS-MT) >= mean_CERES(SOS1, KRAS-WT)
+  OR p >= 0.10
+
+H1 PARTIAL if:
+  Directional (KRAS-MT more essential) but p >= 0.10 OR |d| < 0.3
+
+### H2: SOS1 differential exceeds RAF1 and SHP2 differentials (pathway-specificity control)
+
+If SOS1's CERES shift in KRAS-MT is due to GEF-specific positive feedback (allosteric
+RAS-GTP activation at second site), it should be larger than the shift for:
+  - RAF1: direct KRAS effector, always co-activated with KRAS-MT (pathway load control)
+  - SHP2/PTPN11: upstream RAS activator via RTK, less relevant in constitutive KRAS-MT
+
+H2 CONFIRMED if:
+  |delta_CERES(SOS1)| > |delta_CERES(RAF1)|
+  AND |delta_CERES(SOS1)| > |delta_CERES(PTPN11)|
+  where delta = mean(KRAS-MT) - mean(KRAS-WT)
+
+H2 DENIED if:
+  RAF1 differential >= SOS1 differential
+  OR PTPN11 differential >= SOS1 differential
+
+H2 PARTIAL if one control exceeds SOS1 but not both.
+
+### H3: SOS1 NOT more essential in BRAF-V600E vs BRAF-WT SKCM (RAS-bypass test)
+
+BRAF-V600E activates MEK directly, bypassing RAS. SOS1 (a RAS-GEF) should have no
+special essentiality advantage in BRAF-V600E cells vs BRAF-WT cells.
+
+If H3 is CONFIRMED (no SOS1 differential in SKCM), this establishes that the H1
+finding is specific to KRAS activation, not a general MAPK-hyperactivation effect.
+
+H3 CONFIRMED if:
+  |mean_CERES(SOS1, BRAF-V600E) - mean_CERES(SOS1, BRAF-WT)| < 0.15 CERES units
+  OR Mann-Whitney p > 0.30 (no evidence of differential essentiality)
+
+H3 DENIED if:
+  SOS1 is MORE essential in BRAF-V600E SKCM (mean CERES more negative, p < 0.10)
+  This would suggest MAPK-load (not KRAS-specific) drives SOS1 essentiality.
+
+### H4: KRAS CERES lower in KRAS-MT LUAD (positive control)
+
+KRAS should be essential in KRAS-MT cell lines (KRAS addiction). This is the
+well-established positive control for the dataset and annotation quality.
+
+H4 CONFIRMED if:
+  mean_CERES(KRAS, KRAS-MT) < mean_CERES(KRAS, KRAS-WT) AND p < 0.05
+
+H4 DENIED if KRAS is NOT more essential in KRAS-MT. This would invalidate the
+annotation/dataset and render H1–H3 uninterpretable.
+
+## Pre-registration caveats
+
+1. Mutation annotation is literature-curated, not from a programmatic mutation file.
+   Cell lines with ambiguous KRAS status in published literature are excluded.
+   A footnote will list all included/excluded lines and their documented mutation status.
+
+2. CERES score convention: negative = essential. Lower score = more essential.
+   All direction claims use this convention consistently.
+
+3. Group sizes are expected to be small (n=10–20 per LUAD group, n=8–15 per SKCM group).
+   Statistical power is limited; results will be reported with exact n, p, and d.
+   If n < 5 per group, report descriptive only (no statistical test).
+
+4. The PRISM meta file covers ~1120 cell lines; CRISPRGeneEffect may cover different
+   lines. Intersection is used for lineage annotation. If a KRAS-MT line is in CRISPR
+   but not PRISM, it is included using its CCLE name directly.
+
+5. Multiple testing: 4 genes × 2 comparisons = 8 tests. No Bonferroni correction applied
+   (each hypothesis is pre-registered and directional). Report uncorrected p-values.
+
+6. Cross-experiment validation: After D22, add row to Driver=ANCHOR symmetry table:
+   "SOS1 z_dr=+4.184 in KRAS-MT LUAD → SOS1 CERES differential in KRAS-MT LUAD".
+   This closes the structural-to-functional validation loop for SOS1.
+
+## Pre-registration hash will be in commit immediately following this file
