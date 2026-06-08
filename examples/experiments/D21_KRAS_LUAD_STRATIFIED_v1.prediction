@@ -1,0 +1,213 @@
+# D21_KRAS_LUAD_STRATIFIED_v1
+# Pre-registration: KRAS-stratified TCGA LUAD 100-node structural pharmacology
+# Date: 2026-06-08
+# Status: PRE-REGISTERED — do not parse RNA-Seq or MAF files before this commit
+
+## Scientific background
+
+D19 revealed FM5 (Driver-Addiction Structural Inversion): EGFR is a structural ANCHOR
+in EGFR-MT LUAD (z=-2.047) despite being a DAMPER in CRC (z=+2.411). The proposed
+mechanism: constitutive oncogenic driver activation reorganizes the cancer coexpression
+network around the driver-downstream axis, converting the driver from a peripheral
+modulator (DAMPER) into the central organizing node (ANCHOR). TKI efficacy is delivered
+via Driver Addiction Override, not structural disruption.
+
+D21 tests whether FM5 generalizes from EGFR to KRAS:
+
+KRAS is the second major oncogenic driver in LUAD (~30% of non-EGFR LUAD;
+24.1% across all 618 LUAD MAF files; p.G12C, p.G12V, p.G12D, p.G13D, p.Q61L etc.).
+KRAS-MT LUAD activates constitutive RAS/MAPK/PI3K signaling analogous to EGFR-MT LUAD.
+If FM5 is a general "Driver = ANCHOR" law:
+
+  Any gene that is the constitutive oncogenic driver in a cancer context
+  becomes a structural ANCHOR in that context, regardless of its structural
+  role in cancers where it is NOT the driver.
+
+Prediction from FM5 generalization:
+  KRAS-MT LUAD: KRAS structural ANCHOR (z < -1.0)
+  KRAS-WT LUAD: KRAS near-zero (no dominant driver signal through KRAS)
+
+Cross-validation of the Driver=ANCHOR principle:
+  EGFR-MT LUAD (D19): EGFR=ANCHOR (-2.047), KRAS=near-zero (-0.993)
+  KRAS-MT LUAD (D21): KRAS=ANCHOR (predicted), EGFR=near-zero (predicted)
+  The symmetric swap of ANCHOR/near-zero roles would confirm the bidirectional
+  "Driver=ANCHOR, Non-driver=near-zero" law.
+
+Critical methodological addition: H4 is a pre-registered null specificity test
+that directly addresses whether the observed ANCHOR shift is gene-specific (a real
+structural signal) or a global embedding drift artifact (KRAS-MT tumors reorganize the
+entire coexpression geometry, making ALL genes look more ANCHOR-like in MT vs WT).
+This controls for the "mutation dominates expression geometry" confound.
+
+## Data
+
+RNA-Seq: downloads/D19/031800/ (602 augmented STAR count TSV files, TCGA-LUAD)
+  -- same files as D19; reuse d19_uuid_barcode_cache.json
+MAF files: downloads/D19/032644/ (618 masked somatic MAF.gz files, TCGA-LUAD WXS)
+  -- UUID subdirectory structure: downloads/D19/032644/UUID/*.maf.gz
+Network: same 100-node STRING network as D14b/D17/D19/D20 (Layer A unchanged)
+Cache: scripts/d19_uuid_barcode_cache.json (reused)
+
+## Patient stratification (pre-registered)
+
+Step 1: Parse all 618 MAF files -> EGFR status AND KRAS status per barcode.
+  EGFR-MT: any non-silent EGFR mutation (as D19: Variant_Classification not in SILENT)
+  KRAS-MT: Hugo_Symbol == "KRAS" AND Variant_Classification NOT in SILENT_CLASSES
+    SILENT_CLASSES = {Silent, 3'UTR, 5'UTR, Intron, RNA, lincRNA, 3'Flank,
+                      5'Flank, IGR, Splice_Region}
+    Covers: G12C, G12V, G12D, G12S, G12A, G13D, Q61H, Q61L, Q61R, A146V, etc.
+  KRAS-WT: sample has MAF file AND no qualifying KRAS mutation
+
+Step 2: Restrict to EGFR-WT patients (no qualifying EGFR mutation) only.
+  KRAS-MT group: EGFR-WT AND KRAS-MT
+  KRAS-WT group: EGFR-WT AND KRAS-WT
+  Excluded: EGFR-MT patients (already analyzed in D19, separate driver context)
+
+Rationale for exclusion of EGFR-MT: EGFR-MT patients have a different dominant driver;
+including them in KRAS-WT would contaminate the control group with another Driver=ANCHOR
+signal (EGFR ANCHOR). The comparison KRAS-MT vs KRAS-WT(EGFR-WT) cleanly isolates
+the KRAS driver effect.
+
+## Expected sample sizes
+
+Observed from full MAF scan (pre-registration phase):
+  Total MAF files: 618
+  KRAS-MT patients: 149 (24.1% overall)
+  EGFR-MT patients: ~84-85 (from D19)
+  KRAS-MT/EGFR-WT: ~140-148 (EGFR-KRAS co-occurrence <5% in LUAD)
+  KRAS-WT/EGFR-WT: ~360-380
+
+After RNA-Seq barcode matching (expected ~5-10% dropout):
+  KRAS-MT: ~125-140 RNA-Seq samples
+  KRAS-WT: ~330-360 RNA-Seq samples
+  Minimum n=50 per group (same threshold as all prior experiments)
+
+## Processing protocol (pre-registered)
+
+Same as D19, except:
+  1. Parse MAF for KRAS AND EGFR status per patient
+  2. Restrict to EGFR-WT; then split by KRAS status
+  3. Reuse d19_uuid_barcode_cache.json for UUID->barcode mapping
+  4. Build Layer B at r>=0.30 for each group; auto-adjust if <50 or >500 edges
+     (same rule as D19: try 0.30, raise to 0.45, 0.50, 0.55 if too dense)
+  5. 500 Maslov-Sneppen rewirings per group
+  6. Report z_dr for all 100 mapped proteins
+
+## Pre-specified control genes for H4 specificity test
+
+Five non-driver control genes selected from the 100-node network.
+Criterion: genes NOT in the immediate KRAS->RAF->MEK->ERK axis and NOT KRAS itself.
+Selected based on D19 LUAD-WT z_dr stability and pathway independence from KRAS:
+
+  1. TGFA  -- EGFR ligand; upstream of EGFR, independent of KRAS signaling
+  2. EGF   -- EGFR ligand; upstream of EGFR, independent of KRAS signaling
+  3. MDM2  -- p53/MDM2 regulatory axis; KRAS-independent pathway
+  4. TP53  -- tumor suppressor; KRAS-independent (direct MDM2 interaction)
+  5. MTOR  -- mTOR complex; 3+ steps downstream of KRAS, distinct signaling arm
+
+For each control gene g: shift(g) = z_dr(g, KRAS-MT) - z_dr(g, KRAS-WT)
+For KRAS: shift(KRAS) = z_dr(KRAS, MT) - z_dr(KRAS, WT)
+
+H4 CONFIRMED if: shift(KRAS) is more negative (ANCHOR direction) than
+                  shift(g) for >= 4/5 control genes
+  i.e., the KRAS shift toward ANCHOR is the most extreme negative shift
+H4 DENIED if: >= 2 control genes show a more negative shift than KRAS
+
+D19 reference (EGFR stratification, for comparison):
+  z_KRAS EGFR-WT = +0.684; z_KRAS EGFR-MT = -0.993; shift = -1.677
+  z_TGFA shifts in D19: WT=+3.682, MT=+3.060; shift = -0.622
+  z_EGF shifts in D19: WT=+3.387, MT=+2.519; shift = -0.868
+  z_MDM2 shifts in D19: WT=+0.321, MT=+1.264; shift = +0.943
+  z_TP53 shifts in D19: WT=-1.774, MT=-0.404; shift = +1.370
+  z_MTOR shifts in D19: WT=+0.155, MT=-0.258; shift = -0.413
+  KRAS shift (-1.677) was more extreme than 5/5 control genes in D19 context.
+  Pre-registering the same specificity test for D21 KRAS stratification.
+
+## Hypotheses
+
+### H1: KRAS structural ANCHOR in KRAS-MT LUAD (z_dr < -1.0)
+
+FM5 generalization: KRAS is the oncogenic driver in KRAS-MT LUAD.
+Constitutive KRAS G12X activation (GTP-locked KRAS) creates coherent RAS/MAPK and
+PI3K/AKT signaling that organizes the tumor coexpression network around the KRAS axis.
+This should convert KRAS from near-zero (non-driver role, as in D19 EGFR-MT where
+KRAS z=-0.993) to ANCHOR (driver role, organizing the network in KRAS-MT).
+
+H1 CONFIRMED if: z_dr(KRAS) < -1.0 in KRAS-MT group
+H1 DENIED if: z_dr(KRAS) >= -1.0 in KRAS-MT group
+H1 PARTIAL if: -1.0 <= z_dr(KRAS) < 0 (ANCHOR direction but subthreshold)
+
+### H2: KRAS z_dr lower in KRAS-MT than KRAS-WT (directional)
+
+The KRAS structural position should shift toward ANCHOR in KRAS-MT vs KRAS-WT
+regardless of whether it crosses the -1.0 threshold.
+
+H2 CONFIRMED if: z_dr(KRAS, MT) < z_dr(KRAS, WT)
+H2 DENIED if: z_dr(KRAS, MT) >= z_dr(KRAS, WT)
+
+D19 reference: KRAS was +0.684 (EGFR-WT) vs -0.993 (EGFR-MT).
+In D21 context (KRAS stratification): we expect the reverse — KRAS near-zero in
+KRAS-WT and ANCHOR in KRAS-MT.
+
+### H3: EGFR near-zero in KRAS-MT LUAD (z_dr > -1.0)
+
+The bidirectional Driver=ANCHOR test:
+  D19 showed: EGFR=ANCHOR when EGFR is the driver (EGFR-MT LUAD)
+  D21 tests: EGFR=near-zero when KRAS is the driver (KRAS-MT LUAD)
+
+If the Driver=ANCHOR law holds, EGFR should NOT be an ANCHOR in KRAS-MT LUAD
+because EGFR is not the dominant oncogenic driver in KRAS-mutant tumors.
+This is the symmetric complement to D19 H1.
+
+H3 CONFIRMED if: z_dr(EGFR) > -1.0 in KRAS-MT group (near-zero or positive)
+H3 DENIED if: z_dr(EGFR) <= -1.0 in KRAS-MT group (ANCHOR despite KRAS being driver)
+
+Confirming H3 alongside H1 would establish bidirectional evidence:
+  EGFR-driver context: EGFR=ANCHOR, KRAS=near-zero (D19)
+  KRAS-driver context: KRAS=ANCHOR, EGFR=near-zero (D21)
+  This symmetry confirms "Driver=ANCHOR, Non-driver=near-zero" as a structural law.
+
+### H4: Specificity test — KRAS shift more extreme than 5 non-driver controls
+
+Pre-specified non-driver genes: TGFA, EGF, MDM2, TP53, MTOR
+See "Pre-specified control genes" section above for full justification.
+
+H4 CONFIRMED if: shift(KRAS) < shift(g) for >= 4/5 control genes
+  (KRAS shift most negative = most ANCHOR-directed = most specific)
+H4 DENIED if: >= 2 control genes shift more negative than KRAS
+
+This test controls for the hypothesis that KRAS-MT tumors globally reorganize
+coexpression geometry, making ALL nodes appear more ANCHOR-like. If the null
+is not rejected (H4 DENIED), the KRAS ANCHOR finding (H1) may be an artifact of
+global embedding drift in KRAS-driven tumors rather than a KRAS-specific signal.
+
+## Cross-experiment validation table (post-hoc, pre-specified)
+
+After results: construct "Driver=ANCHOR" symmetry table:
+
+| Context       | EGFR driver? | KRAS driver? | EGFR z_dr | KRAS z_dr | Prediction |
+|---------------|-------------|-------------|-----------|-----------|------------|
+| EGFR-MT LUAD (D19) | YES | No | -2.047 (ANCHOR) | -0.993 (near-0) | Driver=ANCHOR |
+| KRAS-MT LUAD (D21) | No | YES | predicted near-0 | predicted ANCHOR | Driver=ANCHOR |
+| KRAS-WT/EGFR-WT LUAD | No | No | -0.121 (near-0) | +0.684 (near-0) | No driver=near-0 |
+| CRC (D14b) | No (mod.) | partial | +2.411 (DAMPER) | -1.329 (ANCHOR) | CRC KRAS partial |
+
+Note: CRC KRAS (D14b) showed z=-1.329 (near-ANCHOR) despite not being the sole driver.
+D21 KRAS-WT LUAD provides the cleanest non-driver KRAS reference.
+
+## Pre-registration caveats
+
+1. KRAS-MT and EGFR-MT are largely mutually exclusive in LUAD (<5% co-occurrence).
+   Excluding EGFR-MT patients from both groups preserves this clean separation.
+2. KRAS-MT LUAD includes multiple codons (G12C, G12V, G12D, G13D, Q61H, etc.) with
+   potentially different functional effects. D21 treats all non-silent KRAS mutations
+   as a single class. Post-hoc subgroup analysis by codon is permitted but not
+   pre-registered.
+3. Layer B threshold: same auto-adjustment rule (r>=0.30 start, raise if needed).
+   KRAS-MT n~135 is slightly smaller than D19 EGFR-MT n=84 equivalent — adequate
+   for coexpression at r>=0.30 threshold.
+4. Reusing D19 RNA-Seq data and UUID->barcode cache: this is pre-registered.
+   The dataset was not examined by KRAS status before this pre-registration commit.
+5. 500 Maslov-Sneppen rewirings per group (same as all prior experiments).
+
+## Pre-registration hash will be in commit immediately following this file
