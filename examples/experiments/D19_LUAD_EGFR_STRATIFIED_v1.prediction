@@ -1,0 +1,150 @@
+# D19_LUAD_EGFR_STRATIFIED_v1
+# Pre-registration: EGFR-stratified TCGA LUAD 100-node structural pharmacology
+# Date: 2026-06-08
+# Status: PRE-REGISTERED — do not parse RNA-Seq or MAF files before this commit
+
+## Scientific background
+
+D14/D14b/D14c tested the 100-node framework in TCGA COAD (CRC): EGFR is the strongest
+structural DAMPER (z=+2.411), concordant with FDA-approved EGFR TKI use in CRC.
+D17 tested TCGA SKCM (melanoma): EGFR is the strongest structural ANCHOR in BRAF-WT
+melanoma (z=-3.204), concordant with EGFR TKI clinical inactivity in melanoma.
+D18 confirmed the EGFR structural reversal pharmacologically: SKCM > COREAD LN_IC50 for
+EGFR inhibitors (d=+0.566, p=4e-8).
+
+D19 tests the critical question raised by D17/D18:
+  Is EGFR structural DAMPER status a general property of EGFR-DRIVEN cancers,
+  or is it specific to CRC tissue context?
+
+TCGA LUAD (lung adenocarcinoma) has ~14% EGFR mutation rate (confirmed: 85/618 MAF files).
+EGFR-mutant LUAD is the canonical EGFR TKI indication (erlotinib/gefitinib/osimertinib
+first-line in EGFR-MT LUAD). If EGFR is a structural DAMPER in EGFR-MT LUAD (as in CRC),
+this would confirm that the DAMPER property tracks oncogenic driver status (not tissue).
+If EGFR is near-zero or ANCHOR in EGFR-MT LUAD, the CRC DAMPER finding would be
+CRC tissue-specific.
+
+Cross-cancer structural fingerprint progression:
+  CRC (KRAS/APC-driven): EGFR DAMPER +2.411
+  SKCM-WT (NRAS/other-driven): EGFR ANCHOR -3.204
+  LUAD-EGFR-MT (EGFR-driven): predicted DAMPER (H1)
+  LUAD-EGFR-WT (KRAS/other-driven): predicted near-zero or negative (H2)
+
+## Data
+
+RNA-Seq: downloads/D19/031800/ (602 augmented STAR count TSV files, TCGA-LUAD)
+MAF files: downloads/D19/032644/ (619 masked somatic MAF.gz files, TCGA-LUAD WXS)
+Network: same 100-node STRING network as D14b/D14c/D17 (Layer A unchanged)
+Cache: scripts/d19_uuid_barcode_cache.json
+
+## EGFR mutation definition (pre-registered)
+
+EGFR-MT (any protein-altering EGFR mutation):
+  Hugo_Symbol == "EGFR" AND Variant_Classification NOT in SILENT_CLASSES
+  SILENT_CLASSES = {Silent, 3'UTR, 5'UTR, Intron, RNA, lincRNA, 3'Flank,
+                    5'Flank, IGR, Splice_Region}
+  Includes: Missense_Mutation, Nonsense_Mutation, Frame_Shift_Del,
+            Frame_Shift_Ins, In_Frame_Del, In_Frame_Ins, Translation_Start_Site
+
+This definition captures all activating mutations (L858R, exon 19 del, G719X, exon 20 ins)
+without requiring specific codon filtering (unlike BRAF V600 in D17).
+
+EGFR-WT: sample has a MAF file AND no qualifying EGFR mutation.
+
+Secondary (post-hoc only, NOT primary hypothesis):
+  EGFR-sensitizing-MT: subset of EGFR-MT with known sensitizing mutations
+  (L858R: p.L858R, exon 19 del: contains "del" in exon 19 range)
+
+Excluded: samples without matched MAF file.
+
+## Expected sample sizes
+
+EGFR-MT: ~75-85 RNA-Seq samples with matched MAF (85 MAF files have EGFR mutations)
+EGFR-WT: ~400-480 RNA-Seq samples with matched MAF
+Minimum n = 50 per group (same threshold as D14c, D17)
+
+## Processing protocol (pre-registered)
+
+1. Parse 619 MAF files -> EGFR mutation status per patient barcode
+2. Map 602 RNA-Seq UUIDs -> patient barcodes via GDC public API (batch POST)
+   Cache: scripts/d19_uuid_barcode_cache.json
+3. Assign EGFR status to each RNA-Seq sample; exclude samples without MAF
+4. Build log2(TPM+1) expression matrices for EGFR-MT and EGFR-WT groups
+5. For each group: build Layer B at r >= 0.3 (adjust if <50 or >500 edges)
+6. Run delta_r + 500-rewiring Maslov-Sneppen null for each group independently
+7. Report z_dr for all mapped proteins in each group
+
+## Hypotheses
+
+### H1: EGFR structural DAMPER in EGFR-mutant LUAD (z_dr > +1.0)
+
+Rationale: In EGFR-MT LUAD, constitutively active EGFR organizes the cancer coexpression
+network around EGFR-downstream signaling (RAS/MAPK/PI3K). The EGFR coexpression signature
+aligns with the STRING Layer A topology (EGFR is central in the cancer network). Its removal
+should decrease r(A,B) — making EGFR a structural DAMPER.
+
+Clinical concordance: EGFR TKIs are first-line in EGFR-MT LUAD. The structural DAMPER
+prediction would confirm that EGFR structural dominance tracks clinical TKI utility.
+
+H1 CONFIRMED if: z_dr(EGFR) > +1.0 in EGFR-MT group
+H1 DENIED if: z_dr(EGFR) <= +1.0 in EGFR-MT group
+H1 PARTIAL if: 0 < z_dr(EGFR) <= +1.0 (positive but subthreshold)
+
+### H2: EGFR structural position lower in EGFR-WT LUAD than EGFR-MT (z_WT < z_MT)
+
+Rationale: EGFR-WT LUAD is driven by KRAS (~30%), ALK/ROS1 fusions (~5-10%), and other
+non-EGFR mechanisms. EGFR is not the primary driver. Its structural position should be
+lower (less DAMPER, or ANCHOR tendency) compared to EGFR-MT.
+
+H2 CONFIRMED if: z_dr(EGFR)_WT < z_dr(EGFR)_MT
+H2 DENIED if: z_dr(EGFR)_WT >= z_dr(EGFR)_MT
+
+Note: If both groups show positive z_dr (DAMPER), this still CONFIRMS H2 as long as
+EGFR-MT shows stronger DAMPER status. H2 tests directionality, not absolute classification.
+
+### H3: MAP2K1 near-zero in both LUAD groups (z_dr > -1.0)
+
+The 100-node network consistently places MAP2K1 near-zero in CRC (all stratifications,
+D13/D14/D14b/D14c) and SKCM (both groups, D17). Testing whether this boundary condition
+holds across a third cancer type.
+
+H3 CONFIRMED if: z_dr(MAP2K1) > -1.0 in BOTH EGFR-MT and EGFR-WT groups
+H3 DENIED if: z_dr(MAP2K1) < -1.0 in either group
+
+### H4: LUAD EGFR z_dr is positive (z > 0) in EGFR-MT group (DAMPER direction)
+
+Weaker version of H1: tests directional DAMPER tendency without requiring >1.0.
+Places LUAD on the structural spectrum between CRC (+2.411) and SKCM (-3.204).
+
+H4 CONFIRMED if: z_dr(EGFR) > 0 in EGFR-MT
+H4 DENIED if: z_dr(EGFR) <= 0 in EGFR-MT
+
+If H1 is denied but H4 confirmed, LUAD is in the "intermediate" structural zone (like PAAD
+for the EGFR between-cancer comparison: PAAD < CRC < SKCM in D15 H4).
+
+## Cross-cancer comparison (post-hoc, pre-specified)
+
+After results, add LUAD to the EGFR structural-pharmacological ladder:
+  SKCM-WT: z = -3.204 (ANCHOR; TKI inactive)
+  ???? LUAD-WT: predicted near-zero or negative
+  ???? LUAD-MT: predicted positive
+  CRC: z = +2.411 (DAMPER; TKI active)
+
+If H1 confirmed (LUAD-MT > +1.0): LUAD-MT joins CRC in the "EGFR-driven DAMPER" cluster.
+This would mean EGFR DAMPER status is a property of EGFR-DRIVEN cancers, not CRC-specific.
+
+Also compare full z_dr vectors: cosine similarity between LUAD-MT vs CRC vs SKCM fingerprints.
+
+## Pre-registration caveats
+
+1. Same 100-node network as D14b (cancer pathway seeds built for CRC/PDAC, not LUAD-specific).
+   In LUAD, ALK/ROS1 fusions are relevant but not in the seed set — this limits but does
+   not invalidate the analysis.
+2. Layer B threshold adjustment: same auto-adjustment rule as D14b/D17 (target 50-500 edges,
+   try 0.30 first, adjust if needed).
+3. 500 Maslov-Sneppen rewirings per group (same as all prior experiments).
+4. GDC API: same UUID->barcode mapping as D14c/D17, cached to d19_uuid_barcode_cache.json.
+5. EGFR-MT n~75-85 — slightly underpowered vs EGFR-WT (~450). Results for EGFR-MT
+   should be interpreted cautiously given smaller sample size (same caveat as KRAS-MT
+   in D14c: n=204 vs 285 WT).
+
+## Pre-registration hash will be in commit immediately following this file
