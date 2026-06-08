@@ -1,0 +1,160 @@
+# D20_LUAD_GDSC2_PHARMACOLOGY_v1
+# Pre-registration: LUAD pharmacological validation of D19 structural findings (GDSC2)
+# Date: 2026-06-08
+# Status: PRE-REGISTERED — do not open GDSC2 or compute rankings before this commit
+
+## Scientific background
+
+D19 (TCGA LUAD EGFR-stratified, pre-reg 5e797ce) revealed four key structural findings:
+
+1. EGFR z_dr = -2.047 in EGFR-MT LUAD (ANCHOR) — inverts the D14b/CRC DAMPER result.
+   FM5 (Driver-Addiction Structural Inversion): EGFR-MT LUAD EGFR TKIs work via DAo,
+   not structural DAMPER disruption. Structural position (ANCHOR) predicts insensitivity;
+   clinical reality (osimertinib/erlotinib first-line) is the opposite.
+
+2. MAP2K1 z_dr = +1.371 in EGFR-MT LUAD (near-DAMPER, first 100-node MAP2K1 DAMPER).
+   In CRC and SKCM all stratifications, MAP2K1 was near-zero (-0.2 to -0.5).
+   EGFR->RAS->MEK pathway coherence in EGFR-MT LUAD makes MAP2K1 a structural bridge.
+
+3. BRAF z_dr = +0.845 (MT) / +0.201 (WT) — near-zero in both LUAD groups.
+   No structural prediction for BRAF inhibitor sensitivity in LUAD.
+   Contrast: BRAF ANCHOR in CRC (z=-1.591), BRAF near-zero in both LUAD groups.
+
+4. SOS1 top DAMPER in both LUAD groups (z=+3.620 MT, +4.115 WT).
+   SOS1 is pan-LUAD and pan-SKCM top structural DAMPER.
+
+D20 tests whether these structural signatures manifest as detectable pharmacological
+patterns in GDSC2 LUAD cell lines (n=62). This completes the pharmacological arc:
+  D15/D16: CRC GDSC2 pharmacology
+  D18: SKCM GDSC2 pharmacology
+  D20: LUAD GDSC2 pharmacology
+
+## Data
+
+GDSC2: GDSC2_fitted_dose_response_27Oct23.xlsx
+LUAD: TCGA_DESC == "LUAD" (62 cell lines, 286 drugs)
+Reference comparisons: COREAD (46 cell lines, D15/D16), SKCM (54 cell lines, D18)
+
+## Drug-target map (pre-registered)
+
+EGFR (z_WT=-0.121, z_MT=-2.047):
+  Erlotinib, Gefitinib, Afatinib, Osimertinib, Lapatinib
+
+MEK/MAP2K1 (z_WT=+0.645, z_MT=+1.371):
+  Trametinib, Selumetinib, Refametinib, PD0325901
+
+BRAF (z_WT=+0.201, z_MT=+0.845):
+  Dabrafenib, PLX-4720
+
+CDK4 (z_WT=-0.386, z_MT=+0.352):
+  Palbociclib, Ribociclib
+
+MTOR (z_WT=+0.155, z_MT=-0.258):
+  Rapamycin, Temsirolimus
+
+PIK3CA (z_WT=+0.471, z_MT=+0.456):
+  Alpelisib, Pictilisib, Taselisib
+
+Total: 18 drugs, 6 pathway-target classes.
+
+Ranking method: for each pathway class, compute per-cell-line median LN_IC50 across
+its drugs (using all cell lines with data), then report mean across those medians.
+Rank 6 classes ascending (rank 1 = lowest LN_IC50 = most sensitive).
+
+## Z_dr reference values (pre-registered from D19, 5e797ce)
+
+Used for pharmacological concordance scoring:
+  EGFR: WT=-0.121, MT=-2.047
+  MAP2K1: WT=+0.645, MT=+1.371
+  BRAF: WT=+0.201, MT=+0.845
+  CDK4: WT=-0.386, MT=+0.352
+  MTOR: WT=+0.155, MT=-0.258
+  PIK3CA: WT=+0.471, MT=+0.456
+
+For cross-cancer reference (D14b CRC):
+  EGFR_CRC: +2.411, MAP2K1_CRC: -0.187, BRAF_CRC: -1.591
+For cross-cancer reference (D17/D18 SKCM-WT):
+  EGFR_SKCM: -3.204, MAP2K1_SKCM: -0.476, BRAF_SKCM: -0.481
+
+## Hypotheses
+
+### H1: EGFR inhibitors rank in top half of 6 pathway targets in LUAD (rank <= 3)
+
+Rationale: LUAD GDSC2 population includes EGFR-MT cell lines (HCC827, PC-9, NCI-H1650,
+NCI-H1975, etc.) where DAo makes EGFR TKIs highly effective. Despite near-zero/ANCHOR
+structural position in bulk LUAD, the EGFR-MT subset should pull median LN_IC50 low.
+This tests whether DAo signal is detectable in the mixed population.
+
+Structural position prediction (if structure governed): rank >= 4 (ANCHOR/near-zero)
+DAo override prediction: rank <= 3 (mixed population contains sensitive EGFR-MT lines)
+
+H1 CONFIRMED if: EGFR inhibitor target rank <= 3 out of 6
+H1 DENIED if: EGFR inhibitor target rank > 3 out of 6
+
+### H2: MEK inhibitors rank above BRAF inhibitors in LUAD (rank_MEK < rank_BRAF)
+
+Structural rationale: MAP2K1 near-DAMPER (z_MT=+1.371) predicts MEK inhibitor sensitivity
+in EGFR-MT LUAD. BRAF near-zero (z_MT=+0.845) predicts no structural basis for BRAF
+inhibitor efficacy. BRAF V600E is rare in LUAD (~1.5%), so BRAF inhibitors should have
+minimal LUAD-specific efficacy, while MEK inhibitors work downstream of EGFR/KRAS/RAS.
+
+H2 CONFIRMED if: rank_MEK < rank_BRAF (MEK more sensitive than BRAF)
+H2 DENIED if: rank_MEK >= rank_BRAF
+
+### H3: EGFR inhibitor median LN_IC50 lower (more sensitive) in LUAD than SKCM
+
+D18 showed SKCM EGFR LN_IC50 substantially higher than COREAD (d=+0.566, p=4e-8).
+LUAD contains EGFR-MT lines with strong TKI sensitivity (DAo); SKCM lacks EGFR
+addiction. Therefore LUAD should be more sensitive to EGFR inhibitors than SKCM.
+
+H3 CONFIRMED if: mean(LUAD EGFR LN_IC50) < mean(SKCM EGFR LN_IC50), Cohen's d < -0.3,
+                  Mann-Whitney p < 0.05 (LUAD more sensitive = lower LN_IC50)
+H3 DENIED if: d >= -0.3 OR p >= 0.05
+
+Per-drug test: test each EGFR inhibitor separately; H3 PARTIAL if >= 3/5 drugs confirm.
+
+### H4: EGFR inhibitor LN_IC50 not substantially different LUAD vs COREAD (convergence)
+
+The convergence hypothesis: CRC EGFR DAMPER (+2.411) and LUAD DAo-ANCHOR (-2.047)
+represent opposite structural mechanisms but both predict pharmacological EGFR
+sensitivity (cetuximab/erlotinib active in CRC KRAS-WT; osimertinib active in LUAD-MT).
+If DAo fully compensates structural inversion, LUAD and COREAD should show similar
+EGFR inhibitor LN_IC50 profiles.
+
+H4 CONFIRMED if: |Cohen's d| < 0.2 AND/OR Mann-Whitney p >= 0.05
+                  (no meaningful difference in EGFR TKI sensitivity LUAD vs COREAD)
+H4 DENIED if: |Cohen's d| >= 0.2 AND p < 0.05
+
+Note: COREAD contains mostly KRAS-WT lines sensitive to EGFR TKIs (cetuximab indication).
+H4 tests whether two completely different structural mechanisms produce identical
+pharmacological output — a key test of the DAo framework.
+
+## Cross-cancer structural-pharmacological concordance (post-hoc, pre-specified)
+
+After results: compute correlation between z_dr ranking and pharmacological sensitivity
+ranking for all 6 pathway targets across 3 cancer types (LUAD, SKCM, COREAD).
+Use CRC z_dr reference (D14b) for COREAD pharmacology, SKCM-WT z_dr for SKCM,
+LUAD-WT z_dr for LUAD (bulk).
+
+Expected: structural rank correlates with pharmacological rank EXCEPT for:
+  - EGFR in LUAD (FM5: structural ANCHOR but pharmacological sensitivity via DAo)
+  - This exception should appear as an outlier in the correlation plot
+
+## Pre-registration caveats
+
+1. GDSC2 LUAD cell lines (n=62) are a mix of EGFR-MT and EGFR-WT. The structural
+   analysis (D19) was performed on tissue samples stratified by EGFR status. The
+   pharmacological analysis here is necessarily unstratified — cell line EGFR status
+   is not pre-registered but will be noted post-hoc.
+
+2. Some drugs may have different coverage across LUAD cell lines (Refametinib n=60,
+   Temsirolimus n=61). This is acceptable given the >=50 threshold.
+
+3. Rankings are based on 6 pre-registered target classes. Additional drugs present in
+   GDSC2 are excluded from pre-registered hypotheses; post-hoc examination of the
+   full drug panel is permitted.
+
+4. COREAD comparison uses all COREAD cell lines in GDSC2 (n=46), regardless of KRAS
+   status — same unstratified approach as D15 (not D16).
+
+## Pre-registration hash will be in commit immediately following this file
