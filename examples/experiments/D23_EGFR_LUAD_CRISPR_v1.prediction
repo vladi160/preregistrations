@@ -1,0 +1,180 @@
+# D23_EGFR_LUAD_CRISPR_v1
+# Pre-registration: DepMap CRISPR essentiality — EGFR/SOS1/KRAS in EGFR-stratified LUAD
+# Date: 2026-06-11
+# Status: PRE-REGISTERED — do not load CRISPRGeneEffect.csv by EGFR status before this commit
+
+## Scientific background
+
+D19 established EGFR as the strongest structural ANCHOR in the entire cancer atlas:
+  z_dr(EGFR) = −2.047 in EGFR-MT LUAD (100-node network, STRING + TCGA coexpression)
+  z_dr(EGFR) ≈ +0.012 in KRAS-MT LUAD (D21: bidirectional Driver=ANCHOR law)
+
+D22 established the DAMPER-Essentiality Decoupling principle in KRAS-driven LUAD:
+  KRAS z_dr=−0.181 (weak ANCHOR) → CRISPR essential (d=−1.336, p=0.0002) ✓
+  SOS1 z_dr=+4.184 (strong DAMPER) → NOT CRISPR essential (d=+0.522, p=0.29)
+
+The three-regime model predicts RTK-driven cancers (EGFR-MT LUAD) differ from
+GTPase-driven cancers (KRAS-MT LUAD) in structural signature:
+  RTK-driven: driver = strong ANCHOR (z ≤ −2.0), SOS1 DAMPER elevated
+  GTPase-driven: driver = weak/partial ANCHOR (z ≈ −0.2), SOS1 DAMPER maximal
+
+D23 tests the ANCHOR=CRISPR essential prediction at the strongest ANCHOR value in
+the atlas. D22 tested the weakest ANCHOR (KRAS z=−0.181). D23 tests the strongest
+(EGFR z=−2.047). If the ANCHOR→essentiality mapping is quantitative, EGFR should
+show a larger CRISPR effect than KRAS in their respective driver-MT contexts.
+
+Secondary test: DAMPER-Essentiality Decoupling replication.
+SOS1 z_dr=+3.620 in EGFR-MT LUAD (D19). If Decoupling holds, SOS1 should NOT be
+more CRISPR essential in EGFR-MT vs EGFR-WT LUAD, despite its strong DAMPER status.
+
+## Data
+
+CRISPRGeneEffect.csv (DepMap 23Q4, already local from D22)
+  Location: downloads/D22/CRISPRGeneEffect.csv
+  Index: ACH-XXXXXX cell line IDs
+  Columns: "GENE (EntrezID)" format
+  CERES score convention: more negative = more essential
+
+Cell line annotation: lineage from PRISM meta file (same as D22)
+  LUAD: primary_tissue == "lung", secondary_tissue == "lung_NSC"
+
+Pre-registered mutation annotation (from CCLE/DepMap literature, pre-specified before
+loading CRISPR scores):
+
+EGFR-MT LUAD cell lines (sensitizing mutations — exon 19 deletions, L858R, or compound):
+  HCC827 (EGFR Ex19del E746-A750) — canonical EGFR-MT reference line
+  NCI-H1650 (EGFR Ex19del E746-A750)
+  NCI-H1975 (EGFR L858R + T790M resistance) — secondary resistance mutation; include
+             as EGFR-MT but note reduced TKI sensitivity; EGFR structural dependence
+             expected to persist (EGFR remains ANCHOR in T790M background per D19)
+  PC14 (EGFR Ex19del)
+  HCC4006 (EGFR Ex19del)
+  Additional inclusion: any LUAD line in CRISPRGeneEffect with confirmed EGFR sensitizing
+  mutation (Ex19del, L858R, G719X, Ex20ins, L861Q) found in PRISM meta or CCLE annotation.
+  PC9 (EGFR Ex19del) — include if present in CRISPRGeneEffect.
+
+EGFR-WT LUAD comparison group (non-EGFR-MT):
+  Use combined KRAS-MT + KRAS-WT groups from D22 (n=22 + n=21 = 43 lines).
+  These are confirmed non-EGFR-MT and cover both major LUAD driver contexts.
+  This maximizes comparison group n to compensate for small EGFR-MT n.
+  Exact line lists: see D22_DEPMAP_CRISPR_SOS1_KRAS_v1.prediction (KRAS_MT_LUAD +
+  KRAS_WT_LUAD sets).
+
+Small-n acknowledgment: EGFR-MT LUAD cell lines are expected n=5–7 in DepMap.
+Primary outcome is Cohen's d (effect size), not p-value. Significance threshold
+is pre-specified as d < −0.8 (large effect) given small n. p-value is secondary.
+If n_EGFR-MT < 4, report descriptive statistics only.
+
+## Processing protocol (pre-registered)
+
+Step 1: Load CRISPRGeneEffect.csv. Extract columns:
+  EGFR (1956), SOS1 (6654), KRAS (3845)
+
+Step 2: Load PRISM meta for LUAD lineage (same file as D22).
+
+Step 3: Map LUAD lines to EGFR-MT / EGFR-WT using pre-registered annotation above.
+  Cross-check: EGFR-MT lines must appear in PRISM meta as lung_NSC OR be identifiable
+  by CCLE name without ambiguity.
+
+Step 4: Compute group means, Mann-Whitney U (one-tailed), Cohen's d for each gene:
+  EGFR-MT vs EGFR-WT for EGFR, SOS1, KRAS
+
+Step 5: Cross-experiment comparison — compute:
+  delta_CERES(EGFR, EGFR-MT context) vs delta_CERES(KRAS, KRAS-MT context from D22)
+  This tests whether stronger structural ANCHOR predicts larger CRISPR essentiality effect.
+
+## Hypotheses
+
+### H1: EGFR CERES more negative in EGFR-MT vs EGFR-WT LUAD (ANCHOR=essential)
+
+Structural prediction: EGFR z_dr=−2.047 in EGFR-MT LUAD is the strongest ANCHOR
+in the cancer atlas. The ANCHOR=CRISPR essential mapping (established in D22 for KRAS)
+predicts EGFR genetic essentiality in EGFR-MT LUAD.
+
+Clinical prior: EGFR-MT LUAD is the canonical oncogene-addicted tumor type.
+EGFR inhibitors (erlotinib, osimertinib) show ~60% ORR specifically in EGFR-MT.
+This is the strongest driver-addiction relationship in NSCLC.
+
+H1 CONFIRMED if:
+  mean_CERES(EGFR, EGFR-MT) < mean_CERES(EGFR, EGFR-WT)
+  AND Cohen's d < −0.8 (large effect; primary threshold given small n)
+  AND Mann-Whitney p < 0.10 one-tailed (secondary; may be underpowered at n=5)
+
+H1 DENIED if:
+  mean_CERES(EGFR, EGFR-MT) >= mean_CERES(EGFR, EGFR-WT)
+  OR d > −0.5 (small or negligible effect)
+
+H1 PARTIAL if:
+  Directional (EGFR-MT more essential) but d between −0.5 and −0.8
+  OR directional with d < −0.8 but p >= 0.10 (underpowered but large effect)
+
+### H2: SOS1 NOT more essential in EGFR-MT vs EGFR-WT LUAD (Decoupling replication)
+
+SOS1 z_dr=+3.620 in EGFR-MT LUAD (strong DAMPER, D19). The DAMPER-Essentiality
+Decoupling principle (D22) predicts that DAMPER status does not confer CRISPR
+essentiality. SOS1 should not be more essential in EGFR-MT LUAD despite its
+strong structural DAMPER position.
+
+H2 CONFIRMED if:
+  |mean_CERES(SOS1, EGFR-MT) - mean_CERES(SOS1, EGFR-WT)| < 0.15 CERES units
+  OR Mann-Whitney p > 0.20 (no differential essentiality)
+  OR d(SOS1) > −0.5 (not even a small effect toward more essential in EGFR-MT)
+
+H2 DENIED if:
+  SOS1 is MORE essential in EGFR-MT (d < −0.5, p < 0.10)
+  This would challenge the Decoupling principle and require re-examination.
+
+### H3: EGFR differential larger than SOS1 differential (ANCHOR > DAMPER signal)
+
+The ANCHOR→essential / DAMPER→pharmacological mapping predicts that the ANCHOR
+gene (EGFR) shows a larger CRISPR essentiality differential than the DAMPER gene
+(SOS1) in the same cancer context.
+
+H3 CONFIRMED if:
+  |delta_CERES(EGFR, EGFR-MT vs WT)| > |delta_CERES(SOS1, EGFR-MT vs WT)|
+  where delta = mean(EGFR-MT) − mean(EGFR-WT)
+
+H3 DENIED if SOS1 differential exceeds EGFR differential.
+
+### H4: KRAS NOT more essential in EGFR-MT LUAD (structural negative control)
+
+D21 showed EGFR collapses to z_dr≈+0.012 in KRAS-MT LUAD (KRAS replaces EGFR as
+driver). Symmetrically, KRAS is expected near-zero structural position in EGFR-MT
+LUAD. If KRAS essentiality does NOT increase in EGFR-MT LUAD, this confirms the
+bidirectional Driver=ANCHOR law: KRAS addiction disappears when EGFR is the driver.
+
+H4 CONFIRMED if:
+  mean_CERES(KRAS, EGFR-MT) >= mean_CERES(KRAS, EGFR-WT) (KRAS NOT more essential)
+  OR |d(KRAS)| < 0.5 (no meaningful KRAS differential)
+
+H4 DENIED if KRAS is substantially more essential in EGFR-MT (d < −0.8)
+  This would challenge the bidirectional Driver=ANCHOR structural prediction.
+
+## Cross-experiment comparison (exploratory, not pre-registered hypothesis)
+
+After D23, compare:
+  EGFR d(EGFR-MT context) vs KRAS d(KRAS-MT context, D22)
+  Expected: d(EGFR) more negative than d(KRAS) — stronger structural ANCHOR (z=−2.047
+  vs z=−0.181) predicts stronger CRISPR essentiality effect.
+  This comparison is exploratory and reported descriptively, not as a hypothesis test.
+
+## Pre-registration caveats
+
+1. Small n (EGFR-MT expected n=5–7). Primary outcome is effect size d < −0.8, not
+   statistical significance. This threshold is pre-specified here.
+
+2. NCI-H1975 carries T790M resistance mutation in addition to L858R. It is included
+   in the EGFR-MT set (EGFR remains the structural driver) but noted as secondary-
+   resistance background. If removing H1975 changes H1 verdict, report both analyses.
+
+3. CERES convention: negative = essential. Lower CERES = more essential.
+
+4. No Bonferroni correction for 3 genes × 1 comparison = 3 tests.
+   All hypotheses are pre-registered and directional.
+
+5. If n_EGFR-MT < 4 lines found in CRISPRGeneEffect, report descriptive only and
+   label H1 as UNDERPOWERED (not CONFIRMED or DENIED).
+
+6. Comparison group: EGFR-WT = all non-EGFR-MT LUAD from D22 (KRAS-MT + KRAS-WT
+   combined, n=43). This is the largest available same-lineage comparison and is
+   pre-specified here. Alternative analysis (KRAS-WT only, n=21) reported as secondary.
