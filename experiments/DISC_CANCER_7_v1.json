@@ -1,0 +1,64 @@
+{
+  "experiment": "DISC_CANCER_7_v1 -- Degree Rank vs z_dr: Does structural perturbation add information beyond raw degree centrality?",
+  "description": "Critical methodological validation for the cancer structural pharmacology paper. The z_dr metric is derived from a perturbation kernel (node removal, inter-layer Pearson correlation change). A reviewer will ask: is z_dr simply a degree transformation? If high-degree nodes always produce extreme z_dr, the perturbation step adds no information beyond degree centrality. This experiment tests that objection directly using the 6 cancer network JSON files already analyzed in D6/D7 (no new external data). For each network, protein degree is computed per layer (physical_interaction, coexpression_cancer) and summed to total_degree. Degree rank is compared to |z_dr| rank (Null1, from D7). Three specific divergence predictions are tested for key paper proteins (CDK4/PDAC, MEK1 regime-switch, SOS1/EGFR-NSCLC) plus a global Spearman test. All analysis uses already-available local network files. Analysis script: preregistration-scripts/cancer-structural-pharmacology/disc_cancer_7_degree_vs_zdr.py",
+  "networks": [
+    "examples/crc_kras_signaling.json",
+    "examples/pdac_kras_signaling.json",
+    "examples/gbm_egfr_signaling.json",
+    "examples/braf_melanoma_signaling.json",
+    "examples/egfr_nsclc_signaling.json",
+    "examples/nsclc_egfr_signaling.json"
+  ],
+  "z_dr_source": "D7_Z_DR_ATLAS_v1 (pre-reg 9dc1b1d) -- Null1 z_dr values per protein per network",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "CDK4 total_degree rank in PDAC is NOT top-3 (rank > 3, where rank 1 = highest degree), while CDK4 |z_dr_null1| rank IS top-3 (rank <= 3) across all proteins in the PDAC network. From D7: CDK4 z_dr_null1=+2.51, the highest |z_dr| in the entire 6-network atlas. CDK4 is a cell-cycle kinase expected to have moderate connectivity in a KRAS-signaling network; it is not predicted to be a high-degree hub. If CONFIRMED (degree_rank > 3 AND |z_dr|_rank <= 3): z_dr identifies CDK4 as the dominant PDAC structural signal while degree centrality misses it -- the perturbation metric adds strictly more information than degree. If DENIED: CDK4 is also a high-degree hub; its structural prominence is partly degree-driven.",
+      "test": {
+        "type": "dimension_value_comparison",
+        "item_a": "CDK4",
+        "dimension": "degree_rank_pdac",
+        "operator": ">",
+        "value": 3,
+        "_note": "Test block is metadata only -- analysis runs via standalone Python script disc_cancer_7_degree_vs_zdr.py"
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "MEK1 regime-switch (DAMPER in CRC z_dr=+1.86, ANCHOR in BRAF-MEL z_dr=-1.10, from D7) is NOT explained by degree alone. Prediction: |MEK1_total_degree_rank_CRC - MEK1_total_degree_rank_BRAF_MEL| <= 3 (degree rank is stable across both networks -- MEK1 has similar connectivity in CRC and BRAF-MEL), while z_dr correctly assigns opposite signs (confirmed in D7). If CONFIRMED (degree ranks similar, z_dr signs opposite): the regime-switch is a topological signal invisible to degree centrality; the perturbation framework is required to detect it. If DENIED (degree ranks differ by > 3): MEK1 has substantially different connectivity across regimes, providing a degree-level confound.",
+      "test": {
+        "type": "dimension_value_comparison",
+        "item_a": "MEK1",
+        "dimension": "degree_rank_diff_crc_brafmel",
+        "operator": "<=",
+        "value": 3,
+        "_note": "Test block is metadata only -- analysis runs via standalone Python script disc_cancer_7_degree_vs_zdr.py"
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "SOS1 total_degree rank in the EGFR-NSCLC network is NOT top-3 (rank > 3), while SOS1 |z_dr_null1| rank IS top-1 (rank = 1; from D7: z_dr=+2.47, highest in EGFR-NSCLC). SOS1 is a GEF with a specific bridging role between RTK and RAS layers; its topological position as a cross-layer bridge is expected to exceed what its degree count implies. If CONFIRMED (degree_rank > 3 AND |z_dr|_rank = 1): SOS1 is a degree-invisible structural target -- the drug discovery gap would be entirely missed by a degree-based screen. If DENIED (SOS1 is also top-3 by degree): the gap is detectable by simpler means.",
+      "test": {
+        "type": "dimension_value_comparison",
+        "item_a": "SOS1",
+        "dimension": "degree_rank_egfr_nsclc",
+        "operator": ">",
+        "value": 3,
+        "_note": "Test block is metadata only -- analysis runs via standalone Python script disc_cancer_7_degree_vs_zdr.py"
+      }
+    },
+    {
+      "id": "h4",
+      "statement": "Spearman r(total_degree_rank, |z_dr_null1| rank) across all proteins in all 6 cancer networks pooled (approx. n=90 protein-network pairs) is significantly below 0.80. Statistical test: one-sided Fisher-z test, H0: r >= 0.80, alpha=0.05. A value >= 0.80 would indicate z_dr is nearly a monotone degree transformation. Predicted value: r < 0.60, based on the D6 co-hub finding (real networks are MORE uniform than degree-matched random graphs -- degree predicts z_dr direction but not magnitude). If CONFIRMED (r < 0.80, p < 0.05): z_dr is statistically independent of degree at the network-wide level; the perturbation framework is not reducible to a degree metric. If DENIED (r >= 0.80): z_dr tracks degree closely; reviewer objection has merit.",
+      "test": {
+        "type": "dimension_value_comparison",
+        "item_a": "global_spearman",
+        "dimension": "degree_zdr_correlation_all_networks",
+        "operator": "<",
+        "value": 0.80,
+        "_note": "Test block is metadata only -- analysis runs via standalone Python script disc_cancer_7_degree_vs_zdr.py"
+      }
+    }
+  ],
+  "_note": "Do not edit -- this sidecar records pre-committed predictions before any run."
+}

@@ -1,0 +1,24 @@
+{
+  "experiment": "DISC_CANCER_7_v1 -- Degree Rank vs z_dr: Does structural perturbation add information beyond raw degree centrality?",
+  "committed_at": "2026-06-12T03:02:37.630736+00:00",
+  "prediction_hash": "8c61ead607e4cb625f6cd2f0fbe4319659f148019c82be39291db9aaff95110f",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "CDK4 total_degree rank in PDAC is NOT top-3 (rank > 3, where rank 1 = highest degree), while CDK4 |z_dr_null1| rank IS top-3 (rank <= 3) across all proteins in the PDAC network. From D7: CDK4 z_dr_null1=+2.51, the highest |z_dr| in the entire 6-network atlas. CDK4 is a cell-cycle kinase expected to have moderate connectivity in a KRAS-signaling network; it is not predicted to be a high-degree hub. If CONFIRMED (degree_rank > 3 AND |z_dr|_rank <= 3): z_dr identifies CDK4 as the dominant PDAC structural signal while degree centrality misses it -- the perturbation metric adds strictly more information than degree. If DENIED: CDK4 is also a high-degree hub; its structural prominence is partly degree-driven."
+    },
+    {
+      "id": "h2",
+      "statement": "MEK1 regime-switch (DAMPER in CRC z_dr=+1.86, ANCHOR in BRAF-MEL z_dr=-1.10, from D7) is NOT explained by degree alone. Prediction: |MEK1_total_degree_rank_CRC - MEK1_total_degree_rank_BRAF_MEL| <= 3 (degree rank is stable across both networks -- MEK1 has similar connectivity in CRC and BRAF-MEL), while z_dr correctly assigns opposite signs (confirmed in D7). If CONFIRMED (degree ranks similar, z_dr signs opposite): the regime-switch is a topological signal invisible to degree centrality; the perturbation framework is required to detect it. If DENIED (degree ranks differ by > 3): MEK1 has substantially different connectivity across regimes, providing a degree-level confound."
+    },
+    {
+      "id": "h3",
+      "statement": "SOS1 total_degree rank in the EGFR-NSCLC network is NOT top-3 (rank > 3), while SOS1 |z_dr_null1| rank IS top-1 (rank = 1; from D7: z_dr=+2.47, highest in EGFR-NSCLC). SOS1 is a GEF with a specific bridging role between RTK and RAS layers; its topological position as a cross-layer bridge is expected to exceed what its degree count implies. If CONFIRMED (degree_rank > 3 AND |z_dr|_rank = 1): SOS1 is a degree-invisible structural target -- the drug discovery gap would be entirely missed by a degree-based screen. If DENIED (SOS1 is also top-3 by degree): the gap is detectable by simpler means."
+    },
+    {
+      "id": "h4",
+      "statement": "Spearman r(total_degree_rank, |z_dr_null1| rank) across all proteins in all 6 cancer networks pooled (approx. n=90 protein-network pairs) is significantly below 0.80. Statistical test: one-sided Fisher-z test, H0: r >= 0.80, alpha=0.05. A value >= 0.80 would indicate z_dr is nearly a monotone degree transformation. Predicted value: r < 0.60, based on the D6 co-hub finding (real networks are MORE uniform than degree-matched random graphs -- degree predicts z_dr direction but not magnitude). If CONFIRMED (r < 0.80, p < 0.05): z_dr is statistically independent of degree at the network-wide level; the perturbation framework is not reducible to a degree metric. If DENIED (r >= 0.80): z_dr tracks degree closely; reviewer objection has merit."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
