@@ -1,0 +1,32 @@
+{
+  "experiment": "DISC_D4_SOFTWARE_v1 — npm Ecosystem: Structural Centrality vs Developer Attention (d4 Replication in Software)",
+  "description": "Second test of the d4 observer layer, replicating the C. elegans finding (F12_D4_OBSERVER_v1) in a software domain. Domain: the npm JavaScript package ecosystem. d1 = dependency graph (directed edges: package A depends on package B). d2 = reverse-dependency (dependents) graph — how many packages depend on each package, capturing 'infrastructure depth'. d4 = Stack Overflow question count per package tag — how much developer community attention each package receives. The C. elegans result (F12_D4_OBSERVER_v1) showed r(d1↔d4) ≈ 0 — structural hubs in the connectome receive zero scientific attention. The software domain tests whether this divergence is universal or domain-specific. Two competing hypotheses: (A) software replicates biology — structural infrastructure packages are 'invisible' (work silently, nobody asks questions), giving r≈0; (B) software inverts biology — packages developers depend on ARE the ones they ask questions about, giving r>0. The key variable: in biology, d4 attention is driven by functional salience independent of structure. In software, d4 (SO questions) may be driven by usage difficulty which correlates with how much developers interact with the package directly — and direct-interaction packages may or may not be structural hubs. Dataset: top npm packages in the React/Next.js ecosystem, seed=[react, next, webpack, typescript, eslint, jest, prettier, babel, vite, rollup] plus all their declared dependencies up to depth-1. d4 built from Stack Overflow tag question counts via the SE API. Graph: npm_ecosystem_d4_v1.json.",
+  "graph": "../npm_ecosystem_d4_v1.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "dependency", "layer_b": "stack_overflow_attention" },
+    { "run": "cross_layer_analysis", "layer_a": "reverse_dependency", "layer_b": "stack_overflow_attention" },
+    { "run": "cross_layer_analysis", "layer_a": "dependency", "layer_b": "reverse_dependency" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(dependency ↔ stack_overflow_attention) < 0.40. Developer attention (SO questions) does not track structural centrality (dependency degree) closely. Regardless of direction (positive or negative), the correlation will be below 0.40 — establishing that the observer layer is a distinct information dimension from the structural layer. This replicates the F12_D4_OBSERVER_v1 finding (r(d1↔d4) = −0.008 in C. elegans) in a software domain. The 0.40 threshold matches F12_D4 H2. Rationale: infrastructure packages (deep dependencies like semver, lodash internals, node-modules utilities) accumulate high dependency degree but receive few SO questions because they work silently. The packages developers ask about are user-facing frameworks, not infrastructure utilities."
+    },
+    {
+      "id": "h2",
+      "statement": "r(reverse_dependency ↔ stack_overflow_attention) > 0, p < 0.05. Packages that are depended upon by many other packages (high reverse-dependency = high d2 centrality) DO receive more developer attention, because these are exactly the packages developers must understand to use the ecosystem. This is the structural finding that contrasts with d1: being a direct dependency of few packages but widely adopted as a base (high d2) correlates with developer attention, while being a transitive dependency (high d1 out-degree) does not. min_abs_r: 0.20."
+    },
+    {
+      "id": "h3",
+      "statement": "r(dependency ↔ reverse_dependency) > 0.30, p < 0.05. The FPL baseline: packages that depend on many others (high d1 out-degree) also tend to be depended upon by many (high d2 in-degree) — both structural layers within the same physical-structural regime. This is the positive control establishing that FPL holds within physical layers in software as in biology."
+    }
+  ],
+  "decision_rule": {
+    "CONFIRMED_DIVERGENCE":  "h1 confirmed (r<0.40) — Observer attention diverges from structural degree in software. If also r(d1↔d4)>0 (weakly positive), this shows software differs from biology (where r≈0). Either way, d4 is a distinct dimension.",
+    "DENIED_DIVERGENCE":     "h1 denied (r≥0.40) — structural centrality and SO attention are substantially correlated in software. Suggests software observer layer is closer to d1 than biology's was. This would falsify the generalization of Observer Attention Divergence to software.",
+    "PARTIAL":               "h1 confirmed, h2 denied — neither dependency nor reverse-dependency tracks SO attention. Observer attention is fully independent of software structure."
+  }
+}

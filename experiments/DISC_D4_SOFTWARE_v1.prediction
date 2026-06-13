@@ -1,0 +1,20 @@
+{
+  "experiment": "DISC_D4_SOFTWARE_v1 — npm Ecosystem: Structural Centrality vs Developer Attention (d4 Replication in Software)",
+  "committed_at": "2026-06-13T00:00:00.000000+00:00",
+  "prediction_hash": "3d60e19bee034bb8649c14ca324d7d8cca82410f6f52c5080a5d5c7217d0236c",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(dependency ↔ stack_overflow_attention) < 0.40. Developer attention (SO questions) does not track structural centrality (dependency degree) closely. Regardless of direction (positive or negative), the correlation will be below 0.40 — establishing that the observer layer is a distinct information dimension from the structural layer. This replicates the F12_D4_OBSERVER_v1 finding (r(d1↔d4) = −0.008 in C. elegans) in a software domain. The 0.40 threshold matches F12_D4 H2. Rationale: infrastructure packages (deep dependencies like semver, lodash internals, node-modules utilities) accumulate high dependency degree but receive few SO questions because they work silently. The packages developers ask about are user-facing frameworks, not infrastructure utilities."
+    },
+    {
+      "id": "h2",
+      "statement": "r(reverse_dependency ↔ stack_overflow_attention) > 0, p < 0.05. Packages that are depended upon by many other packages (high reverse-dependency = high d2 centrality) DO receive more developer attention, because these are exactly the packages developers must understand to use the ecosystem. This is the structural finding that contrasts with d1: being a direct dependency of few packages but widely adopted as a base (high d2) correlates with developer attention, while being a transitive dependency (high d1 out-degree) does not. min_abs_r: 0.20."
+    },
+    {
+      "id": "h3",
+      "statement": "r(dependency ↔ reverse_dependency) > 0.30, p < 0.05. The FPL baseline: packages that depend on many others (high d1 out-degree) also tend to be depended upon by many (high d2 in-degree) — both structural layers within the same physical-structural regime. This is the positive control establishing that FPL holds within physical layers in software as in biology."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
