@@ -1,0 +1,61 @@
+{
+  "experiment": "DISC_OBSERVER_CELEGANS_v1 — C. elegans d4: Does AI attention recover structurally essential command interneurons ignored by scientific attention?",
+  "domain": "neuroscience",
+  "network": "C. elegans chemical synapse connectome (n=185 neurons, threshold total_degree>=10, Varshney 2011)",
+  "protocol": "Same as DISC_D4_AI_v1 (npm): show edge list to external AI systems in neutral sessions, ask which 20 neurons seem most important. Named condition (real neuron names) + Anonymous condition (nrn_NNN IDs). No mention of structural centrality or biology.",
+  "baselines": {
+    "r_d1_d4_human": -0.0081,
+    "r_d2_d4_human": -0.0445,
+    "human_d4_source": "PubMed co-mention counts from F12_D4_OBSERVER_v1 (ea54c69516d93f88)",
+    "note": "AVAL d4=0, AVAR d4=0 despite being top-d2 structural hubs. PLML d4_rank=6 despite d2=0."
+  },
+  "essential_ground_truth": {
+    "locomotion_command": [
+      "AVAL",
+      "AVAR",
+      "AVBL",
+      "AVBR",
+      "PVCL",
+      "PVCR",
+      "RIML",
+      "RIMR",
+      "AVDL",
+      "AVDR"
+    ],
+    "mechanosensory_touch": [
+      "PLMR",
+      "ALML",
+      "AVM"
+    ],
+    "chemosensory": [
+      "AWCL",
+      "AWCR",
+      "AWAR"
+    ]
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "r(d2, d4_ai_anon) > r(d2, d4_human): AI anon attention correlates more strongly with d2 (structural in-degree) than human PubMed attention does. Baseline r(d2, d4_human) = -0.044. Min effect: r(d2, d4_ai_anon) > 0.10.",
+      "min_abs_r": 0.1,
+      "baseline": -0.044
+    },
+    {
+      "id": "H2_pred",
+      "statement": "AI anon top-20 contains >= 6 of 10 locomotion command interneurons (AVAL, AVAR, AVBL, AVBR, PVCL, PVCR, RIML, RIMR, AVDL, AVDR). These neurons have d4_human = 0 (invisible to scientific attention) but are functionally essential by ablation studies (White et al. 1986). This is a prediction against independent biological ground truth, not against d2.",
+      "threshold": 6,
+      "out_of": 10,
+      "ground_truth_source": "White_1986_Philosophical_Trans_Royal_Society_B + Bhatt_2001_locomotion_circuits"
+    },
+    {
+      "id": "H3",
+      "statement": "r(d2, d4_ai_named) < r(d2, d4_ai_anon): named condition reduces d2 recovery. AI with neuron names will be pulled toward scientifically famous neurons (touch cells, chemosensory), reducing correlation with structural in-degree."
+    },
+    {
+      "id": "H4_contrast",
+      "statement": "AI anon top-20 contains <= 2 of touch neurons (PLMR, ALML, AVM) in subgraph. These are the neurons concentrated in human PubMed attention (d4_rank=6-13 for PLML/ALMR analogs) but have d2 <= 4.",
+      "threshold_max": 2,
+      "ground_truth_source": "Chalfie_1985_Nobel_touch_sensitivity_JNeurosci"
+    }
+  ]
+}
