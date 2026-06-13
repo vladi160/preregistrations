@@ -1,0 +1,40 @@
+{
+  "id": "DISC_D4_AI_v1",
+  "title": "d4_ai: Does AI Attention Recover Structural Importance Better Than Human Community Attention?",
+  "date": "2026-06-13",
+  "domain": "software_npm_ecosystem",
+  "graph": "../npm_ecosystem_d4_v1.json",
+  "description": "Test whether LLM-derived node rankings (d4_ai) correlate with structural centrality (d1/d2) better than human SO attention (d4_human). Two conditions: anonymous (node IDs replaced with pkg_NNN) and named (real package names). Baseline from DISC_D4_SOFTWARE_v1: r(d1, d4_human)=+0.326, r(d2, d4_human)=-0.077. Protocol: LLM is shown edge list only (no degree statistics) and asked which packages are most important to the ecosystem. Rankings converted to ordinal scores. Pearson r computed against d1 (out-degree) and d2 (in-degree).",
+  "protocol": {
+    "model": "claude-sonnet-4-6",
+    "conditions": ["anonymous", "named"],
+    "prompt_anonymous": "You are looking at a software dependency network. Below is a list of packages and what they depend on (anonymized). Based ONLY on the dependency relationships shown -- not any prior knowledge -- rank the 20 packages you think are most important to the ecosystem. Explain your reasoning briefly.",
+    "prompt_named": "You are looking at a software dependency network (npm). Below is a list of packages and what they depend on. Based on the dependency relationships shown (and any relevant knowledge you have), rank the 20 packages you think are most important to the ecosystem. Explain your reasoning briefly.",
+    "output_format": "JSON array: [{rank: 1, id: 'pkg_id', reason: '...'}, ...]",
+    "conversion": "rank_score = (N - rank + 1) / N where N = number of ranked packages. Unranked packages get score 0."
+  },
+  "baselines": {
+    "r_d1_d4_human": 0.3255,
+    "r_d2_d4_human": -0.0765,
+    "r_d1_d2": -0.3121,
+    "n": 193
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "r(d2, d4_ai_anonymous) > r(d2, d4_human) where d4_human is Stack Overflow question count and d4_ai_anonymous is AI ranking of node importance from anonymized edge list alone. Baseline r(d2, d4_human) = -0.077. Prediction: AI identifies infrastructure hubs (d2) better than human community attention.",
+      "min_abs_r": 0.10,
+      "expected_direction": "positive"
+    },
+    {
+      "id": "H2",
+      "statement": "r(d2, d4_ai_named) > r(d2, d4_ai_anonymous) where d4_ai_named is AI ranking from graph with real package names. Prediction: real names help AI identify infrastructure packages (domain knowledge aids d2 recovery).",
+      "expected_direction": "positive"
+    },
+    {
+      "id": "H3",
+      "statement": "r(d4_human, d4_ai_named) > r(d4_human, d4_ai_anonymous). Prediction: named condition reproduces human SO-attention bias more than anonymous condition (training data encodes SO popularity).",
+      "expected_direction": "positive"
+    }
+  ]
+}

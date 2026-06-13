@@ -1,0 +1,6 @@
+{
+  "experiment_id": "DISC_D4_AI_v1",
+  "hash": "a172fd79f0c790d0dff695dd29fa5ec4696e7872aaf1c7049468498395f17355",
+  "committed_at": "2026-06-13T00:00:00.000000+00:00",
+  "note": "Hash covers H1, H2, H3 statements only. SHA256 of json.dumps([{id, statement}], sort_keys=True, ensure_ascii=False)."
+}
