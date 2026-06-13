@@ -1,0 +1,20 @@
+{
+  "experiment": "F12_D4_OBSERVER_v1 — C. elegans d4 Observer Layer: Scientific Attention as a Fourth Layer",
+  "committed_at": "2026-06-13T00:00:00.000000+00:00",
+  "prediction_hash": "ea54c69516d93f8802bab2eaeb4de031c8d6658c4c7a6a978ac59e57fe3d2bb9",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(chemical_synapse <-> scientific_attention) > 0, p < 0.05. Scientific attention partially tracks structural importance: neurons that form more chemical synapses also co-appear in more papers. min_abs_r: 0.10."
+    },
+    {
+      "id": "h2",
+      "statement": "r(chemical_synapse <-> scientific_attention) < 0.40. The observer layer (d4) correlates with the structural layer (d1) significantly less than physical layers correlate with each other (F12 baseline r(d1<->d2) ≈ 0.62). max_abs_r: 0.40."
+    },
+    {
+      "id": "h3",
+      "statement": "r(gap_junction <-> scientific_attention) > 0, p < 0.05. Scientific attention also partially tracks gap-junction connectivity. min_abs_r: 0.10."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}

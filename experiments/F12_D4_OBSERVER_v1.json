@@ -1,0 +1,65 @@
+{
+  "experiment": "F12_D4_OBSERVER_v1 — C. elegans d4 Observer Layer: Scientific Attention as a Fourth Layer",
+  "description": "First empirical test of the Universal Layer Grammar d4 axis on the C. elegans connectome. d4 is the observer layer: how the scientific community directs attention to the system. d4 is operationalized as co-mention in PubMed — two neurons are connected in d4 if they co-appear in the title/abstract of at least one paper about Caenorhabditis elegans (query: '\"Caenorhabditis elegans\"[tiab] AND \"[NEURON]\"[tiab]', Entrez API, retrieved 2026-06-13). Edge weight = number of shared PMIDs. The existing two physical layers are d1 = chemical_synapse (Varshney 2011 S/Sp, directed synaptic contacts) and d2 = gap_junction (Varshney 2011 EJ, undirected electrical coupling). The core theoretical claim: d4 is a different regime than d1/d2. Physical layers (d1, d2) encode direct coupling — the same underlying biological phenomenon seen through two lenses. The observer layer (d4) encodes a cultural/epistemic phenomenon — where human research attention falls. FPL predicts r > 0 when layers share the same relational regime. If d4 diverges from the physical layers, this confirms that d4 is a regime boundary, not just another layer in the same family. Hub shadows — neurons with high d1/d2 centrality but low d4 centrality — are structural blind spots in C. elegans neuroscience: neurons the field under-researches relative to their structural importance. Data source: d1/d2 from Varshney et al. (2011) PLoS Comput Biol 7(2):e1001066, n=279 neurons. d4 built from PubMed Entrez API. Graph: celegans_302_d4.json.",
+  "graph": "../celegans_302_d4.json",
+  "steps": [
+    { "run": "layer_summary" },
+    { "run": "cross_layer_analysis", "layer_a": "chemical_synapse", "layer_b": "scientific_attention" },
+    { "run": "cross_layer_analysis", "layer_a": "gap_junction", "layer_b": "scientific_attention" },
+    { "run": "cross_layer_analysis", "layer_a": "chemical_synapse", "layer_b": "gap_junction" },
+    { "run": "centrality" },
+    { "run": "patterns" }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "r(chemical_synapse <-> scientific_attention) > 0, p < 0.05. Scientific attention partially tracks structural importance: neurons that form more chemical synapses also co-appear in more papers. This is the minimal FPL signal for the d4 layer — if even this fails, d4 is purely noise. min_abs_r is set low (0.10) because scientific attention is a noisier, culturally mediated signal compared to physical coupling. Expected direction: positive (well-studied neurons are structurally important, but the signal is weaker than d1 <-> d2).",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "chemical_synapse",
+        "layer_b": "scientific_attention",
+        "expected_direction": "positive",
+        "min_abs_r": 0.10
+      }
+    },
+    {
+      "id": "h2",
+      "statement": "r(chemical_synapse <-> scientific_attention) < 0.40. This tests the regime boundary hypothesis: the observer layer (d4) correlates with the structural layer (d1) significantly less than the two physical layers correlate with each other. The F12 baseline is r(chemical_synapse <-> gap_junction) ≈ 0.62 (confirmed). If r(d1 <-> d4) < 0.40, it is at most two-thirds of the physical-layer correlation, confirming that d4 is a genuinely different regime — not just a noisier version of d1/d2. The threshold 0.40 is set conservatively below the physical baseline to ensure a meaningful regime gap is established.",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "chemical_synapse",
+        "layer_b": "scientific_attention",
+        "expected_direction": "positive",
+        "max_abs_r": 0.40
+      }
+    },
+    {
+      "id": "h3",
+      "statement": "r(gap_junction <-> scientific_attention) > 0, p < 0.05. Scientific attention also partially tracks gap-junction connectivity. This replicates h1 for the d2 layer. Both physical layers should correlate positively with d4 if the FPL signal is real. min_abs_r: 0.10 (same rationale as h1).",
+      "test": {
+        "type": "cross_layer_hub_correlation",
+        "layer_a": "gap_junction",
+        "layer_b": "scientific_attention",
+        "expected_direction": "positive",
+        "min_abs_r": 0.10
+      }
+    }
+  ],
+  "exploratory": [
+    {
+      "id": "e1",
+      "label": "Hub shadow identification",
+      "statement": "After running centrality on all 3 layers, identify the top-10 neurons where chemical_synapse hub rank significantly exceeds scientific_attention hub rank (rank_d1 - rank_d4 > 20 positions). These are structural blind spots: neurons that are important in the physical connectome but systematically under-researched. Report their neuron class, function (if known), and the rank gap. No formal statistical test — exploratory discovery."
+    },
+    {
+      "id": "e2",
+      "label": "Over-attended neuron identification",
+      "statement": "Identify top-5 neurons where scientific_attention hub rank significantly exceeds chemical_synapse hub rank (rank_d4 - rank_d1 > 20 positions). These are over-attended neurons: neurons that receive disproportionate research focus relative to their structural role. Note any known biological significance that might explain the discrepancy."
+    }
+  ],
+  "decision_rule": {
+    "CONFIRMED":    "h1 and h2 and h3 all pass — d4 connects to physical layers but at a lower correlation, confirming the regime boundary",
+    "PARTIAL":      "h1 passes but h2 fails (r too high): scientific attention tracks structure as tightly as electrical coupling — no clear regime boundary. OR h1 fails: d4 is pure noise.",
+    "INCONCLUSIVE": "h1 passes, h2 passes, h3 fails: gap_junction does not track attention. Would suggest d4 is asymmetrically related to chemical synapses only."
+  }
+}
