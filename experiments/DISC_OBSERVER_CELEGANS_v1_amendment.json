@@ -1,0 +1,39 @@
+{
+  "_amendment_note": "Filed before any data collection. No results seen. Corrects three issues identified by external critic.",
+  "_amendment_date": "2026-06-14",
+  "_original_preregistration": "DISC_OBSERVER_CELEGANS_v1.json",
+  "_original_hash": "c211d58eaaca17198e7460826e119f45e1c1ae5c987b8123c3ac5e3b01eabb30",
+  "framing_correction": {
+    "old": "AI identifies biologically important neurons that human attention misses",
+    "new": "AI ranking approximates lesion-importance distribution more closely than human literature ranking does. Centrality is a proxy for lesion sensitivity, not a direct measure of function.",
+    "reason": "Hub centrality != functional importance in general. Hubs can be redundant. The correct claim is about ranking alignment, not causal discovery."
+  },
+  "null_model": {
+    "type": "hypergeometric",
+    "N": 185,
+    "K": 10,
+    "n": 20,
+    "description": "N=185 neurons in subgraph, K=10 command interneurons (essential set), n=20 AI-ranked top-K. Under random selection, P(overlap >= k) is computed exactly.",
+    "expected_overlap": 1.081,
+    "thresholds": {
+      "p_lt_0.05": 4,
+      "p_lt_0.01": 5,
+      "p_lt_0.001": 6
+    },
+    "note": "Our pre-registered threshold is k=6 (P=0.000120 under null). This is not tuned to results — it was derived from the hypergeometric distribution before any AI responses were collected."
+  },
+  "corrected_H2_pred": {
+    "id": "H2_pred_v2",
+    "statement": "AI anon top-20 contains >= 4 of 10 locomotion command interneurons (AVAL, AVAR, AVBL, AVBR, PVCL, PVCR, RIML, RIMR, AVDL, AVDR). Under hypergeometric null (N=185, K=10, n=20), P(X>=4)=0.014, P(X>=5)=0.0016, P(X>=6)=0.00012. Threshold is set at k=4 (p<0.05) for confirmation, k=6 (p<0.001) for strong confirmation.",
+    "strong_threshold": 6,
+    "confirm_threshold": 4,
+    "null_p_at_4": 0.01385,
+    "null_p_at_6": 0.00012,
+    "ground_truth_source": "White_1986 ablation + locomotion circuit literature, defined before experiment"
+  },
+  "SSPH_framing": {
+    "name": "Structural Salience Projection Hypothesis",
+    "formulation": "Different ranking systems (human literature, AI ranking, lesion impact) induce different projections over the same underlying graph. These projections differ systematically in which graph-theoretic dimension they approximate. OPL is one instance: AI ranking approximates d2 (in-degree) projection while human attention approximates d1 (or non-structural) projection.",
+    "what_this_experiment_tests": "Whether AI ranking projection aligns with lesion-importance projection (White 1986) more than human attention projection does. This is not a claim that AI discovers function — it is a claim about projection alignment across independently defined ranking systems."
+  }
+}
