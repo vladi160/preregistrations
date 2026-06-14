@@ -1,0 +1,85 @@
+{
+  "experiment": "DISC_F14_FLYWIRE_v1",
+  "domain": "Adult Drosophila connectome (FlyWire Princeton release)",
+  "date_preregistered": "2026-06-14",
+  "status": "PRE-REGISTERED — degree distributions NOT yet computed",
+
+  "network": {
+    "source": "FlyWire Princeton release (Dorkenwald et al. 2022, Nature Methods)",
+    "files": [
+      "downloads/F14_flywire/connections_princeton.csv.gz",
+      "downloads/F14_flywire/neurons.csv.gz"
+    ],
+    "n_neurons": 139255,
+    "n_connections": 5342446,
+    "n_total_synapses": 50666648,
+    "edge_type": "directed chemical synaptic connections",
+    "columns_connections": ["pre_root_id", "post_root_id", "neuropil", "syn_count", "nt_type"],
+    "columns_neurons": ["root_id", "group", "nt_type", "nt_type_score", "da_avg", "ser_avg", "gaba_avg", "glut_avg", "ach_avg", "oct_avg"],
+    "note": "Degree distributions not computed prior to pre-registration. Network statistics above from file metadata only."
+  },
+
+  "layer_definitions": {
+    "d1": "out-degree (binary): number of distinct post-synaptic neurons each neuron contacts",
+    "d2": "in-degree (binary): number of distinct pre-synaptic neurons each neuron receives from",
+    "d1_w": "weighted out-degree: sum of syn_count across all outgoing connections",
+    "d2_w": "weighted in-degree: sum of syn_count across all incoming connections"
+  },
+
+  "prior_fpl_evidence": {
+    "C_elegans_F12": "r(d1,d2) = +0.317, n=185 neurons",
+    "larval_Drosophila_F13": "FPL confirmed at 2952 neurons (Spearman r=0.663)",
+    "npm_software": "r(d1,d2) = -0.31 (anti-correlated: bimodal polarity, not FPL failure)",
+    "cancer_signaling": "r(d1,d2) = -0.002 (orthogonal)",
+    "note": "FPL holds in connectomes; the direction in engineering/molecular networks depends on structural regime"
+  },
+
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "FPL holds at 139k scale: r(d1_binary, d2_binary) > 0 for the full connected subgraph (neurons with both d1 > 0 and d2 > 0). Based on FPL confirmed at 302 (C. elegans), 2952 (larval Drosophila F13), and multiple small molecular networks. Pre-registered before computing any degree distributions."
+    },
+    {
+      "id": "H2",
+      "statement": "Weighted FPL exceeds binary FPL: r(d1_syncount, d2_syncount) > r(d1_binary, d2_binary). Synapse count weighting should amplify hub persistence because neurons with many connections tend to also form stronger synapses. First test of weighted FPL in a connectome."
+    },
+    {
+      "id": "H3",
+      "statement": "NT stratification: ACH (cholinergic) neurons have higher mean d1 than GABA neurons. Biological rationale: ACH neurons in Drosophila are primarily excitatory interneurons and projection neurons that fan out to many targets (high d1); GABA neurons are primarily inhibitory interneurons that receive convergent input for local suppression (relatively lower d1 per neuron type). Note: GLUT neurons are largely motoneurons targeting muscle, excluded from this prediction (they would have low d2 = few upstream regulators in CNS). Prediction: mean_d1(ACH) > mean_d1(GABA), two-sided t-test p < 0.05."
+    },
+    {
+      "id": "H4",
+      "statement": "Optic lobe FPL: r(d1, d2) > 0 when restricted to optic lobe neurons (group starting with ME, LA, LO, AME — visual processing subsystem). The optic lobe is retinotopically regular; FPL might be weaker or absent if hub structure is an artifact of column repetition rather than true network centrality. Pre-registered direction: positive (FPL holds within optic lobe), but this is an honest test — a null or negative result would be scientifically significant."
+    },
+    {
+      "id": "H5",
+      "statement": "Hub-specialist distribution: top-d1 nodes and top-d2 nodes show low overlap. In the top-1% by d1 and top-1% by d2 (approximately 1,393 neurons each), the overlap is less than 25% of either set. Rationale: connectomes with FPL can have positive r(d1,d2) even when hubs are structurally specialized. If overlap is high (>50%), d1 and d2 hubs are the same neurons; if low (<25%), they are distinct structural classes. In npm software (r=-0.31) hubs are almost completely disjoint; in C. elegans (r=+0.317) they partially overlap. FlyWire's result will characterize its hub regime."
+    }
+  ],
+
+  "hypothesis_hash": "ea427603c098581b61b9e50458272e761e4405e1c5c8a5aee617dd6a34855ea7",
+
+  "analysis_plan": {
+    "script": "builders/build_flywire_adult.py",
+    "steps": [
+      "Load neurons.csv.gz: build dict root_id -> {group, nt_type, nt_type_score}",
+      "Load connections_princeton.csv.gz: compute d1, d2 (binary) and d1_w, d2_w (syn_count weighted) per root_id",
+      "Restrict to connected neurons: d1 > 0 AND d2 > 0",
+      "H1: Pearson r(d1, d2) on full connected subgraph",
+      "H2: Compare r(d1_w, d2_w) vs r(d1, d2)",
+      "H3: t-test mean d1 ACH vs GABA (neurons with nt_type_score >= 0.5)",
+      "H4: Compute r(d1, d2) restricted to group in {ME, LA, LO, AME, ME.LO, ME.LOP, LO.LOP}",
+      "H5: Compute top-1% d1 set and top-1% d2 set, measure Jaccard overlap",
+      "Report: top-20 d1 neurons, top-20 d2 neurons, brain region, NT type, syn_count",
+      "Save: builders/outputs/flywire_adult_degrees.json"
+    ]
+  },
+
+  "novel_aspects": [
+    "Largest connectome FPL test: 139,255 neurons, 5.3M directed connections (460x C. elegans)",
+    "First weighted FPL test in any connectome (syn_count per connection)",
+    "First NT-stratified FPL test (ACH vs GABA vs GLUT hub roles)",
+    "First FPL test with both optic lobe subsystem and whole-brain analysis",
+    "Hub-specialist vs hub-generalist characterization at scale"
+  ]
+}
