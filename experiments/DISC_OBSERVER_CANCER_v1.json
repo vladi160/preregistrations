@@ -1,0 +1,91 @@
+{
+  "experiment": "DISC_OBSERVER_CANCER_v1",
+  "domain": "cancer signaling biology",
+  "network": "Human cancer signaling network (n=216 proteins, 1721 directed edges). Source: SIGNOR all_data_14_06_26.tsv, protein-protein only (UNIPROT), human (TAX_ID 9606 or species-agnostic), total_degree>=25 threshold. Represents directed regulatory/phosphorylation signals.",
+
+  "protocol": "Same as DISC_D4_AI_v1 and DISC_OBSERVER_CELEGANS_v1: show edge list to 5 external AI systems in neutral sessions, ask which 20 proteins seem most important. Two conditions: named (real gene symbols) and anonymous (prt_NNN IDs).",
+
+  "prompts": {
+    "A_named": "builders/outputs/cancer_prompt_A_named.txt",
+    "B_anon": "builders/outputs/cancer_prompt_B_anon.txt",
+    "anon_map": "builders/outputs/cancer_anon_map.json"
+  },
+
+  "models": ["chatgpt", "grok", "claude_chat", "notebooklm", "googleai"],
+
+  "network_properties": {
+    "n_proteins": 216,
+    "n_edges": 1721,
+    "r_d1_d2": -0.002,
+    "d1_max": 49,
+    "d2_max": 42,
+    "note": "r(d1,d2)=-0.002: kinases (high d1) and transcription factors/targets (high d2) are nearly orthogonal structural classes, similar to npm consumer/infrastructure split."
+  },
+
+  "d4_human": {
+    "source": "PubMed esearch: count of abstracts matching '\"GENE\"[tiab] AND cancer', queried 2026-06-14 via NCBI E-utilities API",
+    "top_10": {
+      "EGFR": 62296,
+      "MET": 58469,
+      "BCL2": 46804,
+      "TNF": 36842,
+      "MYC": 35547,
+      "MTOR": 31788,
+      "KIT": 31351,
+      "KRAS": 29005,
+      "TP53": 26678,
+      "BAX": 25966
+    },
+    "note": "Human cancer attention is fame-driven: EGFR, KRAS, MET, BRCA1 are famous for mutation frequency and therapeutic targets, NOT structural centrality in signaling network. KRAS (pubmed=29005) has d2=2. MET (pubmed=58469) has d2=5."
+  },
+
+  "baselines": {
+    "r_d1_d4_human": 0.020,
+    "r_d2_d4_human": 0.255,
+    "note": "r(d2,d4h)=+0.255 is POSITIVE, unlike npm (-0.077) and C. elegans (-0.044). Human cancer attention is moderately d2-aligned because several famous proteins (TP53 d2=42, MYC d2=23, STAT3 d2=28) happen to also be structural bottlenecks. But KRAS(d2=2), MET(d2=5), EGFR(d2=17) are famous with moderate-to-low d2, creating noise. H1 threshold is thus r(d2,d4_ai_anon)>0.255 (must exceed human partial alignment)."
+  },
+
+  "essential_ground_truth": {
+    "hidden_infrastructure": ["CTNNB1","ESR1","CDKN1B","MAPT","CDKN1A","IRS1","GSK3B","FOXO3","RELA","RAF1"],
+    "definition": "Proteins with d2>=19 (structural top quartile) AND pubmed_cancer<5000 (under-attended by human research attention). These are proteins that receive many regulatory signals but are NOT famous cancer drug targets or mutation hotspots. They represent the 'invisible load-bearing layer' of cancer signaling.",
+    "pubmed_range": [262, 3359],
+    "d2_range": [19, 34],
+    "contrast_set": "Famous proteins with high pubmed but LOW d2: KRAS(d2=2,pubmed=29005), MET(d2=5,pubmed=58469), KIT(d2=9,pubmed=31351). AI anon should NOT recover these in top-20 if recovering by structure."
+  },
+
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "r(d2, d4_ai_anon) > r(d2, d4_human): AI anonymous attention correlates MORE strongly with d2 than human PubMed cancer attention does. Baseline r(d2,d4h)=+0.255. Min threshold: r(d2,d4_ai_anon)>0.30 (must clearly exceed human partial alignment).",
+      "baseline": 0.255,
+      "min_threshold": 0.30
+    },
+    {
+      "id": "H2_pred",
+      "statement": "AI anon top-20 contains >=4 of 10 hidden infrastructure proteins (CTNNB1, ESR1, CDKN1B, MAPT, CDKN1A, IRS1, GSK3B, FOXO3, RELA, RAF1). Under hypergeometric null (N=216, K=10, n=20): expected=0.926, P(X>=3)=0.054, P(X>=4)=0.008, P(X>=5)=0.001. Confirm at k>=3 (p<0.054), strong at k>=4 (p<0.008).",
+      "null_model": {"N": 216, "K": 10, "n": 20, "expected": 0.926},
+      "confirm_threshold": 3,
+      "strong_threshold": 4,
+      "null_p_at_3": 0.05367,
+      "null_p_at_4": 0.00793
+    },
+    {
+      "id": "H3",
+      "statement": "Named condition reduces d2 recovery vs anonymous. Cancer gene names (KRAS, EGFR, BRCA1, HER2) carry strong fame priors. AI in named condition should rank famous mutation-hotspot genes high, reducing r(d2). Expected to be MOST PRONOUNCED of all 3 OPL domains because cancer gene names are maximally fame-loaded in AI training data.",
+      "prediction": "r(d2, d4_ai_named) < r(d2, d4_ai_anon) by >=0.10 for most models"
+    },
+    {
+      "id": "H4_contrast",
+      "statement": "Famous low-d2 proteins (KRAS, MET, KIT) should appear in named top-20 but NOT in anon top-20. This directly tests whether structural vs fame projection produces different rankings for the same proteins.",
+      "contrast_proteins": ["KRAS", "MET", "KIT"],
+      "contrast_d2": [2, 5, 9],
+      "prediction": "KRAS/MET/KIT appear in named top-20 of >=3 models but in anon top-20 of <=1 model"
+    }
+  ],
+
+  "opl_context": {
+    "domain_3_of_3": true,
+    "note": "This is the 3rd domain for the Observer Projection Law. npm (software, human r_d2=-0.077) + C.elegans (neuroscience, human r_d2=-0.044) + Cancer signaling (human r_d2=+0.255). Three domains spanning engineered systems, simple nervous systems, and disease biology. Cancer has POSITIVE human baseline unlike the other two, making the structural contrast richer: AI tracks d2 MORE efficiently than human attention even when human attention already shows partial d2 alignment.",
+    "pre_registered_before_collection": true
+  }
+}
