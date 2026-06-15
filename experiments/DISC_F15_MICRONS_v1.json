@@ -1,0 +1,75 @@
+{
+  "experiment": "DISC_F15_MICRONS_v1",
+  "title": "FPL in Mouse V1 Cortex -- MICrONS Cubic Millimeter Dataset",
+  "date_preregistered": "2026-06-15",
+  "hypothesis_hash": "de0983ea651a5e6b6ac978fef0aee7aa3a02be51",
+  "dataset": "MICrONS Cubic Millimeter v1300 (The MICrONS Consortium et al. 2025, Nature 640:435-447)",
+  "data_source": "s3://bossdb-open-data/iarpa_microns/minnie/minnie65/synapse_graph/cave_exports/v1300/connections_with_nuclei.csv.gz",
+  "species": "Mus musculus (mouse, P87)",
+  "brain_region": "Primary visual cortex (VISp), multiple layers",
+  "network_summary_pre_analysis": {
+    "total_neurons_nucleus_verified": 81995,
+    "total_connection_pairs": 303245722,
+    "artifact_filter_planned": "d1 > 81995 OR d2 > 81995 (impossible for real neurons, indicates over-merged fragments)",
+    "expected_neurons_after_filter": "approximately 81993",
+    "real_max_d1_rank2": 9147,
+    "real_max_d2_rank2": 19718,
+    "median_d1": 58,
+    "median_d2": 1951
+  },
+  "node_definition": "nucleus_id from nucleus_detection_v0; one entry per soma, stable across segmentation versions",
+  "layers": {
+    "d1": "binary out-degree: number of distinct post-synaptic nucleus_ids this neuron connects to",
+    "d2": "binary in-degree: number of distinct pre-synaptic nucleus_ids that connect to this neuron",
+    "d1w": "weighted out-degree: sum of n_syn to distinct targets",
+    "d2w": "weighted in-degree: sum of n_syn from distinct sources"
+  },
+  "hypotheses": {
+    "H1": {
+      "description": "FPL holds in mouse V1 cortex: r(d1_binary, d2_binary) > 0",
+      "direction": "positive",
+      "threshold": "p < 0.05, r > 0",
+      "rationale": "FPL confirmed in all prior connectome experiments (C. elegans, larval Drosophila, adult Drosophila). First mammalian cortex test.",
+      "pre_registered_prediction": "CONFIRMED"
+    },
+    "H2": {
+      "description": "FPL effect size: r(d1, d2) > 0.70",
+      "direction": "positive",
+      "threshold": "r > 0.70",
+      "rationale": "82k neurons falls between larval Drosophila (2952, r=0.663) and adult Drosophila (129117, r=0.819) on the scaling trend. Cortex has different laminar structure so we do not assume the insect scaling factor transfers directly. Conservative prediction: above larval fly.",
+      "pre_registered_prediction": "CONFIRMED if r > 0.70"
+    },
+    "H3": {
+      "description": "Inhibitory neurons have higher mean d1 than excitatory neurons",
+      "direction": "inhibitory > excitatory in mean d1",
+      "threshold": "t-test p < 0.05",
+      "rationale": "Replication of F14 finding: global inhibitory neurons (GABA) dominated d1 hubs in adult Drosophila. In mouse cortex, PV basket cells and SST Martinotti cells provide broad inhibitory coverage. Requires cell type annotations from CAVE (contingent hypothesis).",
+      "pre_registered_prediction": "CONFIRMED if inhibitory mean_d1 > excitatory mean_d1"
+    },
+    "H4": {
+      "description": "Binary FPL >= Weighted FPL: r(d1_binary, d2_binary) >= r(d1w, d2w)",
+      "direction": "binary >= weighted",
+      "threshold": "directional",
+      "rationale": "Replication of F14 finding (binary 0.819 > weighted 0.803). Binary contact diversity hypothesized to be more fundamental FPL signal than synapse-count weighting.",
+      "pre_registered_prediction": "CONFIRMED if binary r >= weighted r"
+    }
+  },
+  "scaling_law_context": {
+    "note": "Post-hoc observation from F12/F13/F14: r(d1,d2) increases monotonically with N across 428x scale range. F15 is the first pre-registered PREDICTION using this trend.",
+    "prior_data_points": [
+      {"experiment": "F12", "species": "C. elegans", "N": 302, "r": 0.317},
+      {"experiment": "F13", "species": "D. melanogaster larva", "N": 2952, "r": 0.663},
+      {"experiment": "F14", "species": "D. melanogaster adult", "N": 129117, "r": 0.819}
+    ],
+    "F15_predicted_r_range": "0.70 to 0.87 (H2 threshold: 0.70)",
+    "note2": "Mouse cortex is a mammalian laminar structure vs insect mushroom body/optic lobe. The scaling trend may not transfer across phyla. F15 result will clarify whether the trend is universal or insect-specific."
+  },
+  "analysis_plan": {
+    "step1": "Filter neurons: exclude nuc_id where d1 > 81995 OR d2 > 81995 (artifact segments)",
+    "step2": "Compute Pearson r(d1_binary, d2_binary) on log-transformed degrees (log1p)",
+    "step3": "Compute Pearson r(d1w, d2w) for H4",
+    "step4": "If cell type annotations available via CAVE: compute mean d1 per cell type for H3",
+    "step5": "Report top-20 hubs by d1 and d2",
+    "script": "builders/build_microns_mouse.py (to be written after pre-registration commit)"
+  }
+}
