@@ -1,0 +1,53 @@
+{
+  "id": "H_ISL_v1",
+  "experiment": "H_ISL — IRDME Symbolic Language: hub-star ISL compression preserves structural identity",
+  "description": "First empirical test of H_ISL. Core question: can a graph be expressed as symbolic hub-star generator rules (ISL), and does the ISL-reconstructed graph preserve IRDME structural identity (hub ranks, FPL sign)? Test graph: linux_kernel (30 nodes, 114 edges, 3 layers). ISL representation: hub-star rules for top 33% nodes (10 hubs) as sources — one rule per (hub, layer) pair. Residual edges (41/114, from non-hub sources) are dropped. Reconstruction uses only hub-star rules. Structural identity is tested by comparing the original full graph to the ISL-only reconstruction.",
+  "graph": "examples/linux_kernel.json",
+  "isl_spec": {
+    "rule_type": "hub_star",
+    "hub_selection": "top 33% by total_degree (d1+d2), n=10",
+    "hubs": ["mm", "scheduler", "block", "vfs", "process", "softirq", "irq", "device_model", "workqueue", "tcp_ip"],
+    "coverage": "73/114 edges (64.0%)",
+    "residual_edges": 41,
+    "n_rules": 22,
+    "compression_ratio_rules_vs_hub_edges": 0.301,
+    "compression_ratio_rules_vs_all_edges": 0.193
+  },
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "ISL hub-star rules achieve compression: n_rules < n_hub_edges (22 rules cover 73 edges). Compression ratio = n_rules / n_hub_edges < 0.5.",
+      "prediction": "compression_ratio < 0.5",
+      "note": "Compression ratio is structurally deterministic from hub selection — this confirms the ISL rule format compresses. Pre-confirmed at 0.301."
+    },
+    {
+      "id": "h2",
+      "statement": "ISL reconstruction preserves hub rank ordering: Spearman r between total_degree ranks in original vs ISL-reconstructed graph > 0.80.",
+      "prediction": "spearman_r_hub_ranks > 0.80",
+      "note": "Key structural identity test. High-d1 hubs (vfs, irq, process) have fully preserved outgoing degree in reconstruction. High-d2 hubs (mm, scheduler) receive connections primarily from other hubs which are included."
+    },
+    {
+      "id": "h3",
+      "statement": "FPL sign is preserved: r(d1, d2) has the same sign in the original graph and the ISL-reconstructed graph.",
+      "prediction": "sign(r_original) == sign(r_reconstructed)",
+      "note": "Original linux_kernel r(d1,d2) = -0.342. ISL drops non-hub edges but hub structure dominates the correlation direction. If hub topology determines FPL sign, sign is preserved."
+    },
+    {
+      "id": "h4",
+      "statement": "Top-3 hubs by total_degree are identical in original and ISL-reconstructed graph (at least 2/3 match).",
+      "prediction": "top3_overlap >= 2",
+      "note": "Original top-3: mm(17), scheduler(15), block(15). All three are in the hub set and appear as targets of multiple hub sources — their incoming degree is partially preserved."
+    }
+  ],
+  "analysis_plan": {
+    "step1": "Load linux_kernel.json, compute degrees d1/d2 per node per layer, rank all nodes by total_degree",
+    "step2": "Extract hub-star rules: for each hub in top-10, for each layer, list all its targets. Output: list of (hub, layer, [targets])",
+    "step3": "Reconstruct ISL graph: expand hub-star rules back to explicit edges. Discard residual edges.",
+    "step4": "Compute d1/d2/total_degree for all nodes in reconstructed graph",
+    "step5": "Measure h1: count rules, compute ratio",
+    "step6": "Measure h2: Spearman r between original and reconstructed total_degree rank vectors",
+    "step7": "Measure h3: compute r(d1,d2) for reconstructed graph, compare sign to original (-0.342)",
+    "step8": "Measure h4: identify top-3 in reconstructed, count overlap with original top-3"
+  },
+  "notes": "This is a prototype ISL test using the simplest possible rule type (hub-star). H_ISL_v2 would test abstract rules (shared-target merging) and chain rules. The scientific question is whether structural identity is preserved under hub-dominated symbolic compression — not whether ISL is production-ready."
+}

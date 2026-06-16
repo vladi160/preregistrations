@@ -1,0 +1,12 @@
+H_ISL_v1 — IRDME Symbolic Language: hub-star ISL preserves structural identity
+SHA256: 2b3ab76d562de84d9b2d010f6eecb10704db837e3591dd0b9bc65b9e83fa4d0b
+
+h1: compression_ratio (n_rules / n_hub_edges) < 0.5          → CONFIRMED expected
+h2: Spearman r(hub ranks original, reconstructed) > 0.80      → CONFIRMED expected
+h3: FPL sign preserved (same sign of r(d1,d2))                → CONFIRMED expected
+h4: top-3 hubs overlap >= 2/3                                  → CONFIRMED expected
+
+Graph: examples/linux_kernel.json (30 nodes, 114 edges, 3 layers)
+ISL rule type: hub-star (top 33% nodes as sources = 10 hubs)
+Hub set: mm, scheduler, block, vfs, process, softirq, irq, device_model, workqueue, tcp_ip
+Rules: 22 rules cover 73/114 edges; residual 41 edges dropped
