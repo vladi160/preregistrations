@@ -1,0 +1,24 @@
+{
+  "experiment": "M_STRUCTURAL_MINING_REPLICATION_v1 — Pre-registered replication of loop_r_gain as trajectory predictor",
+  "committed_at": "2026-06-21T13:14:10.688940+00:00",
+  "prediction_hash": "6f31f99f4784f0eb0892b059a9fbf7e0d7c59e5c699a186b736279e82e429977",
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "Human PPI STRING (14,282 proteins, coexpression + experimental layers, r_full=+0.83) will have trajectory=AMPLIFYING with loop_r_gain > 0. Rationale: r_full=+0.83 is a strong positive baseline — hub proteins in coexpression are also hubs in experimental binding. The hub core of human PPI is known to be dominated by master regulators (TP53, MYC, EGFR, BRCA1) that are generalists across both expression and physical interaction. Hub-focusing should concentrate on these generalist hubs, increasing r further. This is structurally identical to the existing 15-node p53 network (proteins_sl_multilayer, AMPLIFYING), but tested at full proteome scale for the first time."
+    },
+    {
+      "id": "H2",
+      "statement": "Florida cypress wetland food web (128 taxa, wet + dry carbon flow layers, r_full=+0.996) will have trajectory=SELF_SIMILAR or AMPLIFYING with loop_r_gain in (-0.05, +0.10). Rationale: r_full is already near ceiling (+0.996). The same taxa are apex consumers in both wet and dry seasons — the food web structure barely changes seasonally at the hub level. Hub focusing cannot increase r much above 0.996, so gain must be small. SELF_SIMILAR (gain ≈ 0) is the primary prediction; a slight AMPLIFYING result (small positive gain) is also consistent. INVERSION is predicted NOT to occur — the near-perfect seasonal stability rules it out."
+    },
+    {
+      "id": "H3",
+      "statement": "OpenFlights airport network (2,111 airports, direct + codeshare route layers, r_full=+0.000) will have trajectory=AMPLIFYING with loop_r_gain > 0. Rationale: r_full=0 is explained by 754 airports that appear only in direct_route layer (high d1, d2=0), zeroing the correlation. However, the top-10 degree airports all have high counts in BOTH layers (e.g., apt_3682: direct=352, codeshare=358). Hub-focusing selects these dual-layer dominant airports, pushing r from 0 to positive. Tests whether loop_r_gain recovers the generalist hub signal that r_full obscures."
+    },
+    {
+      "id": "H4",
+      "statement": "Network size does not determine trajectory type. Human PPI (14,282 nodes), airports (2,111 nodes), Florida (128 nodes) span two orders of magnitude. The smallest (Florida, 128 nodes) predicts SELF_SIMILAR/AMPLIFYING; the largest (Human PPI, 14k nodes) also predicts AMPLIFYING — same class despite 111x size difference. Replicates M_STRUCTURAL_MINING_v1 H4 (r_size_vs_trajectory = -0.057 on 70 networks)."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}

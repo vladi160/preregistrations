@@ -1,0 +1,87 @@
+{
+  "experiment": "M_STRUCTURAL_MINING_REPLICATION_v1 — Pre-registered replication of loop_r_gain as trajectory predictor",
+  "description": "M_STRUCTURAL_MINING_v1 (2026-06-21) discovered on 70 atlas networks that loop_r_gain (the change in r(d1,d2) across IRDME hub-focusing iterations) is the strongest discriminator between AMPLIFYING and INVERSION trajectory types: AMPLIFYING mean gain = +0.196, INVERSION mean gain = -1.042. This experiment pre-registers the replication of that finding on 3 new networks NOT in the training atlas. All predictions are made BEFORE running irdme loop on any of these networks. Static analysis (irdme law) has been run — only r_full and node/edge counts are known at pre-registration time. The core hypothesis: loop_r_gain > 0 predicts AMPLIFYING trajectory; loop_r_gain < 0 predicts INVERSION or DISSIPATING. H1 tests this on Human PPI STRING (14k nodes, molecular_biology, r_full=+0.83). H2 tests this on Florida ecosystem multilayer (128 nodes, ecology, r_full=+0.996). H3 tests this on airport routes multilayer (2.1k nodes, transportation, r_full=+0.000). H4 tests the size-independence finding from M_STRUCTURAL_MINING (trajectory should not be determined by network size). These 3 networks span 3 domains not previously tested together (molecular_biology at full proteome scale, ecology with seasonal layers, transportation with service-type layers).",
+  "graphs": [
+    "../human_ppi_string_v12.json",
+    "../florida_ecosystem_multilayer.json",
+    "../airport_routes_multilayer.json"
+  ],
+  "static_analysis_at_prereg": {
+    "human_ppi_string_v12": {
+      "n_nodes": 14282,
+      "n_edges": 454618,
+      "layers": ["coexpression", "experimental_binding"],
+      "r_full": 0.8308,
+      "domain": "molecular_biology"
+    },
+    "florida_ecosystem_multilayer": {
+      "n_nodes": 128,
+      "n_edges": 4243,
+      "layers": ["carbon_flow_wet", "carbon_flow_dry"],
+      "r_full": 0.9961,
+      "domain": "ecology"
+    },
+    "airport_routes_multilayer": {
+      "n_nodes": 2111,
+      "n_edges": 42075,
+      "layers": ["direct_route", "codeshare_route"],
+      "r_full": 0.0000,
+      "domain": "transportation"
+    }
+  },
+  "steps": [
+    { "run": "loop", "graph": "../human_ppi_string_v12.json", "save_datasets": false },
+    { "run": "loop", "graph": "../florida_ecosystem_multilayer.json", "save_datasets": false },
+    { "run": "loop", "graph": "../airport_routes_multilayer.json", "save_datasets": false }
+  ],
+  "hypotheses": [
+    {
+      "id": "H1",
+      "network": "human_ppi_string_v12",
+      "statement": "Human PPI STRING (14,282 proteins, coexpression + experimental layers, r_full=+0.83) will have trajectory=AMPLIFYING with loop_r_gain > 0. Rationale: r_full=+0.83 is a strong positive baseline — hub proteins in coexpression are also hubs in experimental binding. The hub core of human PPI is known to be dominated by master regulators (TP53, MYC, EGFR, BRCA1) that are generalists across both expression and physical interaction. Hub-focusing should concentrate on these generalist hubs, increasing r further. This is structurally identical to the existing 15-node p53 network (proteins_sl_multilayer, AMPLIFYING), but tested at full proteome scale for the first time.",
+      "test": {
+        "type": "loop_trajectory_prediction",
+        "expected_trajectory": "AMPLIFYING",
+        "loop_r_gain_sign": "positive",
+        "loop_r_gain_min": 0.01
+      }
+    },
+    {
+      "id": "H2",
+      "network": "florida_ecosystem_multilayer",
+      "statement": "Florida cypress wetland food web (128 taxa, wet + dry carbon flow layers, r_full=+0.996) will have trajectory=SELF_SIMILAR or AMPLIFYING with loop_r_gain in (-0.05, +0.10). Rationale: r_full is already near ceiling (+0.996). The same taxa are apex consumers in both wet and dry seasons — the food web structure barely changes seasonally at the hub level. Hub focusing cannot increase r much above 0.996, so gain must be small. SELF_SIMILAR (gain ≈ 0) is the primary prediction; a slight AMPLIFYING result (small positive gain) is also consistent. INVERSION is predicted NOT to occur — the near-perfect seasonal stability rules it out.",
+      "test": {
+        "type": "loop_trajectory_prediction",
+        "expected_trajectory": ["SELF_SIMILAR", "AMPLIFYING"],
+        "loop_r_gain_sign": "non-negative",
+        "inversion_expected": false
+      }
+    },
+    {
+      "id": "H3",
+      "network": "airport_routes_multilayer",
+      "statement": "OpenFlights airport network (2,111 airports, direct + codeshare route layers, r_full=+0.000) will have trajectory=AMPLIFYING with loop_r_gain > 0. Rationale: r_full=0 is explained by 754 airports that appear only in direct_route layer (high d1, d2=0), zeroing the correlation. However, the top-10 degree airports all have high counts in BOTH layers (e.g., apt_3682: direct=352, codeshare=358). Hub-focusing selects these dual-layer dominant airports, pushing r from 0 to positive. Tests whether loop_r_gain recovers the generalist hub signal that r_full obscures.",
+      "test": {
+        "type": "loop_trajectory_prediction",
+        "expected_trajectory": "AMPLIFYING",
+        "loop_r_gain_sign": "positive",
+        "loop_r_gain_min": 0.05
+      }
+    },
+    {
+      "id": "H4",
+      "network": "all",
+      "statement": "Network size does not determine trajectory type. Human PPI (14,282 nodes), airports (2,111 nodes), Florida (128 nodes) span two orders of magnitude. The smallest (Florida, 128 nodes) predicts SELF_SIMILAR/AMPLIFYING; the largest (Human PPI, 14k nodes) also predicts AMPLIFYING — same class despite 111x size difference. Replicates M_STRUCTURAL_MINING_v1 H4 (r_size_vs_trajectory = -0.057 on 70 networks).",
+      "test": {
+        "type": "loop_trajectory_prediction",
+        "expected_trajectory": ["AMPLIFYING", "SELF_SIMILAR"],
+        "loop_r_gain_sign": "non-negative",
+        "size_independence": true
+      }
+    }
+  ],
+  "discovery_source": "M_STRUCTURAL_MINING_v1, run 2026-06-21, results/M_STRUCTURAL_MINING_v1.json",
+  "prereg_date": "2026-06-21",
+  "author": "Vladi Ivanov / IRDME Research",
+  "notes": "CRITICAL: irdme loop has NOT been run on any of these networks at time of pre-registration. Only irdme law (static FPL analysis) was run to obtain r_full. The loop step must be run AFTER this file is committed with its hash. Verification: irdme verify-prediction M_STRUCTURAL_MINING_REPLICATION_v1."
+}

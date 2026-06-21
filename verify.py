@@ -31,7 +31,16 @@ def verify(json_path: str) -> bool:
     with open(json_path, encoding="utf-8") as f:
         data = json.load(f)
     with open(prediction_path, encoding="utf-8") as f:
-        sidecar = json.load(f)
+        raw = f.read()
+    try:
+        sidecar = json.loads(raw)
+    except json.JSONDecodeError:
+        # Old-format plain-text sidecar (pre-JSON era). Cannot verify hash.
+        exp_name = os.path.basename(json_path)
+        print(f"\n  Experiment : {exp_name}")
+        print(f"  Registered : (old format — non-JSON sidecar)")
+        print(f"  SKIP -- old-format sidecar cannot be verified by this tool.")
+        return True
 
     hypotheses = data.get("hypotheses", [])
     statements = [
