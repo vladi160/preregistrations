@@ -1,0 +1,93 @@
+{
+  "experiment": "M_STRUCTURAL_MINING_REPLICATION_v2 — stable_trajectory rule validation on 3 new networks",
+  "description": "This experiment pre-registers the first use of the stable_trajectory classification rule (BC_RADIAL-excluded) as the primary hypothesis evaluator. M_STRUCTURAL_MINING_REPLICATION_v1 discovered that the IRDME loop has a systematic BC_RADIAL terminal attractor at n≤5 (top-k hub clique degeneracy), causing the original trajectory classifier to return an unreliable value in the final step. The stability diagnostic _loop_stability_analysis() was implemented after seeing v1 results and cannot be applied retroactively. This experiment uses stable_trajectory as the pre-registered primary rule, with trajectory reported for comparison only. Networks: Yeast PPI STRING (5182 proteins, AMPLIFYING predicted), Slashdot Zoo signed social (28574 users, INVERSION or DISSIPATING predicted), Epinions trust network (if downloaded). Three domains: molecular_biology, social, social. Structural contrast: yeast (tight metabolic regulation, high r_full=+0.94) vs signed social networks (low r_full=+0.37, specialist hub structure expected).",
+  "graphs": [
+    "../yeast_ppi_string_v12.json",
+    "../slashdot_zoo_multilayer.json",
+    "../epinions_trust_multilayer.json"
+  ],
+  "classification_rule": "PRIMARY: stable_trajectory from _loop_stability_analysis() in dev.py. Defined as: trajectory computed from loop iterations where regime != BC_RADIAL. If no BC_RADIAL triggered, stable_trajectory == trajectory (the two fields agree). The original trajectory field is reported for reference but is NOT the primary classification for this pre-reg. BC_RADIAL collapse threshold: if BC_RADIAL at n<=10, the final step is excluded from classification.",
+  "static_analysis_at_prereg": {
+    "yeast_ppi_string_v12": {
+      "n_nodes": 5182,
+      "n_edges": 282602,
+      "layers": ["coexpression", "experimental_binding"],
+      "r_full": 0.9402,
+      "domain": "molecular_biology"
+    },
+    "slashdot_zoo_multilayer": {
+      "n_nodes": 28574,
+      "n_edges": 429833,
+      "layers": ["foe_of", "friend_of"],
+      "r_full": 0.3704,
+      "domain": "social"
+    },
+    "epinions_trust_multilayer": {
+      "n_nodes": null,
+      "n_edges": null,
+      "layers": ["trust", "distrust"],
+      "r_full": null,
+      "domain": "social",
+      "note": "Static analysis not yet run — download pending. H3 is conditional on file availability."
+    }
+  },
+  "steps": [
+    { "run": "loop", "graph": "../yeast_ppi_string_v12.json", "save_datasets": false },
+    { "run": "loop", "graph": "../slashdot_zoo_multilayer.json", "save_datasets": false },
+    { "run": "loop", "graph": "../epinions_trust_multilayer.json", "save_datasets": false }
+  ],
+  "hypotheses": [
+    {
+      "id": "H1",
+      "network": "yeast_ppi_string_v12",
+      "statement": "Yeast S. cerevisiae PPI STRING (5182 proteins, coexpression + experimental, r_full=+0.94) will have stable_trajectory=AMPLIFYING with stable_r_gain > 0.01. Rationale: r_full=+0.94 is even stronger than human PPI (r=+0.83, v1 H1). Yeast has a simpler eukaryotic proteome with tighter metabolic regulation than mammalian cells. Master regulator hubs (TOR1, CDC28, SNF1, GCN4) are known to be generalists — top hub by both number of physical interactions AND co-expression partners. Hub-focusing should concentrate on these generalist regulators, increasing r from +0.94 toward 1.0. v1 H1 showed the same structural signal (stable_trajectory=AMPLIFYING at n=143 for human PPI) but with a BC_RADIAL terminal collapse. Yeast at 5182 nodes will likely produce the same AMPLIFYING stable signal. Stable_trajectory is the primary classification (BC_RADIAL excluded if triggered at n<=10).",
+      "test": {
+        "type": "loop_trajectory_prediction",
+        "primary_field": "stable_trajectory",
+        "expected_trajectory": "AMPLIFYING",
+        "stable_r_gain_sign": "positive",
+        "stable_r_gain_min": 0.01
+      }
+    },
+    {
+      "id": "H2",
+      "network": "slashdot_zoo_multilayer",
+      "statement": "Slashdot Zoo signed social network (28574 users, friend_of + foe_of layers, r_full=+0.37) will have stable_trajectory=INVERSION or DISSIPATING. Rationale: r_full=+0.37 is substantially lower than any biological network tested. Signed social networks have a characteristic specialist structure: popular users split into two types — beloved users (high friend_of degree, low foe_of degree) and controversial users (high foe_of degree, also high friend_of degree). Hub-focusing selects users by total degree (friend+foe). At moderate compression, controversial users dominate and r may stay positive. At deep compression, the extreme hub clique likely consists of highly controversial users who are simultaneously hubs in both layers (generalists) OR pure specialist hubs in only one layer. Prediction: r decreases monotonically (DISSIPATING) or crosses zero (INVERSION). The stable_trajectory will clarify which pattern holds without BC_RADIAL interference. Either INVERSION or DISSIPATING is consistent with the signed social specialist hypothesis; AMPLIFYING would falsify it.",
+      "test": {
+        "type": "loop_trajectory_prediction",
+        "primary_field": "stable_trajectory",
+        "expected_trajectory": ["INVERSION", "DISSIPATING"],
+        "amplifying_expected": false
+      }
+    },
+    {
+      "id": "H3",
+      "network": "epinions_trust_multilayer",
+      "statement": "Epinions signed trust network (trust + distrust layers) will have stable_trajectory=INVERSION or DISSIPATING, same class as Slashdot Zoo (H2). Rationale: Epinions and Slashdot are structurally analogous signed social trust networks from the same era (early 2000s internet). If the specialist structure (INVERSION or DISSIPATING) is a property of the signed social trust network class rather than a Slashdot-specific artifact, it must replicate in Epinions. This hypothesis is CONDITIONAL on soc-sign-epinions.txt.gz being available. If not available at run time, H3 is deferred to v3.",
+      "test": {
+        "type": "loop_trajectory_prediction",
+        "primary_field": "stable_trajectory",
+        "expected_trajectory": ["INVERSION", "DISSIPATING"],
+        "amplifying_expected": false,
+        "conditional": true,
+        "condition": "epinions_trust_multilayer.json exists with n_nodes > 0"
+      }
+    },
+    {
+      "id": "H4",
+      "network": "all",
+      "statement": "Structural class (AMPLIFYING vs non-AMPLIFYING) is determined by network type, not by size. Yeast PPI (5182 nodes) predicts AMPLIFYING; Slashdot (28574 nodes) predicts non-AMPLIFYING — despite Slashdot being 5.5× larger. If size determined trajectory, the larger network would be more likely to be AMPLIFYING (as larger networks have more stable hub structure). This prediction falsifies size as the primary determinant. Replicates M_STRUCTURAL_MINING_v1 H4 (r_size_vs_trajectory=-0.057 on 70 networks) and v1 H4 (partial support). Using stable_trajectory as the classification rule removes BC_RADIAL ambiguity from the size-independence test.",
+      "test": {
+        "type": "loop_trajectory_prediction",
+        "primary_field": "stable_trajectory",
+        "expected_trajectory": ["AMPLIFYING", "SELF_SIMILAR"],
+        "size_independence": true,
+        "note": "H4 is confirmed if yeast=AMPLIFYING and slashdot=non-AMPLIFYING regardless of their size ordering."
+      }
+    }
+  ],
+  "discovery_source": "M_STRUCTURAL_MINING_v1 (2026-06-21) + M_STRUCTURAL_MINING_REPLICATION_v1 (2026-06-21)",
+  "prereg_date": "2026-06-22",
+  "author": "Vladi Ivanov / IRDME Research",
+  "notes": "CRITICAL: irdme loop has NOT been run on any of these networks at pre-registration time. Only irdme law (static FPL analysis) was run to obtain r_full for yeast and Slashdot. Epinions static analysis also not yet run. The loop steps must be run AFTER this file is committed with its hash. Verification: irdme verify-prediction M_STRUCTURAL_MINING_REPLICATION_v2. KEY DIFFERENCE FROM v1: stable_trajectory (BC_RADIAL-excluded) is the PRIMARY classification rule. This is explicitly pre-registered here. v1 results cannot be retroactively re-evaluated under this rule."
+}

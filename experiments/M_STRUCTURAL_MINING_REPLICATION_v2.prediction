@@ -1,0 +1,24 @@
+{
+  "experiment": "M_STRUCTURAL_MINING_REPLICATION_v2 — stable_trajectory rule validation on 3 new networks",
+  "committed_at": "2026-06-22T02:09:58.942330+00:00",
+  "prediction_hash": "242c15c66f5ec2224972da973a45e2a4219bd0832fc79198895cdc46a668691a",
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "Yeast S. cerevisiae PPI STRING (5182 proteins, coexpression + experimental, r_full=+0.94) will have stable_trajectory=AMPLIFYING with stable_r_gain > 0.01. Rationale: r_full=+0.94 is even stronger than human PPI (r=+0.83, v1 H1). Yeast has a simpler eukaryotic proteome with tighter metabolic regulation than mammalian cells. Master regulator hubs (TOR1, CDC28, SNF1, GCN4) are known to be generalists — top hub by both number of physical interactions AND co-expression partners. Hub-focusing should concentrate on these generalist regulators, increasing r from +0.94 toward 1.0. v1 H1 showed the same structural signal (stable_trajectory=AMPLIFYING at n=143 for human PPI) but with a BC_RADIAL terminal collapse. Yeast at 5182 nodes will likely produce the same AMPLIFYING stable signal. Stable_trajectory is the primary classification (BC_RADIAL excluded if triggered at n<=10)."
+    },
+    {
+      "id": "H2",
+      "statement": "Slashdot Zoo signed social network (28574 users, friend_of + foe_of layers, r_full=+0.37) will have stable_trajectory=INVERSION or DISSIPATING. Rationale: r_full=+0.37 is substantially lower than any biological network tested. Signed social networks have a characteristic specialist structure: popular users split into two types — beloved users (high friend_of degree, low foe_of degree) and controversial users (high foe_of degree, also high friend_of degree). Hub-focusing selects users by total degree (friend+foe). At moderate compression, controversial users dominate and r may stay positive. At deep compression, the extreme hub clique likely consists of highly controversial users who are simultaneously hubs in both layers (generalists) OR pure specialist hubs in only one layer. Prediction: r decreases monotonically (DISSIPATING) or crosses zero (INVERSION). The stable_trajectory will clarify which pattern holds without BC_RADIAL interference. Either INVERSION or DISSIPATING is consistent with the signed social specialist hypothesis; AMPLIFYING would falsify it."
+    },
+    {
+      "id": "H3",
+      "statement": "Epinions signed trust network (trust + distrust layers) will have stable_trajectory=INVERSION or DISSIPATING, same class as Slashdot Zoo (H2). Rationale: Epinions and Slashdot are structurally analogous signed social trust networks from the same era (early 2000s internet). If the specialist structure (INVERSION or DISSIPATING) is a property of the signed social trust network class rather than a Slashdot-specific artifact, it must replicate in Epinions. This hypothesis is CONDITIONAL on soc-sign-epinions.txt.gz being available. If not available at run time, H3 is deferred to v3."
+    },
+    {
+      "id": "H4",
+      "statement": "Structural class (AMPLIFYING vs non-AMPLIFYING) is determined by network type, not by size. Yeast PPI (5182 nodes) predicts AMPLIFYING; Slashdot (28574 nodes) predicts non-AMPLIFYING — despite Slashdot being 5.5× larger. If size determined trajectory, the larger network would be more likely to be AMPLIFYING (as larger networks have more stable hub structure). This prediction falsifies size as the primary determinant. Replicates M_STRUCTURAL_MINING_v1 H4 (r_size_vs_trajectory=-0.057 on 70 networks) and v1 H4 (partial support). Using stable_trajectory as the classification rule removes BC_RADIAL ambiguity from the size-independence test."
+    }
+  ],
+  "_note": "Do not edit — this sidecar records pre-committed predictions before any run."
+}
